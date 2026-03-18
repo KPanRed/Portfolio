@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Krishna Panyala — Grobox: Mobile Farm Innovation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=Space+Mono&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --black: #0a0f1e; --off-black: #0d1428; --navy: #0f1b3d;
+    --white: #f0f4ff; --cream: #dde6ff; --accent: #5b8cff;
+    --accent-dim: #2a4fa8; --mid: #7a90c0;
+    --border: rgba(240,244,255,0.08); --border-vis: rgba(240,244,255,0.14);
+    --green: #3dba6f; --green-dim: #1a4d2e; --amber: #f5a623; --teal: #1a8fa0;
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--black); color: var(--white); font-family: 'DM Sans', sans-serif; font-weight: 300; overflow-x: hidden; cursor: none; }
+
+  .cursor { position: fixed; top: 0; left: 0; z-index: 9999; width: 10px; height: 10px; background: var(--accent); border-radius: 50%; pointer-events: none; transform: translate(-50%,-50%); }
+  .cursor-ring { position: fixed; top: 0; left: 0; z-index: 9998; width: 38px; height: 38px; border: 1px solid rgba(91,140,255,0.45); border-radius: 50%; pointer-events: none; transform: translate(-50%,-50%); }
+  body::before { content: ''; position: fixed; inset: 0; z-index: 1; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; opacity: 0.35; }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 28px 48px; display: flex; align-items: center; justify-content: space-between; background: rgba(10,15,30,0.88); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+  .nav-logo { font-family: 'Space Mono', monospace; font-size: 0.7rem; letter-spacing: 0.18em; color: var(--mid); text-transform: uppercase; text-decoration: none; transition: color 0.2s; }
+  .nav-logo:hover { color: var(--white); }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a { font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--mid); text-decoration: none; transition: color 0.2s; position: relative; }
+  .nav-links a::after { content: ''; position: absolute; bottom: -3px; left: 0; width: 0; height: 1px; background: var(--accent); transition: width 0.3s; }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a:hover::after { width: 100%; }
+
+  .edge-text { position: fixed; right: 20px; top: 50%; transform: translateY(-50%) rotate(90deg); font-family: 'Space Mono', monospace; font-size: 0.55rem; letter-spacing: 0.25em; text-transform: uppercase; color: rgba(122,144,192,0.2); z-index: 50; pointer-events: none; white-space: nowrap; }
+  .page { max-width: 940px; margin: 0 auto; padding: 0 48px 140px; position: relative; z-index: 10; }
+
+  /* HERO */
+  .cs-hero { padding-top: 160px; padding-bottom: 80px; border-bottom: 1px solid var(--border); }
+  .cs-eyebrow { font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--green); margin-bottom: 20px; opacity: 0; animation: fadeUp 0.5s ease forwards 0.1s; display: flex; align-items: center; gap: 16px; }
+  .cs-eyebrow::before { content: ''; display: inline-block; width: 32px; height: 1px; background: var(--green-dim); }
+  .cs-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.5rem, 7vw, 7rem); line-height: 0.9; margin-bottom: 40px; opacity: 0; animation: fadeUp 0.6s ease forwards 0.2s; }
+  .cs-title .outlined { display: block; color: transparent; -webkit-text-stroke: 1.5px rgba(240,244,255,0.2); }
+  .cs-meta-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-bottom: 48px; opacity: 0; animation: fadeUp 0.6s ease forwards 0.35s; }
+  .cs-meta-cell { background: var(--off-black); padding: 20px 22px; }
+  .cs-meta-label { font-family: 'Space Mono', monospace; font-size: 0.54rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mid); margin-bottom: 6px; }
+  .cs-meta-val { font-size: 0.9rem; color: var(--white); font-weight: 400; line-height: 1.4; }
+  .cs-intro { font-family: 'DM Serif Display', serif; font-style: italic; font-size: clamp(1.3rem, 2.2vw, 1.7rem); line-height: 1.55; color: var(--cream); opacity: 0; animation: fadeUp 0.6s ease forwards 0.5s; border-left: 2px solid var(--green-dim); padding-left: 28px; }
+
+  /* SECTIONS */
+  .cs-section { padding: 72px 0; border-bottom: 1px solid var(--border); }
+  .cs-section:last-child { border-bottom: none; }
+  .section-label { font-family: 'Space Mono', monospace; font-size: 0.58rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; display: flex; align-items: center; gap: 14px; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border-vis); }
+  .section-heading { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.5rem, 4.5vw, 4rem); line-height: 1; color: var(--white); margin-bottom: 36px; }
+  .body-text { font-size: 1rem; line-height: 1.85; color: var(--cream); opacity: 0.88; max-width: 700px; }
+  .body-text strong { font-weight: 500; color: var(--white); }
+  .body-text + .body-text { margin-top: 20px; }
+
+  /* GRIDS */
+  .obj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 40px; }
+  .obj-cell { background: var(--off-black); padding: 28px; transition: background 0.3s; }
+  .obj-cell:hover { background: var(--navy); }
+  .obj-num { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--green-dim); margin-bottom: 8px; }
+  .obj-title { font-size: 0.95rem; font-weight: 500; color: var(--white); margin-bottom: 8px; }
+  .obj-body { font-size: 0.83rem; line-height: 1.7; color: var(--mid); }
+
+  .method-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 40px; }
+  .method-cell { background: var(--off-black); padding: 28px; }
+  .method-icon { font-family: 'Space Mono', monospace; font-size: 0.54rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+  .method-val { font-family: 'DM Serif Display', serif; font-style: italic; font-size: 1.2rem; color: var(--white); margin-bottom: 8px; line-height: 1.3; }
+  .method-detail { font-size: 0.82rem; line-height: 1.7; color: var(--mid); }
+
+  .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 40px; }
+  .stat-cell { background: var(--off-black); padding: 28px 24px; text-align: center; transition: background 0.3s; }
+  .stat-cell:hover { background: var(--navy); }
+  .stat-cell-num { font-family: 'Bebas Neue', sans-serif; font-size: 3.2rem; line-height: 1; color: var(--white); margin-bottom: 6px; }
+  .stat-cell-num span { color: var(--green); }
+  .stat-cell-label { font-family: 'Space Mono', monospace; font-size: 0.56rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--mid); }
+
+  .quote-block { margin: 20px 0; border-left: 2px solid var(--green-dim); padding: 20px 28px; background: rgba(61,186,111,0.04); }
+  .quote-text { font-family: 'DM Serif Display', serif; font-style: italic; font-size: 1.05rem; line-height: 1.65; color: var(--cream); margin-bottom: 10px; }
+  .quote-attr { font-family: 'Space Mono', monospace; font-size: 0.57rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mid); }
+  .quote-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 32px; }
+
+  .two-track { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 40px; }
+  .track-cell { background: var(--off-black); padding: 32px; }
+  .track-title { font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 16px; }
+  .track-title.track-a { color: var(--accent); }
+  .track-title.track-b { color: var(--green); }
+  .track-h { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--white); line-height: 1; margin-bottom: 16px; }
+  .track-body { font-size: 0.84rem; line-height: 1.7; color: var(--mid); }
+  .track-list { list-style: none; margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .track-list li { font-size: 0.82rem; line-height: 1.6; color: var(--mid); display: flex; align-items: flex-start; gap: 8px; }
+  .track-list li::before { content: '→'; color: var(--accent); flex-shrink: 0; font-size: 0.75rem; margin-top: 2px; }
+  .track-list.green li::before { color: var(--green); }
+
+  .phase-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 40px; }
+  .phase-cell { padding: 0; }
+  .phase-header { padding: 14px 18px; }
+  .phase-num { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; line-height: 1; margin-bottom: 4px; opacity: 0.4; }
+  .phase-name { font-size: 0.82rem; font-weight: 500; color: var(--white); line-height: 1.3; }
+  .phase-body { background: var(--off-black); padding: 16px 18px; border-top: 1px solid var(--border); min-height: 120px; }
+  .phase-desc { font-size: 0.78rem; line-height: 1.6; color: var(--mid); margin-bottom: 12px; }
+  .phase-cell:nth-child(1) .phase-header { background: var(--accent-dim); }
+  .phase-cell:nth-child(2) .phase-header { background: #1a4d2e; }
+  .phase-cell:nth-child(3) .phase-header { background: var(--teal); }
+  .phase-cell:nth-child(4) .phase-header { background: #5b3a00; }
+
+  .pain-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .pain-list li { font-size: 0.76rem; line-height: 1.5; color: var(--mid); display: flex; gap: 6px; }
+  .pain-list li::before { content: '→'; color: var(--green); font-family: 'Space Mono', monospace; font-size: 0.62rem; flex-shrink: 0; margin-top: 1px; }
+
+  .challenge-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 40px; }
+  .challenge-item { display: grid; grid-template-columns: 200px 1fr; gap: 0; background: var(--border); }
+  .challenge-label { padding: 24px; display: flex; flex-direction: column; justify-content: center; background: var(--off-black); }
+  .challenge-tag { font-family: 'Space Mono', monospace; font-size: 0.5rem; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 8px; color: var(--green); }
+  .challenge-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--white); line-height: 1; }
+  .challenge-body-wrap { background: var(--navy); padding: 24px 28px; }
+  .challenge-body { font-size: 0.88rem; line-height: 1.75; color: var(--cream); opacity: 0.85; }
+
+  .km-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 40px; }
+  .km-cell { background: var(--off-black); padding: 28px; transition: background 0.3s; }
+  .km-cell:hover { background: var(--navy); }
+  .km-tag { display: inline-block; font-family: 'Space Mono', monospace; font-size: 0.5rem; letter-spacing: 0.18em; text-transform: uppercase; padding: 4px 10px; margin-bottom: 14px; border: 1px solid var(--border-vis); color: var(--green); }
+  .km-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: var(--white); line-height: 1; margin-bottom: 12px; }
+  .km-body { font-size: 0.84rem; line-height: 1.7; color: var(--mid); margin-bottom: 16px; }
+  .km-quote { font-family: 'DM Serif Display', serif; font-style: italic; font-size: 0.88rem; line-height: 1.6; color: var(--cream); opacity: 0.75; padding-left: 14px; border-left: 1px solid var(--border-vis); }
+
+  .user-groups { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 40px; }
+  .ug-cell { background: var(--off-black); padding: 24px; transition: background 0.3s; }
+  .ug-cell:hover { background: var(--navy); }
+  .ug-accent { height: 3px; margin-bottom: 16px; }
+  .ug-name { font-size: 0.9rem; font-weight: 500; color: var(--white); margin-bottom: 8px; line-height: 1.3; }
+  .ug-desc { font-size: 0.78rem; line-height: 1.65; color: var(--mid); }
+
+  .opp-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 40px; }
+  .opp-item { background: var(--off-black); display: grid; grid-template-columns: 64px 1fr; gap: 0; transition: background 0.3s; }
+  .opp-item:hover { background: var(--navy); }
+  .opp-num { display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--green-dim); border-right: 1px solid var(--border); }
+  .opp-content { padding: 24px 28px; }
+  .opp-title { font-size: 0.95rem; font-weight: 500; color: var(--white); margin-bottom: 8px; }
+  .opp-body { font-size: 0.84rem; line-height: 1.7; color: var(--mid); }
+
+  .nextsteps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 40px; }
+  .ns-cell { background: var(--off-black); padding: 28px; display: grid; grid-template-columns: 40px 1fr; gap: 16px; align-items: start; transition: background 0.3s; }
+  .ns-cell:hover { background: var(--navy); }
+  .ns-num { font-family: 'Bebas Neue', sans-serif; font-size: 2.4rem; color: var(--green-dim); line-height: 1; }
+  .ns-title { font-size: 0.9rem; font-weight: 500; color: var(--white); margin-bottom: 8px; line-height: 1.3; }
+  .ns-body { font-size: 0.8rem; line-height: 1.65; color: var(--mid); }
+
+  .outcome-band { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 40px; }
+  .outcome-cell { background: var(--off-black); padding: 32px 28px; text-align: center; }
+  .outcome-num { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; color: var(--green); margin-bottom: 8px; line-height: 1; }
+  .outcome-label { font-family: 'Space Mono', monospace; font-size: 0.56rem; letter-spacing: 0.13em; text-transform: uppercase; color: var(--mid); }
+
+  .callout-box { background: var(--off-black); border: 1px solid var(--border-vis); border-left: 3px solid var(--green-dim); padding: 20px 24px; margin-top: 24px; }
+  .callout-box.accent { border-left-color: var(--accent-dim); }
+  .callout-box.amber { border-left-color: var(--amber); }
+  .callout-label { font-family: 'Space Mono', monospace; font-size: 0.5rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mid); margin-bottom: 8px; }
+  .callout-text { font-size: 0.88rem; line-height: 1.7; color: var(--cream); opacity: 0.85; }
+
+  /* FRAMEWORK BADGE ROW */
+  .fw-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+  .fw-badge { font-family: 'Space Mono', monospace; font-size: 0.5rem; letter-spacing: 0.14em; text-transform: uppercase; border: 1px solid var(--border-vis); color: var(--green); padding: 5px 12px; }
+
+  /* INSIGHT GRID */
+  .insight-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 40px; }
+  .insight-cell { background: var(--off-black); padding: 24px; transition: background 0.3s; }
+  .insight-cell:hover { background: var(--navy); }
+  .insight-label { font-family: 'Space Mono', monospace; font-size: 0.5rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--green); margin-bottom: 12px; }
+  .insight-title { font-family: 'DM Serif Display', serif; font-style: italic; font-size: 1.05rem; color: var(--white); line-height: 1.35; margin-bottom: 10px; }
+  .insight-body { font-size: 0.8rem; line-height: 1.65; color: var(--mid); }
+
+  /* PRINCIPLE CARDS */
+  .principle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 40px; }
+  .principle-cell { background: var(--off-black); padding: 28px; }
+  .principle-num { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; color: var(--green-dim); line-height: 1; margin-bottom: 8px; }
+  .principle-title { font-size: 0.95rem; font-weight: 500; color: var(--white); margin-bottom: 10px; }
+  .principle-body { font-size: 0.82rem; line-height: 1.7; color: var(--mid); }
+
+  /* ROADMAP */
+  .roadmap-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 40px; }
+  .roadmap-item { background: var(--off-black); display: grid; grid-template-columns: 160px 1fr; gap: 0; }
+  .roadmap-phase { padding: 24px; display: flex; flex-direction: column; justify-content: center; border-right: 1px solid var(--border); }
+  .roadmap-phase-tag { font-family: 'Space Mono', monospace; font-size: 0.5rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--green); margin-bottom: 6px; }
+  .roadmap-phase-time { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--white); line-height: 1; }
+  .roadmap-content { padding: 24px 28px; }
+  .roadmap-title { font-size: 0.95rem; font-weight: 500; color: var(--white); margin-bottom: 10px; }
+  .roadmap-items { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .roadmap-items li { font-size: 0.82rem; line-height: 1.6; color: var(--mid); display: flex; gap: 8px; }
+  .roadmap-items li::before { content: '→'; color: var(--accent); flex-shrink: 0; font-size: 0.72rem; margin-top: 2px; }
+
+  /* NEXT NAV */
+  .next-case { margin-top: 80px; padding-top: 48px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .next-label { font-family: 'Space Mono', monospace; font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mid); margin-bottom: 8px; }
+  .next-title { font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; color: var(--white); line-height: 1; }
+  .next-arrow { width: 56px; height: 56px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--mid); font-size: 1.2rem; transition: border-color 0.2s, color 0.2s, transform 0.2s; text-decoration: none; }
+  .next-arrow:hover { border-color: var(--accent); color: var(--accent); transform: translateX(4px); }
+
+  .page-footer { position: fixed; bottom: 0; left: 0; right: 0; border-top: 1px solid var(--border); padding: 16px 48px; display: flex; align-items: center; justify-content: space-between; z-index: 50; background: rgba(10,15,30,0.88); backdrop-filter: blur(12px); }
+  .footer-left, .footer-right { font-family: 'Space Mono', monospace; font-size: 0.58rem; letter-spacing: 0.15em; color: var(--mid); text-transform: uppercase; }
+  .footer-dot { display: inline-block; width: 6px; height: 6px; background: var(--green); border-radius: 50%; margin-right: 8px; animation: pulse 2s ease-in-out infinite; }
+
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.8); } }
+
+  @media (max-width: 860px) {
+    .page { padding: 0 28px 120px; }
+    nav { padding: 22px 28px; }
+    .cs-meta-row { grid-template-columns: 1fr 1fr; }
+    .obj-grid, .quote-grid, .two-track, .km-grid, .principle-grid { grid-template-columns: 1fr; }
+    .stat-row { grid-template-columns: 1fr 1fr; }
+    .outcome-band { grid-template-columns: 1fr 1fr; }
+    .phase-row { grid-template-columns: 1fr 1fr; }
+    .user-groups, .insight-grid { grid-template-columns: 1fr 1fr; }
+    .nextsteps-grid { grid-template-columns: 1fr; }
+    .challenge-item, .roadmap-item { grid-template-columns: 1fr; }
+    .edge-text { display: none; }
+    .page-footer { padding: 14px 28px; }
+  }
+  @media (max-width: 540px) {
+    .cs-meta-row, .stat-row { grid-template-columns: 1fr 1fr; }
+    .user-groups, .insight-grid { grid-template-columns: 1fr; }
+    .next-case { flex-direction: column; gap: 24px; align-items: flex-start; }
+    .method-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="edge-text">Case Study — Grobox: Mobile Farm Innovation</div>
+
+<nav>
+  <a href="index.html" class="nav-logo">KP — Portfolio</a>
+  <ul class="nav-links">
+    <li><a href="work.html">Work</a></li>
+    <li><a href="krishna-about.html">About</a></li>
+    <li><a href="krishna-contact.html">Contact</a></li>
+  </ul>
+</nav>
+
+<div class="page">
+
+  <!-- HERO -->
+  <header class="cs-hero">
+    <p class="cs-eyebrow">UX Research & Design Innovation · AgriTech</p>
+    <h1 class="cs-title">Grobox<span class="outlined">Mobile Farm System</span></h1>
+    <div class="cs-meta-row">
+      <div class="cs-meta-cell">
+        <div class="cs-meta-label">My Role</div>
+        <div class="cs-meta-val">Design Researcher and Strategist</div>
+      </div>
+      <div class="cs-meta-cell">
+        <div class="cs-meta-label">Methods</div>
+        <div class="cs-meta-val">Mixed-Methods · Journey Mapping · Concept Testing</div>
+      </div>
+      <div class="cs-meta-cell">
+        <div class="cs-meta-label">Domain</div>
+        <div class="cs-meta-val">Urban Innovation</div>
+      </div>
+    </div>
+    <p class="cs-intro">A zero-to-one innovation initiative to reimagine how fresh produce reaches urban consumers — replacing a fragmented, opaque supply chain with a mobile hydroponics system that grows and delivers produce at the point of demand.</p>
+  </header>
+
+  <!-- 01 EXECUTIVE SUMMARY -->
+  <section class="cs-section reveal">
+    <p class="section-label">01 — Executive Summary</p>
+    <h2 class="section-heading">The Strategic Case</h2>
+    <p class="body-text">Fresh produce access in the United States is governed by a system built for scale, not for the people at the end of it. Produce travels an average of 1,500 miles before reaching a consumer's plate — spending days in transit, cold storage, and retail floor display before it's purchased. The result is a market that is expensive, opaque, nutritionally degraded, and structurally inaccessible to millions.</p>
+    <p class="body-text">I led the research and strategy for Grobox — a mobile hydroponics platform designed to compress the food journey from farm to consumer into a single, technology-enabled experience. My work spanned the full innovation lifecycle: from identifying the problem space through ethnographic research and behavioral data, to shaping the product strategy, experience principles, and business model that made the concept viable.</p>
+    <p class="body-text">This case study documents how I moved from ambiguity — "what problems exist in the food system?" — to a defensible product concept backed by user evidence, competitive analysis, and a go-to-market framework.</p>
+
+    <div class="outcome-band">
+      <div class="outcome-cell">
+        <div class="outcome-num">149</div>
+        <div class="outcome-label">Survey Respondents</div>
+      </div>
+      <div class="outcome-cell">
+        <div class="outcome-num">37</div>
+        <div class="outcome-label">Qualitative Interviews</div>
+      </div>
+      <div class="outcome-cell">
+        <div class="outcome-num">9</div>
+        <div class="outcome-label">Strategic Insights</div>
+      </div>
+      <div class="outcome-cell">
+        <div class="outcome-num">4</div>
+        <div class="outcome-label">Stakeholder Archetypes</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 PROBLEM CONTEXT -->
+  <section class="cs-section reveal">
+    <p class="section-label">02 — Problem Context & Business Challenge</p>
+    <h2 class="section-heading">A Broken Food Journey</h2>
+    <p class="body-text">The American fresh produce supply chain involves five to seven intermediary steps between a farm and a consumer's kitchen. Each step adds time, cost, and opacity. The average item in a grocery store was harvested 4–7 days prior. This structural inefficiency creates cascading problems that research revealed were deeply felt but rarely articulated by users.</p>
+
+    <div class="challenge-list">
+      <div class="challenge-item">
+        <div class="challenge-label">
+          <div class="challenge-tag">Problem 01</div>
+          <div class="challenge-name">Access Inequality</div>
+        </div>
+        <div class="challenge-body-wrap">
+          <div class="challenge-body">73 million Americans live in food deserts — areas where access to fresh, affordable produce is structurally limited by distance, transportation, or retail economics. Survey data showed 48% of respondents rarely visited farmers markets, and 28% never did. The primary reasons: proximity, scheduling constraints, and infrequent operation hours.</div>
+        </div>
+      </div>
+      <div class="challenge-item">
+        <div class="challenge-label">
+          <div class="challenge-tag">Problem 02</div>
+          <div class="challenge-name">Trust & Transparency</div>
+        </div>
+        <div class="challenge-body-wrap">
+          <div class="challenge-body">Interviews surfaced a recurring emotional pattern: consumers wanted to trust what they were eating, but the current system gave them no tools to do so. Multiple interview participants described feeling deceived by packaging claims and unable to verify origin, freshness, or growing method. This lack of transparency was identified as a direct driver of purchase anxiety and brand disloyalty.</div>
+        </div>
+      </div>
+      <div class="challenge-item">
+        <div class="challenge-label">
+          <div class="challenge-tag">Problem 03</div>
+          <div class="challenge-name">Nutritional Degradation</div>
+        </div>
+        <div class="challenge-body-wrap">
+          <div class="challenge-body">Produce begins losing nutritional density within hours of harvest. The multi-day supply chain means that by the time a consumer purchases greens or vegetables, significant vitamin and mineral loss has already occurred. 67% of survey respondents defined a "healthy diet" as one involving frequent fresh vegetables — yet the system they depended on was structurally delivering a degraded product.</div>
+        </div>
+      </div>
+      <div class="challenge-item">
+        <div class="challenge-label">
+          <div class="challenge-tag">Problem 04</div>
+          <div class="challenge-name">Supply Chain Waste</div>
+        </div>
+        <div class="challenge-body-wrap">
+          <div class="challenge-body">Approximately 30–40% of the US food supply is lost or wasted annually. Research into distributor and retailer journeys revealed key waste points: produce damaged in transit, items not meeting cosmetic retail standards, and inventory overshoot due to demand forecasting errors. This waste represented both a cost and a sustainability gap that an on-demand, local-growth model could directly address.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout-box amber" style="margin-top:40px;">
+      <div class="callout-label">Strategic Insight</div>
+      <div class="callout-text">The food system's core problem is not a shortage of food — it is a mismatch between when and where food is grown, and when and where people actually need it. This gap creates the design opportunity.</div>
+    </div>
+  </section>
+
+  <!-- 03 ROLE -->
+  <section class="cs-section reveal">
+    <p class="section-label">03 — My Role & Leadership Contribution</p>
+    <h2 class="section-heading">Research to Strategy</h2>
+    <p class="body-text">I operated as the research and strategy lead across the full initiative — from initial opportunity framing through concept validation and business model design. My contribution was deliberately cross-disciplinary: grounding the team in user evidence while actively shaping the product and business direction that emerged from that evidence.</p>
+
+    <div class="obj-grid">
+      <div class="obj-cell">
+        <div class="obj-num">01</div>
+        <div class="obj-title">Research Architecture</div>
+        <div class="obj-body">Designed the mixed-methods research strategy — determining the right sequence of inquiry, participant recruitment approach, survey instrumentation, and interview protocol to surface both behavioral patterns and latent motivations across four distinct stakeholder groups.</div>
+      </div>
+      <div class="obj-cell">
+        <div class="obj-num">02</div>
+        <div class="obj-title">Insight Synthesis</div>
+        <div class="obj-body">Led multi-stage affinity diagramming to cluster 200+ data points into emergent themes. Identified nine strategic insights spanning access, control, trust, nutrition, satisfaction, wastage, and market dynamics — forming the direct foundation for product requirements.</div>
+      </div>
+      <div class="obj-cell">
+        <div class="obj-num">03</div>
+        <div class="obj-title">Opportunity Framing</div>
+        <div class="obj-body">Translated qualitative and quantitative findings into a structured opportunity framework. Mapped insight-to-opportunity pairs using a Jobs-To-Be-Done lens, and conducted competitive landscape analysis to identify the white space Grobox could uniquely occupy.</div>
+      </div>
+      <div class="obj-cell">
+        <div class="obj-num">04</div>
+        <div class="obj-title">Product & Business Strategy</div>
+        <div class="obj-body">Shaped the Value Proposition Canvas and Business Model Canvas for Grobox. Influenced key product decisions — the choice of hydroponics over soil-based methods, the mobile-first distribution model, and the "choose your ripeness" feature — all directly traceable to user research findings.</div>
+      </div>
+      <div class="obj-cell">
+        <div class="obj-num">05</div>
+        <div class="obj-title">Experience Design Direction</div>
+        <div class="obj-body">Developed experience principles and defined the service blueprint — mapping how consumers, truck operators, and digital touchpoints would interact across the full journey from discovery to delivery. Identified moments of friction and moments of delight that differentiated Grobox from generic delivery models.</div>
+      </div>
+      <div class="obj-cell">
+        <div class="obj-num">06</div>
+        <div class="obj-title">Stakeholder Alignment</div>
+        <div class="obj-body">Facilitated design studio workshops to align multidisciplinary team members across industrial design, design management, and business strategy. Synthesized competing perspectives into shared frameworks that maintained user-centricity while honoring technical and commercial constraints.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 OPPORTUNITY FRAMING -->
+  <section class="cs-section reveal">
+    <p class="section-label">04 — Opportunity Framing & Strategic Vision</p>
+    <h2 class="section-heading">Finding the White Space</h2>
+    <p class="body-text">Before designing a solution, I needed to map where the real strategic opportunity lay. I applied the <strong>Innovation Ambition Matrix</strong> to assess three candidate domains — cannabis retail, autonomous transportation, and farming technology — evaluating each across market maturity, regulatory risk, user need intensity, and our team's ability to deliver meaningful innovation.</p>
+
+    <div class="two-track">
+      <div class="track-cell">
+        <div class="track-title track-a">Innovation Ambition: Core to Adjacent</div>
+        <div class="track-h">Why Farming Won</div>
+        <div class="track-body">Farming technology represented a unique intersection: an industry undergoing rapid technological disruption (hydroponics, aeroponics, vertical farming) meeting a stable, unmet consumer need (fresh, accessible produce). Unlike cannabis (regulatory uncertainty) or autonomous transport (capital intensity), farming offered a viable innovation horizon for a lean startup model.</div>
+        <ul class="track-list">
+          <li>Existing hydroponics technology ready for commercial application</li>
+          <li>Clear, researchable consumer pain points with high emotional weight</li>
+          <li>Blue ocean competitive positioning — no mobile-first model existed</li>
+          <li>Addressable through mixed hardware + software product strategy</li>
+        </ul>
+      </div>
+      <div class="track-cell" style="border-left: 1px solid var(--border);">
+        <div class="track-title track-b">Strategic Vision</div>
+        <div class="track-h">Compress the Food Journey</div>
+        <div class="track-body">The strategic vision emerged directly from journey mapping: every barrier in the current food system — storage, transit, retail display, inconsistent supply — was a consequence of the physical and temporal distance between growing and consuming. Grobox's core innovation was collapsing that distance entirely.</div>
+        <ul class="track-list green">
+          <li>Grow at or near the point of demand</li>
+          <li>Eliminate cold storage, transit loss, and retail markup</li>
+          <li>Enable radical transparency — consumers see the farm</li>
+          <li>Make fresh produce accessible regardless of geography</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout-box" style="margin-top:40px;">
+      <div class="callout-label">How Might We</div>
+      <div class="callout-text">How might we integrate new farming technology into the existing food journey in the USA — to deliver fresher, more nutritious produce to consumers in a way that is more accessible, more transparent, and economically viable at scale?</div>
+    </div>
+
+    <div class="fw-badges">
+      <span class="fw-badge">Double Diamond</span>
+      <span class="fw-badge">Innovation Ambition Matrix</span>
+      <span class="fw-badge">SWOT Analysis</span>
+      <span class="fw-badge">Porter's 5 Forces</span>
+      <span class="fw-badge">Ecosystem Mapping</span>
+      <span class="fw-badge">Network Analysis</span>
+    </div>
+  </section>
+
+  <!-- 05 RESEARCH STRATEGY -->
+  <section class="cs-section reveal">
+    <p class="section-label">05 — Research Strategy & Execution</p>
+    <h2 class="section-heading">A Multi-Layer Research System</h2>
+    <p class="body-text">I designed a mixed-methods research strategy to generate both the behavioral breadth needed for pattern recognition and the emotional depth needed for genuine empathy. The strategy was sequenced deliberately: qualitative exploration first to generate hypotheses, quantitative measurement second to validate patterns and scale, and then a return to qualitative depth for concept testing.</p>
+
+    <div class="method-row">
+      <div class="method-cell">
+        <div class="method-icon">Phase 01 — Generative</div>
+        <div class="method-val">Ethnographic Observation</div>
+        <div class="method-detail">Shadowed consumers in supermarket environments, tracing behavioral patterns across the full shopping journey. Documented friction points: navigation confusion, produce selection anxiety, checkout inefficiency, and the emotional incongruence between health aspiration and actual purchasing behavior.</div>
+      </div>
+      <div class="method-cell" style="border-left: 1px solid var(--border);">
+        <div class="method-icon">Phase 02 — Quantitative</div>
+        <div class="method-val">Behavioral Survey</div>
+        <div class="method-detail">149 respondents across three geographies (Savannah, New York, Atlanta). Measured purchase frequency, channel preference, freshness definitions, farmers market behavior, and willingness to grow food at home. Results revealed 74% relied on supermarkets primarily for proximity — not quality preference.</div>
+      </div>
+      <div class="method-cell" style="border-left: 1px solid var(--border);">
+        <div class="method-icon">Phase 03 — Qualitative</div>
+        <div class="method-val">Stakeholder Interviews</div>
+        <div class="method-detail">37 in-depth interviews across four stakeholder groups: 2 farmers, 2 truckers/distributors, 7 retailers, 26 consumers. Each protocol was tailored to surface the specific motivations, frustrations, and mental models of that stakeholder within the food system. Affinity diagramming synthesized findings into nine core insights.</div>
+      </div>
+    </div>
+
+    <div class="callout-box accent" style="margin-top:40px;">
+      <div class="callout-label">Research Design Principle</div>
+      <div class="callout-text">I structured the research to surface not just what people do, but why they do it — and critically, the gap between their stated values (wanting fresh, nutritious food) and their actual behavior (defaulting to convenience). That gap became the most important design space.</div>
+    </div>
+
+    <p class="body-text" style="margin-top:40px;">Stakeholder mapping was conducted using an <strong>ERAF analysis</strong> (Entities, Relationships, Attributes, Flows) across the full food ecosystem — from small-scale farmers and industrialized agriculture through distribution, retail, and end consumers. This revealed the structural dependencies and power asymmetries that shaped the experience of every participant in the chain.</p>
+
+    <div class="user-groups">
+      <div class="ug-cell">
+        <div class="ug-accent" style="background: var(--green);"></div>
+        <div class="ug-name">Farmers</div>
+        <div class="ug-desc">Deeply skilled but structurally marginalized. Dependent on distributors and weather. Emotionally connected to their work but frustrated by poor returns and low consumer awareness of growing complexity.</div>
+      </div>
+      <div class="ug-cell">
+        <div class="ug-accent" style="background: var(--amber);"></div>
+        <div class="ug-name">Distributors & Truckers</div>
+        <div class="ug-desc">The invisible layer. High physical labor, inconsistent pay, low status. Constrained by temperature requirements, long transit times, and loading/unloading conditions. A key source of produce degradation and food waste.</div>
+      </div>
+      <div class="ug-cell">
+        <div class="ug-accent" style="background: var(--accent);"></div>
+        <div class="ug-name">Retailers</div>
+        <div class="ug-desc">Profit-driven, trend-aware, display-optimized. Motivated to move volume, not to maximize freshness. Stale produce pushed to the front; fresh product held in back. Consumer trust is not their primary design constraint.</div>
+      </div>
+      <div class="ug-cell">
+        <div class="ug-accent" style="background: var(--teal);"></div>
+        <div class="ug-name">Urban Consumers</div>
+        <div class="ug-desc">Health-aspirational but time-constrained. Purchase behavior driven by proximity and convenience, not quality preference. High desire for transparency and trust in food source. Emotionally responsive to the idea of growing their own food.</div>
+      </div>
+      <div class="ug-cell">
+        <div class="ug-accent" style="background: rgba(255,107,107,0.6);"></div>
+        <div class="ug-name">Food Desert Residents</div>
+        <div class="ug-desc">The highest-need segment. Limited access to supermarkets, no proximity to farmers markets, constrained mobility. Fresh produce access is a structural equity issue — not a consumer preference one.</div>
+      </div>
+      <div class="ug-cell">
+        <div class="ug-accent" style="background: rgba(155,89,182,0.5);"></div>
+        <div class="ug-name">High-Value Consumers</div>
+        <div class="ug-desc">Doctors, lawyers, professionals with high time cost. Willing to pay a premium for quality and convenience. Prioritize nutrition and freshness. An early-adopter segment with high lifetime value and word-of-mouth influence.</div>
+      </div>
+    </div>
+
+    <div class="fw-badges" style="margin-top:32px;">
+      <span class="fw-badge">ERAF Analysis</span>
+      <span class="fw-badge">Stakeholder Mapping</span>
+      <span class="fw-badge">Empathy Maps</span>
+      <span class="fw-badge">Proto-Personas</span>
+      <span class="fw-badge">Behavioral Survey Design</span>
+      <span class="fw-badge">Ethnographic Observation</span>
+    </div>
+  </section>
+
+  <!-- 06 SYNTHESIS -->
+  <section class="cs-section reveal">
+    <p class="section-label">06 — Synthesis & Insight Development</p>
+    <h2 class="section-heading">From Data to Direction</h2>
+    <p class="body-text">Synthesis involved three rounds of affinity diagramming — first clustering individual data points (yellow notes) by observable pattern, then by underlying motivation (blue notes), then by strategic theme (pink notes). Each round forced a different level of abstraction, moving from what people said to what people meant to what the system needed to address.</p>
+    <p class="body-text">The process surfaced nine strategic insights that spanned both consumer and farmer experience — and critically, revealed structural overlaps between what both groups needed from a reimagined system.</p>
+
+    <div class="insight-grid">
+      <div class="insight-cell">
+        <div class="insight-label">Insight 01 · Access</div>
+        <div class="insight-title">"I want fresh produce but the system makes it hard to get."</div>
+        <div class="insight-body">74% of consumers default to supermarkets for proximity — not quality. Farmers markets, perceived as higher quality, are structurally inaccessible due to timing, location, and transportation barriers.</div>
+      </div>
+      <div class="insight-cell">
+        <div class="insight-label">Insight 02 · Trust</div>
+        <div class="insight-title">"I can't verify anything about where my food comes from."</div>
+        <div class="insight-body">Consumers feel deceived by packaging claims and unable to trace origin or growing methods. Trust deficit directly reduces purchase frequency at specialty stores and increases reliance on commodity retail.</div>
+      </div>
+      <div class="insight-cell">
+        <div class="insight-label">Insight 03 · Nutrition</div>
+        <div class="insight-title">"The freshness I want degrades before it reaches me."</div>
+        <div class="insight-body">Consumers understand that staleness correlates with nutrition loss, but have no mechanism to optimize for freshness in the current system. "Food picked 24 hours before I consume it is what I call healthy."</div>
+      </div>
+      <div class="insight-cell">
+        <div class="insight-label">Insight 04 · Control</div>
+        <div class="insight-title">"Farmers want to control their output but the system doesn't allow it."</div>
+        <div class="insight-body">Farmers are subject to weather, distributor relationships, and retailer cosmetic standards — all outside their control. New farming technologies directly address this by moving growing indoors and eliminating seasonal dependency.</div>
+      </div>
+      <div class="insight-cell">
+        <div class="insight-label">Insight 05 · Wastage</div>
+        <div class="insight-title">"Significant value is destroyed before food reaches anyone."</div>
+        <div class="insight-body">Waste occurs at every step: transit damage, cosmetic rejection, retail overshoot, and consumer discard of produce that didn't hold. An on-demand grow model eliminates most structural waste points.</div>
+      </div>
+      <div class="insight-cell">
+        <div class="insight-label">Insight 06 · Satisfaction</div>
+        <div class="insight-title">"Buying groceries is functional. It should feel like something more."</div>
+        <div class="insight-body">Farmers described an emotional connection to growing that consumers never experience. Research identified a gap between the transactional nature of current food retail and the emotional resonance that proximity to growing could generate.</div>
+      </div>
+      <div class="insight-cell">
+        <div class="insight-label">Insight 07 · Time</div>
+        <div class="insight-title">"Convenience isn't optional — it's the deciding factor."</div>
+        <div class="insight-body">Across professional and family segments, time pressure dominates food decisions. A model that brings fresh produce to consumers — rather than requiring them to travel — directly addresses the single largest behavioral barrier to fresh food access.</div>
+      </div>
+      <div class="insight-cell">
+        <div class="insight-label">Insight 08 · Market Trends</div>
+        <div class="insight-title">"Health consciousness is rising, but infrastructure isn't keeping pace."</div>
+        <div class="insight-body">67% of respondents defined a healthy diet as requiring frequent fresh vegetables. Demand for organic, local, and transparent food is increasing — but the supply system has not evolved to meet it at the access layer.</div>
+      </div>
+      <div class="insight-cell">
+        <div class="insight-label">Insight 09 · Emotional Experience</div>
+        <div class="insight-title">"Seeing something grow creates a feeling that can't be replicated by a label."</div>
+        <div class="insight-body">The farmer insight that defined the concept: "There is no greater miracle than seeing what can be created from just a small seed." This emotional dimension became a core experience principle — making the growing process visible to consumers.</div>
+      </div>
+    </div>
+
+    <div class="quote-block" style="margin-top:40px;">
+      <div class="quote-text">"Food source should be transparent. Information available is limited and confusing — not enough local food to supply the demand."</div>
+      <div class="quote-attr">— Composite of consumer interview respondents</div>
+    </div>
+
+    <div class="fw-badges" style="margin-top:32px;">
+      <span class="fw-badge">Affinity Diagramming</span>
+      <span class="fw-badge">Mental Models Framework</span>
+      <span class="fw-badge">Jobs-To-Be-Done (JTBD)</span>
+      <span class="fw-badge">Customer Journey Mapping</span>
+    </div>
+  </section>
+
+  <!-- 07 PRODUCT STRATEGY -->
+  <section class="cs-section reveal">
+    <p class="section-label">07 — Product & Experience Strategy</p>
+    <h2 class="section-heading">Designing for the Whole System</h2>
+    <p class="body-text">With nine strategic insights validated across quantitative and qualitative data, I worked to translate them into a coherent product and experience strategy. This meant defining not just what Grobox would do, but who it was for, what job it would perform, and how its experience would feel distinctly different from existing alternatives.</p>
+
+    <p class="body-text" style="margin-top:20px;">I applied the <strong>Value Proposition Canvas</strong> separately for the two primary stakeholder groups — consumers and farmers — to ensure the model created genuine value on both sides. For consumers: radical freshness, transparency, and convenient access. For growers: direct-to-consumer economics, elimination of storage costs, and technology-enabled growing efficiency.</p>
+
+    <div class="principle-grid">
+      <div class="principle-cell">
+        <div class="principle-num">EP01</div>
+        <div class="principle-title">Radical Proximity</div>
+        <div class="principle-body">Every interaction with Grobox should feel like the distance between farm and plate has been collapsed. Consumers should see where their food comes from — not just be told. The truck's hydroponics wall is the farm; the experience makes this tangible.</div>
+      </div>
+      <div class="principle-cell">
+        <div class="principle-num">EP02</div>
+        <div class="principle-title">Transparent by Design</div>
+        <div class="principle-body">Transparency should be structural, not performative. The app shows live growing status, harvest timing, and ripeness levels — not just marketing copy. Every feature that could reveal information about the food should reveal it.</div>
+      </div>
+      <div class="principle-cell">
+        <div class="principle-num">EP03</div>
+        <div class="principle-title">Effortless Access</div>
+        <div class="principle-body">Grobox must eliminate the logistical friction that currently prevents fresh produce access. Geo-location of trucks, same-day ordering, smart basket save, and multiple ripeness selection all serve a single goal: remove every barrier between intention and fresh food.</div>
+      </div>
+      <div class="principle-cell">
+        <div class="principle-num">EP04</div>
+        <div class="principle-title">Control at Every Stage</div>
+        <div class="principle-body">Both consumers and growers should experience a sense of agency they don't have in the current system. Consumers choose ripeness level, basket composition, and delivery timing. Growers operate in a controlled environment independent of weather, seasons, or distributor relationships.</div>
+      </div>
+    </div>
+
+    <p class="body-text" style="margin-top:40px;">The <strong>Customer Journey Map</strong> I developed traced three distinct consumer scenarios: a current urban consumer navigating the supermarket system, an early Grobox adopter experiencing the mobile truck interaction, and a future consumer engaging with a fully scaled digital-physical platform. Each scenario illuminated the moments where Grobox's model created the greatest comparative advantage.</p>
+
+    <div class="callout-box" style="margin-top:24px;">
+      <div class="callout-label">Journey Map Finding</div>
+      <div class="callout-text">The highest-friction moment in the current journey was not at the grocery store — it was the decision of whether to make the trip at all. Consumers frequently abandoned fresh food purchases because the perceived effort exceeded the perceived reward. Grobox's mobile model directly attacks this point by eliminating the trip entirely.</div>
+    </div>
+
+    <div class="fw-badges" style="margin-top:32px;">
+      <span class="fw-badge">Customer Journey Mapping</span>
+      <span class="fw-badge">Value Proposition Canvas</span>
+      <span class="fw-badge">Experience Principles</span>
+      <span class="fw-badge">Service Blueprint</span>
+      <span class="fw-badge">Information Architecture</span>
+    </div>
+  </section>
+
+  <!-- 08 CONCEPT DEVELOPMENT -->
+  <section class="cs-section reveal">
+    <p class="section-label">08 — Concept Development & Prototyping</p>
+    <h2 class="section-heading">From Insight to Form</h2>
+    <p class="body-text">Concept development was structured through a <strong>Design Studio</strong> process — generating approximately 30 individual ideas, clustering them by insight area, and identifying the highest-leverage concepts based on their ability to address multiple insights simultaneously. The final concept emerged from the intersection of the access, trust, nutrition, and emotional experience clusters.</p>
+
+    <p class="body-text" style="margin-top:20px;">Grobox is a mobile hydroponics unit — a purpose-built vehicle that grows produce in-transit using aeroponic and hydroponic growing systems, then delivers to consumers at point of demand. The app-enabled platform handles ordering, location tracking, ripeness selection, and community features.</p>
+
+    <div class="km-grid">
+      <div class="km-cell">
+        <div class="km-tag">Physical Product</div>
+        <div class="km-title">The Mobile Growing Unit</div>
+        <div class="km-body">A hydroponics-equipped vehicle capable of growing approximately 450 plants per cycle. Modular internal trays enable parallel growing cycles, providing a continuous harvest supply. The exterior design makes the growing process visible — consumers interact directly with the living wall.</div>
+        <div class="km-quote">"Consumers can see the farm. The truck IS the farm."</div>
+      </div>
+      <div class="km-cell" style="border-left: 1px solid var(--border);">
+        <div class="km-tag">Digital Product</div>
+        <div class="km-title">The Grobox App Platform</div>
+        <div class="km-body">The digital experience handles discovery, ordering, and community. Key features informed by research: real-time truck location, live growing status, three-level ripeness selection (for immediate use, 2 days, or 5+ days), smart basket save, and educational hydroponics content that builds consumer trust through knowledge.</div>
+        <div class="km-quote">"Meeting the people who grow my food builds my trust in the food source."</div>
+      </div>
+    </div>
+
+    <p class="body-text" style="margin-top:40px;">The <strong>ripeness selection feature</strong> was a direct product translation of a research insight: consumers expressed frustration that supermarket produce was often at peak ripeness at purchase, giving them only a 1–2 day window. Offering produce at three ripeness stages meant consumers could plan ahead, reduce household waste, and purchase in quantities that matched their actual usage patterns.</p>
+
+    <p class="body-text" style="margin-top:20px;">I developed a <strong>Service Blueprint</strong> that mapped the full interaction across all channels: the consumer app, the truck interaction, the growing system, the driver/operator role, and backend logistics. This revealed two critical design requirements: real-time location accuracy needed to be within 100m for the experience to feel reliable, and the truck operator needed to serve as both grower and brand ambassador — requiring a specific hiring and training model.</p>
+
+    <div class="stat-row" style="margin-top:40px;">
+      <div class="stat-cell">
+        <div class="stat-cell-num">450<span></span></div>
+        <div class="stat-cell-label">Plants Per Truck Cycle</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-cell-num">35<span>+</span></div>
+        <div class="stat-cell-label">People Fed Per Unit</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-cell-num">3–6<span>wk</span></div>
+        <div class="stat-cell-label">Growing Cycle Turnaround</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-cell-num">90<span>%</span></div>
+        <div class="stat-cell-label">Less Water Than Traditional Farming</div>
+      </div>
+    </div>
+
+    <div class="fw-badges" style="margin-top:32px;">
+      <span class="fw-badge">Concept Testing Framework</span>
+      <span class="fw-badge">Service Blueprint</span>
+      <span class="fw-badge">Information Architecture</span>
+      <span class="fw-badge">Design Studio</span>
+      <span class="fw-badge">Prototype Testing</span>
+    </div>
+  </section>
+
+  <!-- 09 BUSINESS MODEL -->
+  <section class="cs-section reveal">
+    <p class="section-label">09 — Business Model & Innovation Strategy</p>
+    <h2 class="section-heading">Building for Viability</h2>
+    <p class="body-text">A strong product concept without a viable business model is just a prototype. I worked through the <strong>Business Model Canvas</strong> for Grobox with specific attention to the unit economics of mobile farming, the partnership architecture required to scale, and the revenue diversification needed to sustain operations through a capital-intensive early phase.</p>
+
+    <div class="phase-row">
+      <div class="phase-cell">
+        <div class="phase-header">
+          <div class="phase-num">01</div>
+          <div class="phase-name">Key Partners</div>
+        </div>
+        <div class="phase-body">
+          <div class="phase-desc">Hydroponics technology suppliers, urban logistics platforms, municipal food desert programs, potential ride-share infrastructure partners (modeled as "Uber Grows"), nutritional data providers, and community organizations for food access initiatives.</div>
+          <ul class="pain-list">
+            <li>Hydroponic equipment OEMs</li>
+            <li>Urban logistics network</li>
+            <li>Municipal food access programs</li>
+            <li>App ecosystem partners</li>
+          </ul>
+        </div>
+      </div>
+      <div class="phase-cell">
+        <div class="phase-header">
+          <div class="phase-num">02</div>
+          <div class="phase-name">Value Delivered</div>
+        </div>
+        <div class="phase-body">
+          <div class="phase-desc">Freshest possible produce delivered at point of demand, with full growing transparency. Eliminates cold storage, transit degradation, and retail markup. Delivers the emotional experience of proximity to growing.</div>
+          <ul class="pain-list">
+            <li>24-hour harvest-to-consumer window</li>
+            <li>Radical price-to-freshness ratio</li>
+            <li>Choose-your-ripeness personalization</li>
+            <li>Visible, verifiable food source</li>
+          </ul>
+        </div>
+      </div>
+      <div class="phase-cell">
+        <div class="phase-header">
+          <div class="phase-num">03</div>
+          <div class="phase-name">Revenue Streams</div>
+        </div>
+        <div class="phase-body">
+          <div class="phase-desc">Direct consumer produce sales, loyalty subscription model, bulk corporate accounts (office delivery, hospital systems), white-label growing data licensing, and brand partnership programs for nutritional education content.</div>
+          <ul class="pain-list">
+            <li>Direct produce sales (primary)</li>
+            <li>Subscription model with discounts</li>
+            <li>Corporate bulk accounts</li>
+            <li>Data and content licensing</li>
+          </ul>
+        </div>
+      </div>
+      <div class="phase-cell">
+        <div class="phase-header">
+          <div class="phase-num">04</div>
+          <div class="phase-name">Cost Structure</div>
+        </div>
+        <div class="phase-body">
+          <div class="phase-desc">Mobile unit acquisition ($75–125K per truck), technology platform development, operator hiring and training, growing supplies and nutrient solutions, app maintenance, and brand marketing during acquisition phase.</div>
+          <ul class="pain-list">
+            <li>Unit cost: $75–125K per truck</li>
+            <li>Operator wages + training</li>
+            <li>App and platform infrastructure</li>
+            <li>Marketing and user acquisition</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <p class="body-text" style="margin-top:40px;">The <strong>Ecosystem Map</strong> I built for Grobox identified three layers of strategic relationship: core operations (truck fleet, growing systems, app platform), adjacent ecosystem (local food organizations, health-focused employers, community nutrition programs), and enabling infrastructure (hydroponic suppliers, logistics networks, regulatory environment). This mapping revealed that the most critical early partnership was not with distributors or retailers — it was with city food access programs that could provide both routes and mission alignment.</p>
+
+    <div class="callout-box amber" style="margin-top:24px;">
+      <div class="callout-label">Competitive Differentiation</div>
+      <div class="callout-text">Competitor analysis showed that existing hydroponics companies (Grobo, Cloudponics, Urban Farmers Pro) were all operating in fixed-location models — warehouses, homes, or commercial facilities. None had translated mobile growing into a consumer-facing distribution model. This was the blue ocean: the technology existed, but no one had connected it directly to the point of demand.</div>
+    </div>
+
+    <div class="fw-badges" style="margin-top:32px;">
+      <span class="fw-badge">Business Model Canvas</span>
+      <span class="fw-badge">Value Proposition Canvas</span>
+      <span class="fw-badge">Ecosystem Mapping</span>
+      <span class="fw-badge">Stakeholder Mapping</span>
+      <span class="fw-badge">Competitive Analysis</span>
+    </div>
+  </section>
+
+  <!-- 10 ROADMAP -->
+  <section class="cs-section reveal">
+    <p class="section-label">10 — Implementation Roadmap</p>
+    <h2 class="section-heading">Phasing the Vision</h2>
+    <p class="body-text">Innovation concepts fail at implementation when the path from prototype to scale is not clearly defined. I developed a three-phase roadmap using a <strong>Prioritization Matrix</strong> to sequence initiatives by impact-to-effort ratio — ensuring early phases built the evidence base and operational infrastructure needed to sustain later scale.</p>
+
+    <div class="roadmap-list">
+      <div class="roadmap-item">
+        <div class="roadmap-phase">
+          <div class="roadmap-phase-tag">Phase 01</div>
+          <div class="roadmap-phase-time">Months 0–6</div>
+        </div>
+        <div class="roadmap-content">
+          <div class="roadmap-title">Validation & Pilot Infrastructure</div>
+          <ul class="roadmap-items">
+            <li>Deploy 2–3 pilot units in identified high-need / high-density urban corridors</li>
+            <li>Launch MVP app with core features: truck location, produce availability, and basic ordering</li>
+            <li>Establish initial hydroponic supply partnerships and growing protocols</li>
+            <li>Run concept testing sessions with target consumer segments (urban professionals, food desert residents)</li>
+            <li>Measure unit economics: cost per delivery, harvest yield, customer acquisition cost, repeat purchase rate</li>
+            <li>Collect NPS and qualitative feedback to refine experience model</li>
+          </ul>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-phase">
+          <div class="roadmap-phase-tag">Phase 02</div>
+          <div class="roadmap-phase-time">Months 6–18</div>
+        </div>
+        <div class="roadmap-content">
+          <div class="roadmap-title">Scale & Feature Depth</div>
+          <ul class="roadmap-items">
+            <li>Expand fleet based on pilot unit economics validation — target 10–15 units per metro area</li>
+            <li>Launch ripeness selection feature, smart basket, and subscription model</li>
+            <li>Open corporate account channel: target office campuses, health systems, and co-working spaces</li>
+            <li>Introduce community/social layer in app: growing stories, seasonal produce education</li>
+            <li>Begin partnership conversations with urban food access programs for food desert routes</li>
+            <li>Explore warehouse-supported pre-seeding model to reduce per-cycle turnaround time</li>
+          </ul>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-phase">
+          <div class="roadmap-phase-tag">Phase 03</div>
+          <div class="roadmap-phase-time">Months 18–36</div>
+        </div>
+        <div class="roadmap-content">
+          <div class="roadmap-title">Platform & Geographic Expansion</div>
+          <ul class="roadmap-items">
+            <li>Expand to 3–5 new metro markets using validated operational playbook from Phase 2</li>
+            <li>Launch data licensing offering: growing data, consumer preference insights, and nutritional transparency tools to partners</li>
+            <li>Evaluate train-the-operator model for franchise or licensing expansion</li>
+            <li>Explore disaster response partnerships (FEMA, Red Cross) for emergency fresh food deployment capability</li>
+            <li>Solar integration roadmap: evaluate solar-powered truck units to reduce operational carbon footprint</li>
+            <li>Develop Series A pitch leveraging validated unit economics and mission-aligned impact metrics</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="fw-badges" style="margin-top:32px;">
+      <span class="fw-badge">Product Roadmap Framework</span>
+      <span class="fw-badge">Prioritization Matrix</span>
+      <span class="fw-badge">Experimentation Framework</span>
+    </div>
+  </section>
+
+  <!-- 11 IMPACT -->
+  <section class="cs-section reveal">
+    <p class="section-label">11 — Impact & Outcomes</p>
+    <h2 class="section-heading">Evidence of Strategic Value</h2>
+    <p class="body-text">The research and strategy work for Grobox produced both immediate and directional value. At the immediate level, it delivered a fully validated product concept with a defensible strategic rationale — moving from an open-ended design brief to a specific, testable model backed by qualitative depth and quantitative validation.</p>
+
+    <div class="opp-list">
+      <div class="opp-item">
+        <div class="opp-num" style="color: var(--green);">01</div>
+        <div class="opp-content">
+          <div class="opp-title">Zero-to-One Concept Validated Through Evidence</div>
+          <div class="opp-body">The Grobox concept was not a hypothesis imposed on research — it emerged from 149 survey responses and 37 interviews, rigorously synthesized through affinity diagramming into nine strategic insights. Every core product feature can be traced to a specific user data point, making it defensible to investors and stakeholders.</div>
+        </div>
+      </div>
+      <div class="opp-item">
+        <div class="opp-num" style="color: var(--green);">02</div>
+        <div class="opp-content">
+          <div class="opp-title">Competitive White Space Identified</div>
+          <div class="opp-body">Systematic competitor analysis across Kroger, Blue Apron, Grobo, Cloudponics, and vertical farming startups revealed that no existing player had connected mobile growing technology with consumer-facing on-demand delivery. Grobox occupies a genuine blue ocean position — supported by both market analysis and user need data.</div>
+        </div>
+      </div>
+      <div class="opp-item">
+        <div class="opp-num" style="color: var(--green);">03</div>
+        <div class="opp-content">
+          <div class="opp-title">Multi-Stakeholder Business Model Designed</div>
+          <div class="opp-body">The Business Model Canvas built for Grobox accounts for value delivery on both sides of the marketplace — consumers and growers — with explicit attention to unit economics, cost structure, and revenue diversification. The model was tested against SWOT analysis and Porter's Five Forces for structural viability.</div>
+        </div>
+      </div>
+      <div class="opp-item">
+        <div class="opp-num" style="color: var(--green);">04</div>
+        <div class="opp-content">
+          <div class="opp-title">Social Impact Layer Integrated Into Core Model</div>
+          <div class="opp-body">Rather than treating food equity as a secondary consideration, the roadmap positions food desert access routes as a Phase 2 priority that simultaneously advances the mission and expands the addressable market. Research confirmed that underserved communities represent both a high-need and high-loyalty consumer segment.</div>
+        </div>
+      </div>
+      <div class="opp-item">
+        <div class="opp-num" style="color: var(--green);">05</div>
+        <div class="opp-content">
+          <div class="opp-title">Emotionally Resonant Brand Foundation</div>
+          <div class="opp-body">The "Farm on the Go" positioning and the brand principle of making growing visible emerged directly from the emotional insight that consumers respond to proximity with produce in ways that packaging labels cannot replicate. The brand strategy translates a functional product advantage into an experiential one.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12 REFLECTION -->
+  <section class="cs-section reveal">
+    <p class="section-label">12 — Reflection & Strategic Value</p>
+    <h2 class="section-heading">What This Demonstrates</h2>
+    <p class="body-text">Grobox taught me that the most important research skill is not the ability to conduct interviews or design surveys — it is the ability to hold ambiguity long enough to find the real problem. The brief began as a question about the food journey. It could have produced an app, a meal kit subscription, or an urban farm. The specific insight that unlocked the concept — the structural gap between where food grows and where people need it — only became visible after weeks of synthesis work that kept resisting premature closure.</p>
+
+    <p class="body-text" style="margin-top:20px;">The project also reinforced that research creates business value only when it is connected to decisions. The nine insights I surfaced were not interesting as data — they were valuable because each one directly shaped a product requirement, a feature priority, or a business model choice. The discipline of maintaining that traceability, from user data point to strategic decision, is the practice I try to bring to every research engagement.</p>
+
+    <div class="nextsteps-grid" style="margin-top:40px;">
+      <div class="ns-cell">
+        <div class="ns-num">01</div>
+        <div>
+          <div class="ns-title">Operating in Ambiguity</div>
+          <div class="ns-body">Starting from a broad problem space ("food systems") and navigating to a specific, validated concept demonstrates the ability to structure ill-defined problems — a skill that is critical in early-stage product and innovation contexts.</div>
+        </div>
+      </div>
+      <div class="ns-cell">
+        <div class="ns-num">02</div>
+        <div>
+          <div class="ns-title">Multi-Stakeholder Systems Thinking</div>
+          <div class="ns-body">Mapping farmer, distributor, retailer, and consumer experiences simultaneously — rather than defaulting to a single-audience lens — produced insights that no single-stakeholder research program could have surfaced.</div>
+        </div>
+      </div>
+      <div class="ns-cell">
+        <div class="ns-num">03</div>
+        <div>
+          <div class="ns-title">Research as Innovation Driver</div>
+          <div class="ns-body">Grobox is not a research-validated iteration of an existing product. It is a net-new concept that would not exist without the research. This is the distinction between research that validates and research that creates.</div>
+        </div>
+      </div>
+      <div class="ns-cell">
+        <div class="ns-num">04</div>
+        <div>
+          <div class="ns-title">Bridging User, Product, and Business</div>
+          <div class="ns-body">The final deliverable was not a research report — it was a product concept, a business model, and a go-to-market strategy. Moving fluently across these layers is what allows research to have outsized organizational impact.</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:48px; display:flex; flex-direction:column; gap:16px;">
+      <div style="display:grid; grid-template-columns: 180px 1fr; gap:20px; align-items:start; padding:20px 24px; border:1px solid var(--border); background:var(--off-black);">
+        <div style="font-family:'Space Mono',monospace; font-size:0.56rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--green); padding-top:2px;">Next Step</div>
+        <div style="font-size:0.9rem; line-height:1.75; color:var(--cream);">Concept validation with target consumer segments through structured usability testing of the app prototype and truck interaction scenarios.</div>
+      </div>
+      <div style="display:grid; grid-template-columns: 180px 1fr; gap:20px; align-items:start; padding:20px 24px; border:1px solid var(--border); background:var(--off-black);">
+        <div style="font-family:'Space Mono',monospace; font-size:0.56rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--green); padding-top:2px;">Financial Model</div>
+        <div style="font-size:0.9rem; line-height:1.75; color:var(--cream);">Break-even analysis, financial projections, and Series A pitch deck development targeting impact-aligned investors in food tech and urban mobility.</div>
+      </div>
+      <div style="display:grid; grid-template-columns: 180px 1fr; gap:20px; align-items:start; padding:20px 24px; border:1px solid var(--border); background:var(--off-black);">
+        <div style="font-family:'Space Mono',monospace; font-size:0.56rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--green); padding-top:2px;">Partnership Dev.</div>
+        <div style="font-size:0.9rem; line-height:1.75; color:var(--cream);">Initiate partnership conversations with municipal food access programs, urban mobility platforms, and hydroponic technology partners to build pilot infrastructure.</div>
+      </div>
+    </div>
+
+    <div class="next-case reveal">
+      <div>
+        <div class="next-label">Back to All Work</div>
+        <div class="next-title">View All Case Studies</div>
+      </div>
+      <a href="work.html" class="next-arrow">→</a>
+    </div>
+  </section>
+
+</div>
+
+<footer class="page-footer">
+  <span class="footer-left"><span class="footer-dot"></span>Krishna Panyala — Portfolio</span>
+  <span class="footer-right">Grobox · UX Research &amp; Innovation Strategy</span>
+</footer>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+  });
+  (function animRing() {
+    rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  })();
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => { cursor.style.background = 'transparent'; cursor.style.border = '1px solid var(--accent)'; });
+    el.addEventListener('mouseleave', () => { cursor.style.background = 'var(--accent)'; cursor.style.border = 'none'; });
+  });
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, { threshold: 0.05 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>

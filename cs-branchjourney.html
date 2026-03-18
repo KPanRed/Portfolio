@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Krishna Panyala — Branch Journey Mapping Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=Space+Mono&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --black: #0a0f1e; --off-black: #0d1428; --navy: #0f1b3d;
+    --white: #f0f4ff; --cream: #dde6ff; --accent: #5b8cff;
+    --accent-dim: #2a4fa8; --mid: #7a90c0; --border: rgba(240,244,255,0.08);
+    --border-vis: rgba(240,244,255,0.14);
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--black); color: var(--white); font-family: 'DM Sans', sans-serif; font-weight: 300; overflow-x: hidden; cursor: none; }
+  .cursor { position: fixed; top: 0; left: 0; z-index: 9999; width: 10px; height: 10px; background: var(--accent); border-radius: 50%; pointer-events: none; transform: translate(-50%,-50%); }
+  .cursor-ring { position: fixed; top: 0; left: 0; z-index: 9998; width: 38px; height: 38px; border: 1px solid rgba(91,140,255,0.45); border-radius: 50%; pointer-events: none; transform: translate(-50%,-50%); }
+  body::before { content: ''; position: fixed; inset: 0; z-index: 1; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; opacity: 0.35; }
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 28px 48px; display: flex; align-items: center; justify-content: space-between; background: rgba(10,15,30,0.8); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+  .nav-logo { font-family: 'Space Mono', monospace; font-size: 0.7rem; letter-spacing: 0.18em; color: var(--mid); text-transform: uppercase; text-decoration: none; transition: color 0.2s; }
+  .nav-logo:hover { color: var(--white); }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a { font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--mid); text-decoration: none; transition: color 0.2s; position: relative; }
+  .nav-links a::after { content: ''; position: absolute; bottom: -3px; left: 0; width: 0; height: 1px; background: var(--accent); transition: width 0.3s; }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a:hover::after { width: 100%; }
+  .edge-text { position: fixed; right: 20px; top: 50%; transform: translateY(-50%) rotate(90deg); font-family: 'Space Mono', monospace; font-size: 0.55rem; letter-spacing: 0.25em; text-transform: uppercase; color: rgba(122,144,192,0.2); z-index: 50; pointer-events: none; white-space: nowrap; }
+  .page { max-width: 940px; margin: 0 auto; padding: 0 48px 140px; position: relative; z-index: 10; }
+
+  /* HERO */
+  .cs-hero { padding-top: 160px; padding-bottom: 80px; border-bottom: 1px solid var(--border); }
+  .cs-eyebrow { font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; opacity: 0; animation: fadeUp 0.5s ease forwards 0.1s; display: flex; align-items: center; gap: 16px; }
+  .cs-eyebrow::before { content: ''; display: inline-block; width: 32px; height: 1px; background: var(--accent-dim); }
+  .cs-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.5rem, 7vw, 7rem); line-height: 0.9; margin-bottom: 40px; opacity: 0; animation: fadeUp 0.6s ease forwards 0.2s; }
+  .cs-title .outlined { display: block; color: transparent; -webkit-text-stroke: 1.5px rgba(240,244,255,0.22); }
+  .cs-meta-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-bottom: 48px; opacity: 0; animation: fadeUp 0.6s ease forwards 0.35s; }
+  .cs-meta-cell { background: var(--off-black); padding: 20px 22px; }
+  .cs-meta-label { font-family: 'Space Mono', monospace; font-size: 0.54rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mid); margin-bottom: 6px; }
+  .cs-meta-val { font-size: 0.9rem; color: var(--white); font-weight: 400; line-height: 1.4; }
+  .cs-intro { font-family: 'DM Serif Display', serif; font-style: italic; font-size: clamp(1.3rem, 2.2vw, 1.7rem); line-height: 1.55; color: var(--cream); opacity: 0; animation: fadeUp 0.6s ease forwards 0.5s; border-left: 2px solid var(--accent-dim); padding-left: 28px; }
+
+  /* SECTIONS */
+  .cs-section { padding: 72px 0; border-bottom: 1px solid var(--border); }
+  .cs-section:last-child { border-bottom: none; }
+  .section-label { font-family: 'Space Mono', monospace; font-size: 0.58rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; display: flex; align-items: center; gap: 14px; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border-vis); }
+  .section-heading { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.5rem, 4.5vw, 4rem); line-height: 1; color: var(--white); margin-bottom: 36px; }
+  .body-text { font-size: 1rem; line-height: 1.85; color: var(--cream); opacity: 0.88; max-width: 700px; }
+  .body-text strong { font-weight: 500; color: var(--white); }
+
+  /* IMAGE BLOCKS */
+  .img-frame { margin: 36px 0; border: 1px solid var(--border); overflow: hidden; background: #0d1224; }
+  .img-frame img { width: 100%; height: auto; display: block; opacity: 0.92; transition: opacity 0.3s; }
+  .img-frame:hover img { opacity: 1; }
+  .img-caption { padding: 14px 20px; border-top: 1px solid var(--border); background: var(--off-black); }
+  .img-caption-text { font-family: 'Space Mono', monospace; font-size: 0.56rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mid); }
+
+  /* INSIGHTS GRID */
+  .insights-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin: 40px 0; }
+  .insight-card { background: var(--off-black); padding: 32px; }
+  .insight-label { font-family: 'Space Mono', monospace; font-size: 0.54rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+  .insight-text { font-size: 1rem; line-height: 1.7; color: var(--cream); }
+  .insight-text strong { color: var(--white); font-weight: 500; }
+
+  /* FINDING BLOCK */
+  .finding-block { padding: 28px 32px; border: 1px solid var(--border); background: rgba(91,140,255,0.04); margin: 24px 0; }
+  .finding-icon { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--accent); margin-bottom: 12px; }
+  .finding-title { font-size: 1.1rem; font-weight: 500; color: var(--white); margin-bottom: 10px; }
+  .finding-desc { font-size: 0.95rem; line-height: 1.7; color: var(--mid); }
+
+  /* RESEARCH METRICS */
+  .metrics-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin: 40px 0; }
+  .metric-cell { background: var(--off-black); padding: 32px 24px; text-align: center; }
+  .metric-number { font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem; line-height: 1; color: var(--accent); margin-bottom: 12px; }
+  .metric-label { font-family: 'Space Mono', monospace; font-size: 0.58rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mid); line-height: 1.6; }
+
+  /* CHART AREA */
+  .chart-section { margin: 48px 0; }
+  .chart-container { background: var(--off-black); border: 1px solid var(--border); padding: 40px; }
+  .chart-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--white); margin-bottom: 12px; }
+  .chart-subtitle { font-size: 0.9rem; line-height: 1.6; color: var(--mid); margin-bottom: 36px; }
+  
+  /* RANKING CHART */
+  .ranking-row { display: grid; grid-template-columns: 160px 1fr 60px; gap: 20px; align-items: center; margin-bottom: 28px; }
+  .ranking-label { font-size: 0.95rem; color: var(--cream); font-weight: 400; line-height: 1.4; }
+  .ranking-bar-container { position: relative; }
+  .ranking-bar { height: 32px; background: linear-gradient(135deg, rgba(15,27,61,1), rgba(13,20,40,1)); border: 1px solid var(--border-vis); position: relative; overflow: hidden; border-radius: 3px; box-shadow: inset 0 1px 3px rgba(91,140,255,0.1); }
+  .ranking-fill { height: 100%; background: linear-gradient(90deg, #5b8cff, #7aa3ff); width: 0%; transition: width 0.9s cubic-bezier(0.34, 1.56, 0.64, 1); position: relative; }
+  .ranking-fill::after { content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 2px; background: rgba(255,255,255,0.2); }
+  .ranking-value { font-family: 'Space Mono', monospace; font-size: 0.75rem; color: var(--accent); font-weight: 600; text-align: right; letter-spacing: 0.05em; }
+  
+  /* THEME CHART */
+  .theme-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin: 40px 0; }
+  .theme-card { background: var(--off-black); padding: 28px; }
+  .theme-channel { font-family: 'Space Mono', monospace; font-size: 0.56rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 24px; display: block; font-weight: 600; }
+  .theme-item { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
+  .theme-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+  .theme-label { font-size: 0.9rem; line-height: 1.5; color: var(--cream); }
+  .theme-label strong { color: var(--white); font-weight: 500; }
+
+  /* PAIN POINTS */
+  .pain-points-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin: 40px 0; }
+  .pain-point { background: var(--off-black); padding: 28px; }
+  .pain-category { font-family: 'Space Mono', monospace; font-size: 0.58rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; display: block; }
+  .pain-text { font-size: 0.95rem; line-height: 1.7; color: var(--cream); }
+
+  /* QUOTE */
+  .quote-block { margin: 20px 0; border-left: 2px solid var(--accent-dim); padding: 20px 28px; background: rgba(91,140,255,0.04); }
+  .quote-text { font-family: 'DM Serif Display', serif; font-style: italic; font-size: 1.05rem; line-height: 1.65; color: var(--cream); margin-bottom: 10px; }
+  .quote-attr { font-family: 'Space Mono', monospace; font-size: 0.57rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mid); }
+
+  /* RECOMMENDATIONS */
+  .rec-list { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
+  .rec-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px; background: rgba(91,140,255,0.04); border-left: 2px solid var(--accent-dim); }
+  .rec-item::before { content: '→'; color: var(--accent); font-weight: 600; flex-shrink: 0; }
+  .rec-text { font-size: 0.95rem; line-height: 1.6; color: var(--cream); }
+  .rec-text strong { color: var(--white); font-weight: 500; }
+
+  /* ANIMATION */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .reveal { opacity: 0; animation: fadeUp 0.6s ease forwards; }
+  .reveal.visible { opacity: 1; }
+
+  /* NEXT NAV */
+  .next-case { margin-top: 80px; padding-top: 48px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .next-label { font-family: 'Space Mono', monospace; font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mid); margin-bottom: 8px; }
+  .next-title { font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; color: var(--white); line-height: 1; }
+  .next-arrow { width: 56px; height: 56px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--mid); font-size: 1.2rem; transition: border-color 0.2s, color 0.2s, transform 0.2s; text-decoration: none; }
+  .next-arrow:hover { border-color: var(--accent); color: var(--accent); transform: translateX(4px); }
+
+  /* FOOTER */
+  .page-footer { position: fixed; bottom: 0; left: 0; right: 0; z-index: 50; padding: 16px 48px; display: flex; justify-content: space-between; align-items: center; background: rgba(10,15,30,0.9); border-top: 1px solid var(--border); font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mid); }
+  .footer-dot { display: inline-block; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; margin-right: 8px; }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 20px 32px; }
+    .nav-links { gap: 20px; }
+    .page { padding: 0 32px 120px; }
+    .cs-hero { padding-top: 140px; padding-bottom: 60px; }
+    .cs-meta-row { grid-template-columns: repeat(2, 1fr); }
+    .insights-grid, .pain-points-grid { grid-template-columns: 1fr; }
+    .metrics-row { grid-template-columns: 1fr; }
+    .ranking-row { grid-template-columns: 100px 1fr; }
+    .chart-container { padding: 24px; }
+  }
+
+  @media (max-width: 540px) {
+    .cs-meta-row, .stat-row { grid-template-columns: 1fr 1fr; }
+    .next-case { flex-direction: column; gap: 24px; align-items: flex-start; }
+    .user-groups { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="edge-text">Case Study 2024</div>
+
+<!-- old nav -->
+<!-- <nav>
+  <a href="#" class="nav-logo">Krishna Panyala</a>
+  <ul class="nav-links">
+    <li><a href="#research">Research</a></li>
+    <li><a href="#findings">Findings</a></li>
+    <li><a href="#recommendations">Recommendations</a></li>
+  </ul>
+</nav> -->
+
+<nav>
+  <a href="index.html" class="nav-logo">KP — Portfolio</a>
+  <ul class="nav-links">
+    <li><a href="work.html">Work</a></li>
+    <li><a href="krishna-about.html">About</a></li>
+    <li><a href="krishna-contact.html">Contact</a></li>
+  </ul>
+</nav>
+
+<div class="page">
+
+  <!-- HERO -->
+  <section class="cs-hero">
+    <p class="cs-eyebrow">UX Research</p>
+    <h1 class="cs-title">Branch Journey<span class="outlined">Mapping</span></h1>
+    
+    <div class="cs-meta-row">
+      <div class="cs-meta-cell">
+        <div class="cs-meta-label">Participants</div>
+        <div class="cs-meta-val">443 Service Associates</div>
+      </div>
+      <div class="cs-meta-cell">
+        <div class="cs-meta-label">Scope</div>
+        <div class="cs-meta-val">6 Support Channels</div>
+      </div>
+      <div class="cs-meta-cell">
+        <div class="cs-meta-label">Methodology</div>
+        <div class="cs-meta-val">Quantitative Survey + Qualitative Analysis</div>
+      </div>
+      <div class="cs-meta-cell">
+        <div class="cs-meta-label">Response Rate</div>
+        <div class="cs-meta-val">47.7% (443/930)</div>
+      </div>
+    </div>
+
+    <p class="cs-intro">Understanding the complete support experience across all channels to identify pain points, unmet needs, and opportunities for service redesign. The study revealed critical gaps between user expectations and current system capabilities.</p>
+  </section>
+
+  <!-- 01 OVERVIEW -->
+  <section class="cs-section reveal" id="research">
+    <p class="section-label">01 — Research Overview</p>
+    <h2 class="section-heading">Study Objectives</h2>
+    
+    <p class="body-text">This comprehensive research initiative aimed to measure and understand the quality of user experience across multiple service channels at a major financial services organization. The study enabled leaders to compare product performance to established goals and benchmarks, while identifying specific areas for UI improvement versus training needs.</p>
+
+    <div class="insights-grid" style="margin-top: 40px;">
+      <div class="insight-card">
+        <div class="insight-label">Primary Question</div>
+        <div class="insight-text">How effective are current support channels in solving customer problems? Which channels are being relied upon most, and why?</div>
+      </div>
+      <div class="insight-card">
+        <div class="insight-label">Secondary Goal</div>
+        <div class="insight-text">Separate <strong>UI/design problems</strong> from <strong>training and awareness gaps</strong> to inform prioritization of design initiatives.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 METHODOLOGY -->
+  <section class="cs-section reveal">
+    <p class="section-label">02 — Research Methodology</p>
+    <h2 class="section-heading">Quantitative Survey Design</h2>
+    
+    <p class="body-text">We deployed a comprehensive survey instrument to 930 service associates (Bank Officers and Financial Advisors), with a strong response rate of <strong>47.7% (443 respondents)</strong>. The survey employed confidence intervals (98%) to provide statistically valid insights rather than raw sample averages.</p>
+
+    <div class="findings-block" style="margin-top: 40px;">
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+        <div>
+          <div class="finding-title">Survey Questions</div>
+          <div class="rec-list">
+            <div class="rec-item">
+              <div class="rec-text"><strong>Question 1:</strong> Which support channels do you use?</div>
+            </div>
+            <div class="rec-item">
+              <div class="rec-text"><strong>Question 2:</strong> Rank channels 1–6 (preference order)</div>
+            </div>
+            <div class="rec-item">
+              <div class="rec-text"><strong>Question 3:</strong> Rate effectiveness 1–7</div>
+            </div>
+            <div class="rec-item">
+              <div class="rec-text"><strong>Question 4:</strong> Open feedback on pain points</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="finding-title">Channels Evaluated</div>
+          <div class="rec-list">
+            <div class="rec-item">
+              <div class="rec-text">Jones Link (Knowledge Base)</div>
+            </div>
+            <div class="rec-item">
+              <div class="rec-text">Resource Center</div>
+            </div>
+            <div class="rec-item">
+              <div class="rec-text">Service Call</div>
+            </div>
+            <div class="rec-item">
+              <div class="rec-text">Written Service Request</div>
+            </div>
+            <div class="rec-item">
+              <div class="rec-text">Live Chat</div>
+            </div>
+            <div class="rec-item">
+              <div class="rec-text">Chatbot</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 KEY FINDINGS -->
+  <section class="cs-section reveal" id="findings">
+    <p class="section-label">03 — Key Findings</p>
+    <h2 class="section-heading">Channel Usage & Satisfaction</h2>
+    
+    <p class="body-text" style="margin-bottom: 40px;">The research revealed a clear hierarchy of channel adoption and satisfaction. Associates overwhelmingly favor certain channels for specific use cases, while others remain underutilized or generate frustration.</p>
+
+    <div class="chart-section">
+      <div class="chart-container">
+        <div class="chart-title">Support Channel Preferences</div>
+        <div class="chart-subtitle">Ranked by usage & adoption (1–6 scale, where 1 is most preferred)</div>
+        
+        <div style="margin-top: 40px;">
+          <div class="ranking-row">
+            <div class="ranking-label">Jones Link</div>
+            <div class="ranking-bar-container">
+              <div class="ranking-bar">
+                <div class="ranking-fill" style="width: 95%; background: linear-gradient(90deg, #5b8cff 0%, #7aa3ff 100%);"></div>
+              </div>
+            </div>
+            <div class="ranking-value">93.6%</div>
+          </div>
+          <div class="ranking-row">
+            <div class="ranking-label">Service Call</div>
+            <div class="ranking-bar-container">
+              <div class="ranking-bar">
+                <div class="ranking-fill" style="width: 90%; background: linear-gradient(90deg, #5b8cff 0%, #7aa3ff 100%);"></div>
+              </div>
+            </div>
+            <div class="ranking-value">89.9%</div>
+          </div>
+          <div class="ranking-row">
+            <div class="ranking-label">Written Request</div>
+            <div class="ranking-bar-container">
+              <div class="ranking-bar">
+                <div class="ranking-fill" style="width: 59%; background: linear-gradient(90deg, #5b8cff 0%, #7aa3ff 100%);"></div>
+              </div>
+            </div>
+            <div class="ranking-value">59.4%</div>
+          </div>
+          <div class="ranking-row">
+            <div class="ranking-label">Live Chat</div>
+            <div class="ranking-bar-container">
+              <div class="ranking-bar">
+                <div class="ranking-fill" style="width: 47%; background: linear-gradient(90deg, #5b8cff 0%, #7aa3ff 100%);"></div>
+              </div>
+            </div>
+            <div class="ranking-value">47.5%</div>
+          </div>
+          <div class="ranking-row">
+            <div class="ranking-label">Resource Center</div>
+            <div class="ranking-bar-container">
+              <div class="ranking-bar">
+                <div class="ranking-fill" style="width: 24%; background: linear-gradient(90deg, #5b8cff 0%, #7aa3ff 100%);"></div>
+              </div>
+            </div>
+            <div class="ranking-value">24.2%</div>
+          </div>
+          <div class="ranking-row">
+            <div class="ranking-label">Chatbot</div>
+            <div class="ranking-bar-container">
+              <div class="ranking-bar">
+                <div class="ranking-fill" style="width: 18%; background: linear-gradient(90deg, #5b8cff 0%, #7aa3ff 100%);"></div>
+              </div>
+            </div>
+            <div class="ranking-value">17.9%</div>
+          </div>
+        </div>
+        
+        <p class="body-text" style="margin-top: 40px; font-size: 0.9rem; color: var(--mid);"><strong>Key Insight:</strong> Jones Link and Service Calls dominate usage. Chatbot adoption remains minimal, suggesting either low awareness, accessibility issues, or perceived ineffectiveness. Resource Center and Live Chat represent untapped channels with growth potential.</p>
+      </div>
+    </div>
+
+    <div class="chart-section">
+      <div class="chart-container">
+        <div class="chart-title">Effectiveness Ratings</div>
+        <div class="chart-subtitle">User satisfaction scores (1–7 scale, where 7 is most effective)</div>
+        
+        <div style="margin-top: 40px;">
+          <div class="ranking-row">
+            <div class="ranking-label">Service Call</div>
+            <div class="ranking-bar-container">
+              <div class="ranking-bar">
+                <div class="ranking-fill" style="width: 92%; background: linear-gradient(90deg, #7aa3ff 0%, #5b8cff 100%);"></div>
+              </div>
+            </div>
+            <div class="ranking-value">6.47/7</div>
+          </div>
+          <div class="ranking-row">
+            <div class="ranking-label">Live Chat</div>
+            <div class="ranking-bar-container">
+              <div class="ranking-bar">
+                <div class="ranking-fill" style="width: 81%; background: linear-gradient(90deg, #7aa3ff 0%, #5b8cff 100%);"></div>
+              </div>
+            </div>
+            <div class="ranking-value">5.65/7</div>
+          </div>
+          <div class="ranking-row">
+            <div class="ranking-label">Resource Center</div>
+            <div class="ranking-bar-container">
+              <div class="ranking-bar">
+                <div class="ranking-fill" style="width: 79%; background: linear-gradient(90deg, #7aa3ff 0%, #5b8cff 100%);"></div>
+              </div>
+            </div>
+            <div class="ranking-value">5.51/7</div>
+          </div>
+          <div class="ranking-row">
+            <div class="ranking-label">Written Request</div>
+            <div class="ranking-bar-container">
+              <div class="ranking-bar">
+                <div class="ranking-fill" style="width: 74%; background: linear-gradient(90deg, #7aa3ff 0%, #5b8cff 100%);"></div>
+              </div>
+            </div>
+            <div class="ranking-value">5.18/7</div>
+          </div>
+          <div class="ranking-row">
+            <div class="ranking-label">Jones Link</div>
+            <div class="ranking-bar-container">
+              <div class="ranking-bar">
+                <div class="ranking-fill" style="width: 73%; background: linear-gradient(90deg, #7aa3ff 0%, #5b8cff 100%);"></div>
+              </div>
+            </div>
+            <div class="ranking-value">5.16/7</div>
+          </div>
+          <div class="ranking-row">
+            <div class="ranking-label">Chatbot</div>
+            <div class="ranking-bar-container">
+              <div class="ranking-bar">
+                <div class="ranking-fill" style="width: 64%; background: linear-gradient(90deg, #7aa3ff 0%, #5b8cff 100%);"></div>
+              </div>
+            </div>
+            <div class="ranking-value">4.53/7</div>
+          </div>
+        </div>
+        
+        <p class="body-text" style="margin-top: 40px; font-size: 0.9rem; color: var(--mid);"><strong>The Usage-Satisfaction Gap:</strong> Adoption ≠ Quality. Jones Link is used most frequently but ranks below Service Calls in perceived effectiveness. This disconnect reveals a critical opportunity: improve self-service quality to reduce dependency on phone support, or enhance phone support to handle complex cases more efficiently.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 OPEN COMMENT THEMES -->
+  <section class="cs-section reveal">
+    <p class="section-label">05 — Qualitative Deep Dive</p>
+    <h2 class="section-heading">Open Comment Themes by Channel</h2>
+    
+    <p class="body-text" style="margin-bottom: 48px;">Analysis of 1,037 open comments revealed distinct pain point patterns unique to each channel, informing specific redesign priorities.</p>
+
+    <div class="theme-grid">
+      <div class="theme-card">
+        <span class="theme-channel">Written Service Request</span>
+        <div class="theme-item">
+          <div class="theme-dot"></div>
+          <div class="theme-label"><strong>Delayed Response Times</strong> — Multi-day wait times hinder urgent issue resolution</div>
+        </div>
+        <div class="theme-item">
+          <div class="theme-dot"></div>
+          <div class="theme-label"><strong>Incomplete Reading</strong> — Associates overlook question details, requiring follow-ups</div>
+        </div>
+        <div class="theme-item">
+          <div class="theme-dot"></div>
+          <div class="theme-label"><strong>Generic Responses</strong> — Copy-pasted answers and Web ID referrals without context</div>
+        </div>
+        <div class="theme-item">
+          <div class="theme-dot"></div>
+          <div class="theme-label"><strong>Valued for Documentation</strong> — Users appreciate written records for compliance</div>
+        </div>
+        <div class="theme-item">
+          <div class="theme-dot"></div>
+          <div class="theme-label"><strong>Best for Non-Urgent</strong> — Preferred when time sensitivity is low</div>
+        </div>
+      </div>
+
+      <div class="theme-card">
+        <span class="theme-channel">Service Call</span>
+        <div class="theme-item">
+          <div class="theme-dot"></div>
+          <div class="theme-label"><strong>Long Hold Times</strong> — Extended waits frustrate users despite effective resolution</div>
+        </div>
+        <div class="theme-item">
+          <div class="theme-dot"></div>
+          <div class="theme-label"><strong>Inconsistent Answers</strong> — Different reps provide conflicting guidance</div>
+        </div>
+        <div class="theme-item">
+          <div class="theme-dot"></div>
+          <div class="theme-label"><strong>Incorrect Information</strong> — Users require multiple calls to get accurate answers</div>
+        </div>
+        <div class="theme-item">
+          <div class="theme-dot"></div>
+          <div class="theme-label"><strong>Department Transfers</strong> — Unnecessary routing between departments</div>
+        </div>
+        <div class="theme-item">
+          <div class="theme-dot"></div>
+          <div class="theme-label"><strong>Highest Satisfaction</strong> — When calls connect, perceived quality is strong</div>
+        </div>
+      </div>
+
+      <div class="theme-card">
+        <span class="theme-channel">Live Chat</span>
+        <div class="theme-item">
+          <div class="theme-dot"></div>
+          <div class="theme-label"><strong>Text Format Limitations</strong> — Complex scenarios hard to explain in writing</div>
+        </div>
+        <div class="theme-item">
+          <div class="theme-dot"></div>
+          <div class="theme-label"><strong>Excessive Back & Forth</strong> — Text-based communication requires many exchanges</div>
+        </div>
+        <div class="theme-item">
+          <div class="theme-dot"></div>
+          <div class="theme-label"><strong>Limited Availability</strong> — Not available across all departments</div>
+        </div>
+        <div class="theme-item">
+          <div class="theme-dot"></div>
+          <div class="theme-label"><strong>Bot Friction</strong> — Automated screening slows path to live agents</div>
+        </div>
+        <div class="theme-item">
+          <div class="theme-dot"></div>
+          <div class="theme-label"><strong>Expansion Opportunity</strong> — Users want broader coverage and screen sharing</div>
+        </div>
+      </div>
+
+      <div class="theme-card">
+        <span class="theme-channel">Chatbot</span>
+        <div class="theme-item">
+          <div class="theme-dot"></div>
+          <div class="theme-label"><strong>Limited Comprehension</strong> — Fails on complex, nuanced questions</div>
+        </div>
+        <div class="theme-item">
+          <div class="theme-dot"></div>
+          <div class="theme-label"><strong>Preference for Humans</strong> — Users seek personalized, contextual support</div>
+        </div>
+        <div class="theme-item">
+          <div class="theme-dot"></div>
+          <div class="theme-label"><strong>Time Consuming</strong> — Multiple bot interactions frustrate users</div>
+        </div>
+        <div class="theme-item">
+          <div class="theme-dot"></div>
+          <div class="theme-label"><strong>Generic Responses</strong> — Canned answers don't solve specific problems</div>
+        </div>
+        <div class="theme-item">
+          <div class="theme-dot"></div>
+          <div class="theme-label"><strong>Lowest Adoption</strong> — 17.9% usage indicates systematic failure</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="quote-block" style="margin-top: 48px;">
+      <div class="quote-text">"Usually cannot understand complex questions, and why would I EVER ask for help with simple things that are easy to find? It's generally a complete waste of valuable time."</div>
+      <div class="quote-attr">— Chatbot User Sentiment</div>
+    </div>
+  </section>
+
+  <!-- 06 CROSS-CHANNEL INSIGHTS -->
+  <section class="cs-section reveal">
+    <p class="section-label">06 — System-Wide Pattern</p>
+    <h2 class="section-heading">The Web ID Referral Problem</h2>
+    
+    <p class="body-text" style="margin-bottom: 40px;">One critical finding emerged across <strong>all six channels</strong>: support associates frequently refer users to Web IDs and self-service resources <strong>without adding context or tailored guidance</strong>.</p>
+
+    <div class="findings-block" style="margin-bottom: 40px;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div>
+          <div class="finding-title">The Problem</div>
+          <div style="font-size: 0.95rem; line-height: 1.7; color: var(--cream); margin-top: 12px;">Users typically consult self-service resources (Jones Link, Knowledge Base) before contacting support. When associates then refer them back to the same Web IDs without new context, it signals either lazy support or system failure. It's frustrating and unproductive.</div>
+        </div>
+        <div>
+          <div class="finding-title">The Opportunity</div>
+          <div style="font-size: 0.95rem; line-height: 1.7; color: var(--cream); margin-top: 12px;">Train support staff to provide <strong>tailored guidance alongside</strong> resource links. If a user has already found a Web ID unhelpful, explaining it further wastes time. Instead, offer contextualized answers or alternative approaches.</div>
+        </div>
+      </div>
+    </div>
+
+    <p class="body-text">This pattern indicates that <strong>support quality isn't just about channel availability—it's about the cognitive load users face and whether support associates provide genuine added value over self-service.</strong></p>
+  </section>
+
+  <!-- 07 CRITICAL INSIGHT -->
+  <section class="cs-section reveal">
+    <p class="section-label">07 — Critical Insight</p>
+    <h2 class="section-heading">Design vs. Training</h2>
+    
+    <p class="body-text" style="margin-bottom: 40px;">A key research output was distinguishing problems requiring <strong>UI improvements</strong> from those requiring <strong>better training and onboarding</strong>.</p>
+
+    <div class="insights-grid">
+      <div class="insight-card">
+        <div class="insight-label">Training Gaps (Not Design Issues)</div>
+        <div class="insight-text">Knowledge Search awareness, Comment Box interactions, Dashboard Reports discovery, Case List Filters usage, Parent–Child Case confusion, Case Transfer procedures — all reflect <strong>onboarding failures, not system flaws</strong>.</div>
+      </div>
+      <div class="insight-card">
+        <div class="insight-label">Design Problems Requiring UI Fixes</div>
+        <div class="insight-text">Response time visibility, department routing clarity, question reading emphasis, complex scenario support in chat, chatbot escalation paths — these demand <strong>interface and workflow redesign</strong>.</div>
+      </div>
+    </div>
+
+    <div class="quote-block" style="margin-top: 40px;">
+      <div class="quote-text">"Associates weren't failing to use the system — they had adapted around it. The goal wasn't just to fix the UI. It was to design something they no longer had to work around."</div>
+      <div class="quote-attr">— Research Core Insight</div>
+    </div>
+  </section>
+
+  <!-- 08 KEY METRICS -->
+  <section class="cs-section reveal">
+    <p class="section-label">08 — Impact & Outcomes</p>
+    <h2 class="section-heading">Research Deliverables</h2>
+    
+    <div class="metrics-row">
+      <div class="metric-cell">
+        <div class="metric-number">6</div>
+        <div class="metric-label">Distinct Problem Areas Identified with Actionable Solutions</div>
+      </div>
+      <div class="metric-cell">
+        <div class="metric-number">443</div>
+        <div class="metric-label">Participants Across All Experience Levels and Roles</div>
+      </div>
+      <div class="metric-cell">
+        <div class="metric-number">1,037</div>
+        <div class="metric-label">Open Comments Analyzed for Theme Extraction</div>
+      </div>
+    </div>
+
+    <p class="body-text" style="margin-top: 48px;">The study delivered a prioritized roadmap for the product and design teams, clearly separating design problems from training opportunities. Each problem area included specific redesign recommendations ready to inform the next phase of system customization.</p>
+  </section>
+
+  <!-- 09 RECOMMENDATIONS -->
+  <section class="cs-section reveal" id="recommendations">
+    <p class="section-label">09 — Recommendations</p>
+    <h2 class="section-heading">Next Steps for Product Teams</h2>
+    
+    <p class="body-text" style="margin-bottom: 32px;">Based on the research findings, we identified specific, actionable recommendations for improving the support ecosystem:</p>
+
+    <div class="rec-list">
+      <div class="rec-item">
+        <div class="rec-text"><strong>Response Time Visibility:</strong> Add ETA indicators and progress tracking for service requests. Reduce uncertainty and set clear expectations for turnaround times.</div>
+      </div>
+      <div class="rec-item">
+        <div class="rec-text"><strong>Department Routing Clarity:</strong> Redesign call routing logic to minimize transfers. Provide upfront clarity on which department owns which problem type.</div>
+      </div>
+      <div class="rec-item">
+        <div class="rec-text"><strong>Chatbot Escalation Paths:</strong> Implement intelligent handoff to live agents when chatbot confidence is low. Don't leave users in loops; escalate to humans for complex questions.</div>
+      </div>
+      <div class="rec-item">
+        <div class="rec-text"><strong>Live Chat Screen Sharing:</strong> Enable agents to emulate or share screens during complex troubleshooting. This bridges the gap between text-based chat and phone calls.</div>
+      </div>
+      <div class="rec-item">
+        <div class="rec-text"><strong>Knowledge Base Integration:</strong> Stop referring users to generic web IDs without context. Train support staff to provide tailored guidance alongside resource links.</div>
+      </div>
+      <div class="rec-item">
+        <div class="rec-text"><strong>Training Program Overhaul:</strong> Develop onboarding modules for underutilized features (filtering, reporting, case relationships). Measure training effectiveness through follow-up research.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLOSING -->
+  <!-- <section class="cs-section reveal" style="text-align: center; padding: 100px 0;">
+    <p class="section-label" style="justify-content: center; margin-bottom: 24px;">Research Complete</p>
+    <h2 class="section-heading">Insights Ready for Implementation</h2>
+    <p class="body-text" style="max-width: none; margin: 0 auto;">This research established a foundation for prioritizing investments in support channel redesign, balancing quick wins (training, process changes) with longer-term UI improvements.</p>
+  </section> -->
+
+  <div class="next-case reveal">
+    <div>
+      <div class="next-label">Next Case Study</div>
+      <div class="next-title">Salesforce Workflow Revamp</div>
+    </div>
+    <a href="cs-salesforce.html" class="next-arrow">→</a>
+  </div>
+
+</div>
+
+<footer class="page-footer">
+  <span style="display: flex; align-items: center;"><span class="footer-dot"></span>Research Complete</span>
+  <span>Krishna Panyala © 2024</span>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx=0, my=0, rx=0, ry=0;
+  
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX;
+    my = e.clientY;
+    cursor.style.transform = `translate(${mx}px, ${my}px) translate(-50%, -50%)`;
+  });
+  
+  (function loop() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.transform = `translate(${rx}px, ${ry}px) translate(-50%, -50%)`;
+    requestAnimationFrame(loop);
+  })();
+  
+  // Cursor interactions with links
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.background = 'transparent';
+      cursor.style.border = '1px solid var(--accent)';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.background = 'var(--accent)';
+      cursor.style.border = 'none';
+    });
+  });
+
+  // Scroll reveal animation
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.07 });
+  
+  document.querySelectorAll('.reveal').forEach(r => io.observe(r));
+
+  // Bar animation on scroll with staggered timing
+  const barIO = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('.ranking-fill').forEach((bar, i) => {
+          // Get the target width from inline style
+          const match = bar.style.width.match(/(\d+)%/);
+          const targetWidth = match ? match[1] + '%' : '0%';
+          
+          setTimeout(() => {
+            bar.style.width = targetWidth;
+          }, 100 + i * 100);
+        });
+      }
+    });
+  }, { threshold: 0.2 });
+  
+  document.querySelectorAll('.chart-section').forEach(c => barIO.observe(c));
+
+  // Smooth scroll for nav links
+  document.querySelectorAll('nav a').forEach(link => {
+    link.addEventListener('click', e => {
+      const href = link.getAttribute('href');
+      if (href.startsWith('#')) {
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    });
+  });
+</script>
+</body>
+</html>

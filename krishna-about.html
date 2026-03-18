@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Krishna Panyala — About</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=Space+Mono&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black:      #0a0f1e;
+    --off-black:  #0d1428;
+    --navy:       #0f1b3d;
+    --navy-mid:   #162247;
+    --white:      #f0f4ff;
+    --cream:      #dde6ff;
+    --accent:     #5b8cff;
+    --accent-dim: #2a4fa8;
+    --mid:        #7a90c0;
+    --border:     rgba(240,244,255,0.08);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  .cursor {
+    position: fixed; top: 0; left: 0; z-index: 9999;
+    width: 10px; height: 10px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+  }
+  .cursor-ring {
+    position: fixed; top: 0; left: 0; z-index: 9998;
+    width: 38px; height: 38px;
+    border: 1px solid rgba(91,140,255,0.45);
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 1;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    opacity: 0.35;
+  }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 28px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    color: var(--mid);
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-logo:hover { color: var(--white); }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--mid);
+    text-decoration: none;
+    transition: color 0.2s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute; bottom: -3px; left: 0;
+    width: 0; height: 1px;
+    background: var(--accent);
+    transition: width 0.3s ease;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a:hover::after,
+  .nav-links a.active::after { width: 100%; }
+  .nav-links a.active { color: var(--white); }
+
+  .page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 48px 48px;
+    position: relative;
+    z-index: 10;
+  }
+
+  /* HERO */
+  .about-hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 120px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 100px;
+    max-width: 680px;
+  }
+
+  .eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.2s;
+  }
+  .hero-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4.5rem, 8vw, 8.5rem);
+    line-height: 0.88;
+    letter-spacing: -0.01em;
+    margin-bottom: 36px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.35s;
+  }
+  .hero-name .outlined {
+    display: block;
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(240,244,255,0.25);
+  }
+  .hero-title-block {
+    display: flex; align-items: flex-start; gap: 16px;
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.5s;
+  }
+  .hero-title-line {
+    width: 2px; height: 44px;
+    background: var(--accent-dim);
+    flex-shrink: 0; margin-top: 4px;
+  }
+  .hero-title {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 1.2rem;
+    color: var(--cream);
+    line-height: 1.5;
+  }
+  .hero-cta-row {
+    display: flex; gap: 16px; flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.65s;
+  }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--accent); color: var(--black);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem; font-weight: 700;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    text-decoration: none; padding: 14px 28px;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .btn-primary:hover { background: var(--cream); transform: translateY(-2px); }
+  .btn-ghost {
+    display: inline-flex; align-items: center; gap: 10px;
+    border: 1px solid var(--border); color: var(--mid);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase;
+    text-decoration: none; padding: 14px 28px;
+    transition: border-color 0.2s, color 0.2s, transform 0.2s;
+  }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--white); transform: translateY(-2px); }
+
+  .hero-right {
+    display: flex; flex-direction: column; gap: 24px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.5s;
+  }
+  .stat-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1px; background: var(--border);
+    border: 1px solid var(--border); margin-bottom: 8px;
+  }
+  .stat-cell {
+    background: var(--off-black); padding: 28px 24px;
+    transition: background 0.3s;
+  }
+  .stat-cell:hover { background: var(--navy); }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.2rem; line-height: 1;
+    color: var(--white); margin-bottom: 6px;
+  }
+  .stat-num span { color: var(--accent); }
+  .stat-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.58rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--mid);
+  }
+  .edu-card {
+    border: 1px solid var(--border);
+    padding: 24px; background: var(--off-black);
+  }
+  .edu-card-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.56rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 16px;
+  }
+  .edu-item { margin-bottom: 16px; }
+  .edu-item:last-child { margin-bottom: 0; }
+  .edu-degree { font-size: 0.9rem; font-weight: 500; color: var(--white); margin-bottom: 3px; }
+  .edu-school {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem; letter-spacing: 0.1em; color: var(--mid);
+  }
+  .edu-divider { height: 1px; background: var(--border); margin: 12px 0; }
+
+  /* SECTIONS */
+  .section { padding: 50px 0; border-bottom: 1px solid var(--border); }
+  .section:last-child { border-bottom: none; }
+  .section-header { display: flex; align-items: baseline; gap: 24px; margin-bottom: 64px; }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 5vw, 5rem); line-height: 1; color: var(--white);
+  }
+  .section-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem; letter-spacing: 0.2em; color: var(--mid);
+  }
+
+  /* BIO */
+  .bio-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 80px; align-items: start; }
+  .bio-pull { position: sticky; top: 120px; }
+  .bio-pull-quote {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    line-height: 1.45; color: var(--white); margin-bottom: 32px;
+  }
+  .bio-pull-quote em { font-style: normal; color: var(--accent); }
+  .bio-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .bio-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase;
+    border: 1px solid var(--border); color: var(--mid); padding: 6px 14px;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .bio-tag:hover { border-color: var(--accent); color: var(--white); }
+  .bio-text p {
+    font-size: 1rem; line-height: 1.85;
+    color: var(--cream); margin-bottom: 28px; opacity: 0.9;
+  }
+  .bio-text p:last-child { margin-bottom: 0; }
+  .bio-text strong { font-weight: 500; color: var(--white); }
+
+  /* EXPERIENCE */
+  .exp-list { display: flex; flex-direction: column; }
+  .exp-item {
+    display: grid; grid-template-columns: 220px 1fr;
+    gap: 48px; padding: 48px 0;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .exp-item:first-child { padding-top: 0; }
+  .exp-item:last-child { border-bottom: none; }
+  .exp-item::before {
+    content: '';
+    position: absolute; left: -48px; top: 0; bottom: 0; width: 2px;
+    background: transparent; transition: background 0.3s;
+  }
+  .exp-item:hover::before { background: var(--accent-dim); }
+  .exp-meta { padding-top: 4px; }
+  .exp-period {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem; letter-spacing: 0.14em;
+    color: var(--accent); margin-bottom: 8px; text-transform: uppercase;
+  }
+  .exp-company {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem; letter-spacing: 0.1em; color: var(--mid); line-height: 1.5;
+  }
+  .exp-role {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem; color: var(--white); margin-bottom: 20px; line-height: 1.2;
+  }
+  .exp-bullets { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .exp-bullets li {
+    font-size: 0.9rem; line-height: 1.75;
+    color: var(--mid); padding-left: 20px; position: relative;
+  }
+  .exp-bullets li::before {
+    content: '—'; position: absolute; left: 0;
+    color: var(--accent-dim); font-size: 0.75rem;
+  }
+  .exp-bullets li strong { color: var(--cream); font-weight: 400; }
+
+  /* SKILLS */
+  .skills-outer { display: flex; flex-direction: column; gap: 56px; }
+  .skill-group-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 20px;
+  }
+  .skill-pills { display: flex; flex-wrap: wrap; gap: 10px; }
+  .skill-pill {
+    font-size: 0.85rem; font-weight: 300;
+    color: var(--cream); border: 1px solid var(--border); padding: 9px 18px;
+    transition: background 0.25s, border-color 0.25s, color 0.25s;
+  }
+  .skill-pill:hover {
+    background: rgba(91,140,255,0.08);
+    border-color: rgba(91,140,255,0.4); color: var(--white);
+  }
+  .skill-pill.accent { border-color: rgba(91,140,255,0.3); color: var(--accent); }
+  .skill-pill.accent:hover {
+    background: rgba(91,140,255,0.12); border-color: var(--accent); color: var(--white);
+  }
+  .cert-list {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px;
+  }
+  .cert-card {
+    border: 1px solid var(--border); padding: 24px;
+    display: flex; align-items: flex-start; gap: 16px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .cert-card:hover { border-color: rgba(91,140,255,0.3); background: rgba(91,140,255,0.04); }
+  .cert-icon {
+    width: 36px; height: 36px; border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; color: var(--accent); font-size: 0.75rem;
+  }
+  .cert-name { font-size: 0.88rem; color: var(--white); margin-bottom: 4px; line-height: 1.4; }
+  .cert-issuer {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.55rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mid);
+  }
+
+  /* FOOTER */
+  .page-footer {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    border-top: 1px solid var(--border); padding: 16px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    z-index: 50; background: rgba(10,15,30,0.85); backdrop-filter: blur(12px);
+  }
+  .footer-left, .footer-right {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.58rem; letter-spacing: 0.15em; color: var(--mid); text-transform: uppercase;
+  }
+  .footer-dot {
+    display: inline-block; width: 6px; height: 6px;
+    background: var(--accent); border-radius: 50%; margin-right: 8px;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  .edge-text {
+    position: fixed; right: 20px; top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.55rem; letter-spacing: 0.25em; text-transform: uppercase;
+    color: rgba(122,144,192,0.25); z-index: 50; pointer-events: none; white-space: nowrap;
+  }
+
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  @media (max-width: 960px) {
+    .page { padding: 0 28px 100px; }
+    nav { padding: 22px 28px; }
+    .about-hero { min-height: auto; padding-top: 100px; max-width: 100%; }
+    .bio-grid { grid-template-columns: 1fr; gap: 40px; }
+    .bio-pull { position: static; }
+    .exp-item { grid-template-columns: 1fr; gap: 12px; }
+    .exp-meta { padding-top: 0; }
+    .page-footer { padding: 14px 28px; }
+    .edge-text { display: none; }
+  }
+  @media (max-width: 600px) {
+    .stat-grid { grid-template-columns: 1fr 1fr; }
+    .hero-cta-row { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="edge-text">Portfolio 2026 — About Me</div>
+
+<nav>
+  <a href="index.html" class="nav-logo">KP — Portfolio</a>
+  <ul class="nav-links">
+    <li><a href="work.html">Work</a></li>
+    <li><a href="krishna-about.html" class="active">About</a></li>
+    <li><a href="krishna-contact.html">Contact</a></li>
+  </ul>
+</nav>
+
+<div class="page">
+
+  <!-- HERO -->
+  <section class="about-hero">
+    <div class="hero-left">
+      <p class="eyebrow">About Me</p>
+      <h1 class="hero-name">
+        KRISHNA<br>
+        <span class="outlined">PANYALA</span>
+      </h1>
+      <div class="hero-title-block">
+        <div class="hero-title-line"></div>
+        <p class="hero-title">Senior User Experience Researcher<br>
+        <span style="color:var(--mid); font-style:italic; font-size:0.95rem;">9+ Years · Mixed-Methods · Human Behavior</span></p>
+      </div>
+      <div class="hero-cta-row">
+        <a href="krishna-contact.html" class="btn-primary">Get In Touch →</a>
+        <a href="mailto:krishnapanyala619@gmail.com" class="btn-ghost">krishnapanyala619@gmail.com</a>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- 01 PHILOSOPHY -->
+  <section class="section reveal">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2 class="section-title">Philosophy</h2>
+    </div>
+    <div class="bio-grid">
+      <div class="bio-pull">
+        <p class="bio-pull-quote">
+          "I use research as a lens into the <em>human condition</em> — revealing the signals and tensions that often go unnoticed."
+        </p>
+        <div class="bio-tags">
+          <span class="bio-tag">Ethnography</span>
+          <span class="bio-tag">Human Behavior</span>
+          <span class="bio-tag">Systems Thinking</span>
+          <span class="bio-tag">Empathy</span>
+          <span class="bio-tag">Mixed Methods</span>
+          <span class="bio-tag">Strategy</span>
+        </div>
+      </div>
+      <div class="bio-text">
+        <p>I'm a Senior User Experience Researcher with nine-plus years of exploring the emotional and cultural forces behind human behavior. My work is rooted in ethnography and a deep respect for people's lived experiences — <strong>studying behavior in context to surface the stories, motivations, and patterns that shape how people move through the world.</strong></p>
+        <p>I look for the deeper frictions that influence how people think, decide, and connect — the tensions most teams overlook. Addressing these leads to experiences that feel intuitive, human, and genuinely impactful.</p>
+        <p>By blending qualitative depth with quantitative structure, I ensure insights don't just resonate — <strong>they drive decisions.</strong> My work helps teams move beyond assumptions and build with empathy at the center.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 EXPERIENCE -->
+  <section class="section reveal">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2 class="section-title">Experience</h2>
+    </div>
+    <div class="exp-list">
+
+      <div class="exp-item">
+        <div class="exp-meta">
+          <div class="exp-period">Dec 2020 — Present</div>
+          <div class="exp-company">System Soft<br>Technologies</div>
+        </div>
+        <div class="exp-content">
+          <div class="exp-role">Senior User Experience Researcher</div>
+          <ul class="exp-bullets">
+            <li>Led <strong>end-to-end research for a new digital product initiative</strong>, defining strategies across discovery, validation, and iteration to inform product direction and investment decisions.</li>
+            <li>Designed and executed <strong>large-scale surveys with 2,000+ users</strong>, identifying key drivers of satisfaction, usability gaps, and digitization opportunities that directly informed roadmap prioritization.</li>
+            <li>Partnered with <strong>20+ cross-functional stakeholders</strong> across product, UX, engineering, and business teams to align user needs with business objectives.</li>
+            <li>Conducted <strong>exploratory research into AI- and LLM-enabled experiences</strong>, identifying opportunities for intelligent automation, personalized guidance, and proactive support in complex workflows.</li>
+            <li>Evaluated AI-powered chatbot interactions, uncovering critical friction points and informing refinements that <strong>improved task completion and reduced reliance on human support</strong>.</li>
+            <li>Produced <strong>journey maps, service blueprints, and personas</strong> to clarify end-to-end user experiences, reveal systemic pain points, and guide both design and technical decisions.</li>
+            <li>Served as a <strong>trusted research partner across the product lifecycle</strong>, ensuring user insights consistently influenced decision-making rather than remaining isolated in documentation.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="exp-item">
+        <div class="exp-meta">
+          <div class="exp-period">Jun 2016 — Nov 2020</div>
+          <div class="exp-company">Code Design<br>Studio</div>
+        </div>
+        <div class="exp-content">
+          <div class="exp-role">User Experience Researcher</div>
+          <ul class="exp-bullets">
+            <li>Led <strong>qualitative research engagements</strong> for clients across brand, product, and digital initiatives, shaping early problem framing and defining experience opportunities.</li>
+            <li>Conducted user interviews, contextual inquiry, and exploratory research to <strong>surface unmet needs and behavioral insights</strong> that informed product and business strategy.</li>
+            <li>Facilitated <strong>design thinking workshops</strong> to align teams, generate new concepts, and establish shared understanding of user problems and success criteria.</li>
+            <li>Synthesized qualitative research and market analysis into <strong>actionable insights that guided innovation efforts</strong> and informed data-driven decision-making.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="exp-item">
+        <div class="exp-meta">
+          <div class="exp-period">Dec 2015 — May 2016</div>
+          <div class="exp-company">Dream Sports<br>Retail</div>
+        </div>
+        <div class="exp-content">
+          <div class="exp-role">Design Researcher</div>
+          <ul class="exp-bullets">
+            <li>Conducted <strong>ethnographic research, contextual inquiry, and usability testing</strong> to identify fit, comfort, and usability issues in sportswear products.</li>
+            <li>Led participatory design workshops and user testing sessions, <strong>directly informing product refinements</strong> and design decisions.</li>
+            <li>Performed <strong>competitive analysis and trend research</strong> across Indian e-commerce platforms to identify market gaps and opportunities for differentiation.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 03 SKILLS -->
+  <section class="section reveal">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2 class="section-title">Skills</h2>
+    </div>
+    <div class="skills-outer">
+
+      <div>
+        <div class="skill-group-label">Research Methods</div>
+        <div class="skill-pills">
+          <span class="skill-pill accent">Mixed-Methods Research</span>
+          <span class="skill-pill accent">Qualitative Research</span>
+          <span class="skill-pill accent">Quantitative Research</span>
+          <span class="skill-pill">User Interviews</span>
+          <span class="skill-pill">Usability Testing</span>
+          <span class="skill-pill">Surveys & Questionnaire Design</span>
+          <span class="skill-pill">A/B Testing</span>
+          <span class="skill-pill">Diary Studies</span>
+          <span class="skill-pill">Field Studies</span>
+          <span class="skill-pill">Ethnographic Research</span>
+          <span class="skill-pill">Contextual Inquiry</span>
+          <span class="skill-pill">Card Sorting</span>
+          <span class="skill-pill">Heuristic Evaluation</span>
+          <span class="skill-pill">Benchmarking Studies</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="skill-group-label">Strategy & Frameworks</div>
+        <div class="skill-pills">
+          <span class="skill-pill accent">Journey Mapping</span>
+          <span class="skill-pill accent">Service Blueprinting</span>
+          <span class="skill-pill accent">Experience Mapping</span>
+          <span class="skill-pill">Persona Development</span>
+          <span class="skill-pill">Jobs-To-Be-Done (JTBD)</span>
+          <span class="skill-pill">Task Analysis</span>
+          <span class="skill-pill">User Needs Analysis</span>
+          <span class="skill-pill">Research Strategy</span>
+          <span class="skill-pill">Opportunity Mapping</span>
+          <span class="skill-pill">AI / LLM UX Research</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="skill-group-label">Tools & Platforms</div>
+        <div class="skill-pills">
+          <span class="skill-pill">UserTesting</span>
+          <span class="skill-pill">UserZoom</span>
+          <span class="skill-pill">UserInterviews.com</span>
+          <span class="skill-pill">Optimal Sort</span>
+          <span class="skill-pill">Enjoy HQ</span>
+          <span class="skill-pill">Microsoft Clarity</span>
+          <span class="skill-pill">Power BI</span>
+          <span class="skill-pill">Pendo</span>
+          <span class="skill-pill">Airtable</span>
+          <span class="skill-pill">Miro</span>
+          <span class="skill-pill">Mural</span>
+          <span class="skill-pill">Qualtrics</span>
+          <span class="skill-pill">SurveyMonkey</span>
+          <span class="skill-pill">Figma</span>
+          <span class="skill-pill">Adobe XD</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="skill-group-label">Certifications</div>
+        <div class="cert-list">
+          <div class="cert-card">
+            <div class="cert-icon">IBM</div>
+            <div>
+              <div class="cert-name">Enterprise Design Thinking Practitioner</div>
+              <div class="cert-issuer">Issued by IBM</div>
+            </div>
+          </div>
+          <div class="cert-card">
+            <div class="cert-icon" style="font-size:0.5rem; text-align:center; line-height:1.3;">LI</div>
+            <div>
+              <div class="cert-name">A Design Thinking Approach to Putting the Customer First</div>
+              <div class="cert-issuer">Issued by LinkedIn Learning</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</div>
+
+<!-- EDUCATION — BOTTOM -->
+<div class="edu-bottom reveal" style="position:relative; z-index:10; max-width:1200px; margin:0 auto; padding:0 48px 80px;">
+  <div class="edu-card">
+    <div class="edu-card-label">Education</div>
+    <div style="display:flex; gap:48px; flex-wrap:wrap;">
+      <div class="edu-item" style="margin-bottom:0;">
+        <div class="edu-degree">Master of Design Management</div>
+        <div class="edu-school">Savannah College of Art and Design</div>
+      </div>
+      <div style="width:1px; background:var(--border); flex-shrink:0;"></div>
+      <div class="edu-item" style="margin-bottom:0;">
+        <div class="edu-degree">Bachelor of Design</div>
+        <div class="edu-school">National Institute of Fashion Technology</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="page-footer">
+  <span class="footer-left"><span class="footer-dot"></span>Available for opportunities</span>
+  <span class="footer-right">Krishna Panyala © 2026</span>
+</footer>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.transform = `translate(${mx}px, ${my}px) translate(-50%,-50%)`;
+  });
+  (function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.transform = `translate(${rx}px, ${ry}px) translate(-50%,-50%)`;
+    requestAnimationFrame(animRing);
+  })();
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.background = 'transparent';
+      cursor.style.border = '1px solid var(--accent)';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.background = 'var(--accent)';
+      cursor.style.border = 'none';
+    });
+  });
+
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.08 });
+  reveals.forEach(r => io.observe(r));
+</script>
+</body>
+</html>

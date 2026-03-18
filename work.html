@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Krishna Panyala — Work</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=Space+Mono&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --black: #0a0f1e; --off-black: #0d1428; --navy: #0f1b3d;
+    --white: #f0f4ff; --cream: #dde6ff; --accent: #5b8cff;
+    --accent-dim: #2a4fa8; --mid: #7a90c0;
+    --border: rgba(240,244,255,0.08); --border-vis: rgba(240,244,255,0.14);
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--black); color: var(--white); font-family: 'DM Sans', sans-serif; font-weight: 300; overflow-x: hidden; cursor: none; }
+  .cursor { position: fixed; top: 0; left: 0; z-index: 9999; width: 10px; height: 10px; background: var(--accent); border-radius: 50%; pointer-events: none; transform: translate(-50%,-50%); }
+  .cursor-ring { position: fixed; top: 0; left: 0; z-index: 9998; width: 38px; height: 38px; border: 1px solid rgba(91,140,255,0.45); border-radius: 50%; pointer-events: none; transform: translate(-50%,-50%); transition: width 0.2s, height 0.2s; }
+  body::before { content: ''; position: fixed; inset: 0; z-index: 1; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; opacity: 0.35; }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 28px 48px; display: flex; align-items: center; justify-content: space-between; background: rgba(10,15,30,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+  .nav-logo { font-family: 'Space Mono', monospace; font-size: 0.7rem; letter-spacing: 0.18em; color: var(--mid); text-transform: uppercase; text-decoration: none; transition: color 0.2s; }
+  .nav-logo:hover { color: var(--white); }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a { font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--mid); text-decoration: none; transition: color 0.2s; position: relative; }
+  .nav-links a::after { content: ''; position: absolute; bottom: -3px; left: 0; width: 0; height: 1px; background: var(--accent); transition: width 0.3s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--white); }
+  .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+
+  .edge-text { position: fixed; right: 20px; top: 50%; transform: translateY(-50%) rotate(90deg); font-family: 'Space Mono', monospace; font-size: 0.55rem; letter-spacing: 0.25em; text-transform: uppercase; color: rgba(122,144,192,0.2); z-index: 50; pointer-events: none; white-space: nowrap; }
+
+  .page { max-width: 1040px; margin: 0 auto; padding: 0 48px 140px; position: relative; z-index: 10; }
+
+  /* HEADER */
+  .work-header { padding-top: 160px; padding-bottom: 72px; border-bottom: 1px solid var(--border); }
+  .work-eyebrow { font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; opacity: 0; animation: fadeUp 0.5s ease forwards 0.1s; display: flex; align-items: center; gap: 16px; }
+  .work-eyebrow::before { content: ''; display: inline-block; width: 32px; height: 1px; background: var(--accent-dim); }
+  .work-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(4rem, 8vw, 8rem); line-height: 0.9; margin-bottom: 32px; opacity: 0; animation: fadeUp 0.6s ease forwards 0.2s; }
+  .work-title .outlined { display: block; color: transparent; -webkit-text-stroke: 1.5px rgba(240,244,255,0.2); }
+  .work-intro { font-family: 'DM Serif Display', serif; font-style: italic; font-size: clamp(1.1rem, 1.8vw, 1.4rem); line-height: 1.6; color: var(--cream); max-width: 620px; opacity: 0; animation: fadeUp 0.6s ease forwards 0.4s; border-left: 2px solid var(--accent-dim); padding-left: 24px; }
+
+  /* FILTER TABS */
+  .filter-row { display: flex; gap: 0; margin: 56px 0 0; opacity: 0; animation: fadeUp 0.5s ease forwards 0.5s; border: 1px solid var(--border); width: fit-content; }
+  .filter-btn { font-family: 'Space Mono', monospace; font-size: 0.58rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mid); background: var(--off-black); border: none; border-right: 1px solid var(--border); padding: 12px 22px; cursor: pointer; transition: background 0.2s, color 0.2s; }
+  .filter-btn:last-child { border-right: none; }
+  .filter-btn:hover, .filter-btn.active { background: var(--navy); color: var(--white); }
+  .filter-btn.active { color: var(--accent); }
+
+  /* CASE STUDY LIST */
+  .cs-list { margin-top: 0; display: flex; flex-direction: column; }
+
+  .cs-item {
+    display: grid;
+    grid-template-columns: 72px 1fr auto;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .cs-item::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: var(--accent);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.3s ease;
+  }
+  .cs-item:hover::before { transform: scaleY(1); }
+  .cs-item:hover { background: rgba(91,140,255,0.04); }
+
+  .cs-item-num {
+    padding: 40px 0 40px 0;
+    display: flex;
+    align-items: flex-start;
+    padding-top: 44px;
+  }
+  .cs-item-num span {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    color: var(--accent-dim);
+    letter-spacing: 0.08em;
+    padding-left: 24px;
+  }
+
+  .cs-item-body { padding: 36px 40px 36px 0; border-left: 1px solid var(--border); padding-left: 32px; }
+
+  .cs-item-tag { font-family: 'Space Mono', monospace; font-size: 0.54rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+  .cs-item-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(1.8rem, 3.2vw, 2.8rem); line-height: 1; color: var(--white); margin-bottom: 14px; transition: color 0.2s; }
+  .cs-item:hover .cs-item-title { color: var(--cream); }
+  .cs-item-desc { font-size: 0.88rem; line-height: 1.7; color: var(--mid); max-width: 580px; margin-bottom: 20px; }
+  .cs-item-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill { font-family: 'Space Mono', monospace; font-size: 0.5rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mid); border: 1px solid var(--border-vis); padding: 5px 12px; }
+
+  .cs-item-arrow {
+    display: flex;
+    align-items: center;
+    padding: 40px 32px;
+    border-left: 1px solid var(--border);
+  }
+  .cs-item-arrow span {
+    font-size: 1.4rem;
+    color: var(--mid);
+    transition: color 0.2s, transform 0.2s;
+  }
+  .cs-item:hover .cs-item-arrow span { color: var(--accent); transform: translateX(6px); }
+
+  /* FOOTER */
+  .page-footer { position: fixed; bottom: 0; left: 0; right: 0; border-top: 1px solid var(--border); padding: 16px 48px; display: flex; align-items: center; justify-content: space-between; z-index: 50; background: rgba(10,15,30,0.85); backdrop-filter: blur(12px); }
+  .footer-left, .footer-right { font-family: 'Space Mono', monospace; font-size: 0.58rem; letter-spacing: 0.15em; color: var(--mid); text-transform: uppercase; }
+  .footer-dot { display: inline-block; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; margin-right: 8px; animation: pulse 2s ease-in-out infinite; }
+
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.8); } }
+
+  @media (max-width: 860px) {
+    .page { padding: 0 28px 120px; }
+    nav { padding: 22px 28px; }
+    .cs-item { grid-template-columns: 48px 1fr; }
+    .cs-item-arrow { display: none; }
+    .cs-item-num span { padding-left: 16px; font-size: 0.85rem; }
+    .edge-text { display: none; }
+    .page-footer { padding: 14px 28px; }
+    .filter-row { flex-wrap: wrap; }
+  }
+  @media (max-width: 540px) {
+    .cs-item { grid-template-columns: 1fr; }
+    .cs-item-num { display: none; }
+    .cs-item-body { border-left: none; padding-left: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="edge-text">Work — Selected Projects</div>
+
+<nav>
+  <a href="index.html" class="nav-logo">KP — Portfolio</a>
+  <ul class="nav-links">
+    <li><a href="work.html" class="active">Work</a></li>
+    <li><a href="krishna-about.html">About</a></li>
+    <li><a href="krishna-contact.html">Contact</a></li>
+  </ul>
+</nav>
+
+<main class="page">
+
+  <div class="work-header">
+    <div class="work-eyebrow">Selected Work</div>
+    <h1 class="work-title">
+      Case Studies
+      <span class="outlined">&amp; Projects</span>
+    </h1>
+    <p class="work-intro">End-to-end research and strategy work spanning enterprise platforms, healthcare systems, financial services, and smart city design.</p>
+
+    <div class="filter-row">
+      <button class="filter-btn active" data-filter="all">All Work</button>
+      <button class="filter-btn" data-filter="ux-research">UX Research</button>
+      <button class="filter-btn" data-filter="design-research">Design Research</button>
+      <button class="filter-btn" data-filter="strategy">Strategy</button>
+    </div>
+  </div>
+
+  <div class="cs-list" id="csList">
+
+    <!-- 01 FM Global -->
+    <a href="cs-fmglobal.html" class="cs-item reveal" data-tags="ux-research">
+      <div class="cs-item-num"><span>01</span></div>
+      <div class="cs-item-body">
+        <div class="cs-item-tag">UX Research · Enterprise</div>
+        <div class="cs-item-title">FM Global Knowledge Platform</div>
+        <div class="cs-item-desc">A dual-track generative research initiative exploring how FM Global creates, manages, and consumes its Operating Standards — the foundational documents driving its entire engineering and underwriting operation.</div>
+        <div class="cs-item-pills">
+          <span class="pill">Ethnographic Interviews</span>
+          <span class="pill">Generative Survey</span>
+          <span class="pill">34 SMEs + 398 Respondents</span>
+          <span class="pill">Property Insurance</span>
+        </div>
+      </div>
+      <div class="cs-item-arrow"><span>→</span></div>
+    </a>
+
+    <!-- 02 Branch Journey -->
+    <a href="cs-branchjourney.html" class="cs-item reveal" data-tags="ux-research">
+      <div class="cs-item-num"><span>02</span></div>
+      <div class="cs-item-body">
+        <div class="cs-item-tag">UX Research · Financial Services</div>
+        <div class="cs-item-title">Branch Journey Mapping</div>
+        <div class="cs-item-desc">Understanding the complete support experience across all channels to identify pain points, unmet needs, and opportunities for service redesign. The study revealed critical gaps between user expectations and current system capabilities.</div>
+        <div class="cs-item-pills">
+          <span class="pill">Quantitative Survey</span>
+          <span class="pill">Qualitative Analysis</span>
+          <span class="pill">443 Service Associates</span>
+          <span class="pill">6 Support Channels</span>
+        </div>
+      </div>
+      <div class="cs-item-arrow"><span>→</span></div>
+    </a>
+
+    <!-- 03 Salesforce -->
+    <a href="cs-salesforce.html" class="cs-item reveal" data-tags="ux-research">
+      <div class="cs-item-num"><span>03</span></div>
+      <div class="cs-item-body">
+        <div class="cs-item-tag">UX Research · Enterprise SaaS</div>
+        <div class="cs-item-title">Salesforce Workflow Revamp</div>
+        <div class="cs-item-desc">A fintech client's service team was frustrated. Satisfaction surveys revealed a mean composite score of 4/7 — and open comment analysis pointed directly at the Salesforce case page UI. We went in to find out why.</div>
+        <div class="cs-item-pills">
+          <span class="pill">Usability Research</span>
+          <span class="pill">Journey Mapping</span>
+          <span class="pill">Financial Services</span>
+          <span class="pill">Service Design</span>
+        </div>
+      </div>
+      <div class="cs-item-arrow"><span>→</span></div>
+    </a>
+
+    <!-- 04 Chat Satisfaction -->
+    <a href="cs-edwardjones.html" class="cs-item reveal" data-tags="ux-research">
+      <div class="cs-item-num"><span>04</span></div>
+      <div class="cs-item-body">
+        <div class="cs-item-tag">UX Research · Financial Services</div>
+        <div class="cs-item-title">Chat Satisfaction Survey</div>
+        <div class="cs-item-desc">The first satisfaction readout for Chat — a baseline measurement to understand how branch associates experienced both the live chat tool and the chatbot, establishing a benchmark for tracking progress over time.</div>
+        <div class="cs-item-pills">
+          <span class="pill">Quantitative Survey</span>
+          <span class="pill">Open Comment Analysis</span>
+          <span class="pill">325 Branch Associates</span>
+          <span class="pill">Live Chat + Chatbot</span>
+        </div>
+      </div>
+      <div class="cs-item-arrow"><span>→</span></div>
+    </a>
+
+    <!-- 05 HQ Smart City -->
+    <a href="cs-smartcity.html" class="cs-item reveal" data-tags="design-research">
+      <div class="cs-item-num"><span>05</span></div>
+      <div class="cs-item-body">
+        <div class="cs-item-tag">Design Research · Smart City</div>
+        <div class="cs-item-title">HQ Smart City Design Research</div>
+        <div class="cs-item-desc">Pioneering the "micro" smart city — validated through design thinking workshops that aligned stakeholders, developed user personas, mapped critical journeys, and identified high-value use cases for the first prototype iteration.</div>
+        <div class="cs-item-pills">
+          <span class="pill">Design Thinking Workshop</span>
+          <span class="pill">Personas + Journey Maps</span>
+          <span class="pill">Parking, Security, Facilities</span>
+          <span class="pill">Smart City</span>
+        </div>
+      </div>
+      <div class="cs-item-arrow"><span>→</span></div>
+    </a>
+
+    <!-- 06 Karuna -->
+    <a href="cs-karuna.html" class="cs-item reveal" data-tags="design-research">
+      <div class="cs-item-num"><span>06</span></div>
+      <div class="cs-item-body">
+        <div class="cs-item-tag">Design Research · Healthcare</div>
+        <div class="cs-item-title">Karuna — Compassion by Design</div>
+        <div class="cs-item-desc">How might we use design thinking to reduce the psychological stress of long-stay patients in acute care hospitals? A 6-month human-centered research study across Dallas and Savannah leading to a workshop strategy for emotional care.</div>
+        <div class="cs-item-pills">
+          <span class="pill">Ethnographic Interviews</span>
+          <span class="pill">Human-Centered Design</span>
+          <span class="pill">Healthcare</span>
+          <span class="pill">6 Months</span>
+        </div>
+      </div>
+      <div class="cs-item-arrow"><span>→</span></div>
+    </a>
+
+    <!-- 07 Frameworks -->
+    <!-- <a href="frameworks_showcase.html" class="cs-item reveal" data-tags="strategy">
+      <div class="cs-item-num"><span>07</span></div>
+      <div class="cs-item-body">
+        <div class="cs-item-tag">Strategic Frameworks · Systems Thinking</div>
+        <div class="cs-item-title">Strategic Frameworks &amp; Systems Thinking</div>
+        <div class="cs-item-desc">Strategic frameworks translate complex business and technical problems into visual systems of understanding. These artifacts represent collaborative thinking sessions, technical architecture planning, ecosystem mapping, and enterprise systems design.</div>
+        <div class="cs-item-pills">
+          <span class="pill">Enterprise Architecture</span>
+          <span class="pill">8+ Frameworks</span>
+          <span class="pill">Telecom · Healthcare · SaaS</span>
+          <span class="pill">Integration Design</span>
+        </div>
+      </div>
+      <div class="cs-item-arrow"><span>→</span></div>
+    </a> -->
+
+    <!-- 08 Grobox -->
+    <a href="cs-grobox.html" class="cs-item reveal" data-tags="design-research strategy">
+      <div class="cs-item-num"><span>07</span></div>
+      <div class="cs-item-body">
+        <div class="cs-item-tag">Design Research · Urban Innovation</div>
+        <div class="cs-item-title">Grobox — Mobile Farm System</div>
+        <div class="cs-item-desc">A zero-to-one innovation initiative reimagining how fresh produce reaches urban consumers — replacing a fragmented, opaque supply chain with a mobile hydroponics system that grows and delivers produce at the point of demand.</div>
+        <div class="cs-item-pills">
+          <span class="pill">Mixed-Methods Research</span>
+          <span class="pill">Journey Mapping</span>
+          <span class="pill">Business Model Canvas</span>
+          <span class="pill">AgriTech · Urban Innovation</span>
+        </div>
+      </div>
+      <div class="cs-item-arrow"><span>→</span></div>
+    </a>
+
+  </div><!-- /cs-list -->
+
+</main>
+
+<footer class="page-footer">
+  <div class="footer-left"><span class="footer-dot"></span>Krishna Panyala — Portfolio</div>
+  <div class="footer-right">8 Projects · UX Research &amp; Strategy</div>
+</footer>
+
+<script>
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  const cursorRing = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+  });
+  function animateRing() {
+    rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+    cursorRing.style.left = rx + 'px'; cursorRing.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => { cursorRing.style.width = '56px'; cursorRing.style.height = '56px'; });
+    el.addEventListener('mouseleave', () => { cursorRing.style.width = '38px'; cursorRing.style.height = '38px'; });
+  });
+
+  // Scroll reveal
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, { threshold: 0.06 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // Filter
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const csItems = document.querySelectorAll('.cs-item');
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      csItems.forEach((item, i) => {
+        const tags = item.dataset.tags || '';
+        const show = filter === 'all' || tags.includes(filter);
+        item.style.display = show ? '' : 'none';
+        // re-number visible items
+      });
+      // Re-number
+      let count = 1;
+      csItems.forEach(item => {
+        if (item.style.display !== 'none') {
+          const numEl = item.querySelector('.cs-item-num span');
+          if (numEl) numEl.textContent = String(count).padStart(2, '0');
+          count++;
+        }
+      });
+    });
+  });
+</script>
+</body>
+</html>

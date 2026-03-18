@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Krishna Panyala — Contact</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=Space+Mono&display=swap" rel="stylesheet">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black:      #0a0f1e;
+    --off-black:  #0d1428;
+    --navy:       #0f1b3d;
+    --navy-mid:   #162247;
+    --white:      #f0f4ff;
+    --cream:      #dde6ff;
+    --accent:     #5b8cff;
+    --accent-dim: #2a4fa8;
+    --mid:        #7a90c0;
+    --border:     rgba(240,244,255,0.08);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+    min-height: 100vh;
+  }
+
+  /* ── CURSOR ── */
+  .cursor {
+    position: fixed; top: 0; left: 0; z-index: 9999;
+    width: 10px; height: 10px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    transition: background 0.2s;
+    transform: translate(-50%, -50%);
+  }
+  .cursor-ring {
+    position: fixed; top: 0; left: 0; z-index: 9998;
+    width: 38px; height: 38px;
+    border: 1px solid rgba(91,140,255,0.45);
+    border-radius: 50%;
+    pointer-events: none;
+    transition: transform 0.35s ease;
+    transform: translate(-50%, -50%);
+  }
+
+  /* ── GRAIN ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 1;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    opacity: 0.35;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 28px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    color: var(--mid);
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-logo:hover { color: var(--white); }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--mid);
+    text-decoration: none;
+    transition: color 0.2s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute; bottom: -3px; left: 0;
+    width: 0; height: 1px;
+    background: var(--accent);
+    transition: width 0.3s ease;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a:hover::after,
+  .nav-links a.active::after { width: 100%; }
+  .nav-links a.active { color: var(--white); }
+
+  /* ── MAIN LAYOUT ── */
+  main {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+  }
+
+  /* ── LEFT PANEL ── */
+  .contact-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 140px 64px 100px 48px;
+    position: relative;
+    z-index: 10;
+    border-right: 1px solid var(--border);
+  }
+
+  .section-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.2s;
+  }
+
+  .contact-heading {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(5rem, 9vw, 9.5rem);
+    line-height: 0.88;
+    letter-spacing: -0.01em;
+    color: var(--white);
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.35s;
+  }
+
+  .contact-heading .outlined {
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(240,244,255,0.3);
+    display: block;
+  }
+
+  .contact-subtext {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+    line-height: 1.5;
+    color: var(--cream);
+    max-width: 380px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.5s;
+    margin-bottom: 64px;
+    padding-left: 20px;
+    border-left: 2px solid var(--accent-dim);
+  }
+
+  /* Contact Links */
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.65s;
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 24px 0;
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--white);
+    position: relative;
+    overflow: hidden;
+    transition: padding-left 0.3s ease;
+    group: true;
+  }
+  .contact-item:first-child { border-top: 1px solid var(--border); }
+  .contact-item::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 0;
+    background: rgba(91,140,255,0.06);
+    transition: width 0.4s ease;
+  }
+  .contact-item:hover::before { width: 100%; }
+  .contact-item:hover { padding-left: 12px; }
+
+  .contact-icon {
+    width: 44px; height: 44px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: border-color 0.3s, background 0.3s;
+    position: relative; z-index: 1;
+  }
+  .contact-item:hover .contact-icon {
+    border-color: var(--accent);
+    background: rgba(91,140,255,0.1);
+  }
+  .contact-icon svg { width: 18px; height: 18px; }
+
+  .contact-info { position: relative; z-index: 1; flex: 1; }
+  .contact-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 4px;
+  }
+  .contact-value {
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: var(--white);
+    transition: color 0.2s;
+  }
+  .contact-item:hover .contact-value { color: var(--accent); }
+
+  .contact-arrow {
+    font-size: 1rem;
+    color: var(--mid);
+    transition: transform 0.3s ease, color 0.2s;
+    position: relative; z-index: 1;
+  }
+  .contact-item:hover .contact-arrow {
+    transform: translateX(6px);
+    color: var(--accent);
+  }
+
+  /* ── RIGHT PANEL — FORM ── */
+  .contact-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 140px 48px 100px 64px;
+    position: relative;
+    z-index: 10;
+  }
+
+  .form-heading {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.4s;
+  }
+
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.55s;
+  }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+  }
+
+  .field label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--mid);
+    transition: color 0.2s;
+  }
+  .field:focus-within label { color: var(--accent); }
+
+  .field input,
+  .field textarea,
+  .field select {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 300;
+    padding: 12px 0;
+    outline: none;
+    transition: border-color 0.3s;
+    width: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  .field input::placeholder,
+  .field textarea::placeholder { color: rgba(122,144,192,0.4); }
+  .field input:focus,
+  .field textarea:focus,
+  .field select:focus { border-color: var(--accent); }
+
+  .field textarea {
+    resize: none;
+    height: 100px;
+    line-height: 1.6;
+  }
+
+  .field select { cursor: pointer; }
+  .field select option { background: var(--navy); color: var(--white); }
+
+  /* Underline animation */
+  .field::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 0; height: 1px;
+    background: var(--accent);
+    transition: width 0.4s ease;
+  }
+  .field:focus-within::after { width: 100%; }
+
+  .form-submit {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+  }
+
+  .submit-note {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+    color: var(--mid);
+  }
+
+  .btn-submit {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--accent);
+    color: var(--black);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border: none;
+    padding: 16px 32px;
+    cursor: none;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .btn-submit:hover { background: var(--cream); transform: translateY(-2px); }
+  .btn-submit .arrow { transition: transform 0.2s; }
+  .btn-submit:hover .arrow { transform: translateX(5px); }
+
+  /* Success state */
+  .form-success {
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 40px 0;
+  }
+  .form-success.show { display: flex; }
+  .success-icon {
+    width: 52px; height: 52px;
+    border: 1px solid var(--accent);
+    border-radius: 2px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--accent);
+    font-size: 1.4rem;
+  }
+  .success-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.8rem;
+    color: var(--white);
+    line-height: 1;
+  }
+  .success-msg {
+    font-size: 0.9rem;
+    color: var(--mid);
+    line-height: 1.7;
+    max-width: 360px;
+  }
+
+  /* ── BG DECORATION ── */
+  .bg-word {
+    position: fixed;
+    left: -2vw; bottom: -4vw;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22vw;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(91,140,255,0.04);
+    line-height: 1;
+    pointer-events: none;
+    z-index: 0;
+    user-select: none;
+  }
+
+  /* Right edge text */
+  .edge-text {
+    position: fixed;
+    right: 20px; top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(122,144,192,0.3);
+    z-index: 50;
+    pointer-events: none;
+    white-space: nowrap;
+    opacity: 0;
+    animation: fadeIn 1s ease forwards 1.5s;
+  }
+
+  /* ── FOOTER STRIP ── */
+  footer {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    border-top: 1px solid var(--border);
+    padding: 16px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 50;
+    background: rgba(10,15,30,0.8);
+    backdrop-filter: blur(12px);
+    opacity: 0;
+    animation: fadeIn 0.8s ease forwards 1.2s;
+  }
+  .footer-left {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.15em;
+    color: var(--mid);
+    text-transform: uppercase;
+  }
+  .footer-right {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.15em;
+    color: var(--mid);
+    text-transform: uppercase;
+  }
+  .footer-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    margin-right: 8px;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    main { grid-template-columns: 1fr; }
+    .contact-left {
+      padding: 120px 32px 48px;
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+    }
+    .contact-right { padding: 48px 32px 120px; }
+    nav { padding: 22px 32px; }
+    .form-row { grid-template-columns: 1fr; }
+    .bg-word { display: none; }
+    .edge-text { display: none; }
+    footer { padding: 14px 32px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- BG decoration -->
+<div class="bg-word">HI</div>
+<div class="edge-text">Portfolio 2026 — Contact</div>
+
+<!-- Nav -->
+<nav>
+  <a href="index.html" class="nav-logo">KP — Portfolio</a>
+  <ul class="nav-links">
+    <li><a href="work.html">Work</a></li>
+    <li><a href="krishna-about.html">About</a></li>
+    <li><a href="krishna-contact.html" class="active">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- Main -->
+<main>
+
+  <!-- LEFT: Identity + Links -->
+  <div class="contact-left">
+    <p class="section-eyebrow">Contact</p>
+    <h1 class="contact-heading">
+      <span>LET'S</span>
+      <span>TALK.</span>
+      <span class="outlined">CONNECT.</span>
+    </h1>
+    <p class="contact-subtext">
+      Open to new research and strategy opportunities,
+      collaborations, and conversations about
+      <em style="font-style:italic; color:var(--accent)">human-centered design.</em>
+    </p>
+
+    <div class="contact-links">
+
+      <!-- Email -->
+      <a href="mailto:krishnapanyala619@gmail.com" class="contact-item">
+        <div class="contact-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="2" y="4" width="20" height="16" rx="2"/>
+            <path d="M2 7l10 7 10-7"/>
+          </svg>
+        </div>
+        <div class="contact-info">
+          <div class="contact-label">Email</div>
+          <div class="contact-value">krishnapanyala619@gmail.com</div>
+        </div>
+        <span class="contact-arrow">→</span>
+      </a>
+
+      <!-- LinkedIn -->
+      <a href="https://www.linkedin.com/in/krishnapanyala" target="_blank" class="contact-item">
+        <div class="contact-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="2" y="2" width="20" height="20" rx="3"/>
+            <path d="M7 10v7M7 7v.01M12 17v-4a2 2 0 014 0v4M12 10v7"/>
+          </svg>
+        </div>
+        <div class="contact-info">
+          <div class="contact-label">LinkedIn</div>
+          <div class="contact-value">linkedin.com/in/krishnapanyala</div>
+        </div>
+        <span class="contact-arrow">→</span>
+      </a>
+
+      <!-- Location -->
+      <div class="contact-item" style="cursor:default; pointer-events:none;">
+        <div class="contact-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+            <circle cx="12" cy="9" r="2.5"/>
+          </svg>
+        </div>
+        <div class="contact-info">
+          <div class="contact-label">Location</div>
+          <div class="contact-value">New York Metropolitan Area</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- RIGHT: Form -->
+  <div class="contact-right">
+    <p class="form-heading">Send a Message</p>
+
+    <form class="contact-form" id="contactForm" onsubmit="handleSubmit(event)">
+
+      <div class="form-row">
+        <div class="field">
+          <label>Your Name</label>
+          <input type="text" placeholder="Jane Smith" required>
+        </div>
+        <div class="field">
+          <label>Your Email</label>
+          <input type="email" placeholder="jane@company.com" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Subject</label>
+        <select>
+          <option value="" disabled selected>Select a topic</option>
+          <option>Job Opportunity</option>
+          <option>Freelance / Contract Work</option>
+          <option>Collaboration</option>
+          <option>Speaking / Mentoring</option>
+          <option>Just Saying Hi</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Message</label>
+        <textarea placeholder="Tell me what you're working on..."></textarea>
+      </div>
+
+      <div class="form-submit">
+        <button type="submit" class="btn-submit">
+          Send Message <span class="arrow">→</span>
+        </button>
+      </div>
+
+    </form>
+
+    <!-- Success -->
+    <div class="form-success" id="formSuccess">
+      <div class="success-icon">✓</div>
+      <div class="success-title">Message Sent!</div>
+      <p class="success-msg">
+        Thanks for reaching out. I'll get back to you within 48 hours.<br>
+        In the meantime, feel free to connect on LinkedIn.
+      </p>
+      <a href="https://www.linkedin.com/in/krishnapanyala" target="_blank" class="btn-submit" style="margin-top:8px; text-decoration:none;">
+        Connect on LinkedIn <span class="arrow">→</span>
+      </a>
+    </div>
+
+  </div>
+
+</main>
+
+<!-- Footer -->
+<footer>
+  <span class="footer-left">
+    <span class="footer-dot"></span>Available for opportunities
+  </span>
+  <span class="footer-right">Krishna Panyala © 2026</span>
+</footer>
+
+<script>
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.transform = `translate(${mx}px, ${my}px) translate(-50%, -50%)`;
+  });
+
+  (function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.transform = `translate(${rx}px, ${ry}px) translate(-50%, -50%)`;
+    requestAnimationFrame(animateRing);
+  })();
+
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.background = 'transparent';
+      cursor.style.border = '1px solid var(--accent)';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.background = 'var(--accent)';
+      cursor.style.border = 'none';
+    });
+  });
+
+  // Form submit
+  function handleSubmit(e) {
+    e.preventDefault();
+    const form = document.getElementById('contactForm');
+    const success = document.getElementById('formSuccess');
+    form.style.opacity = '0';
+    form.style.transform = 'translateY(-10px)';
+    form.style.transition = 'all 0.4s ease';
+    setTimeout(() => {
+      form.style.display = 'none';
+      success.classList.add('show');
+      success.style.animation = 'fadeUp 0.6s ease forwards';
+    }, 400);
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Krishna Panyala — FM Global Knowledge Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=Space+Mono&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --black: #0a0f1e; --off-black: #0d1428; --navy: #0f1b3d;
+    --white: #f0f4ff; --cream: #dde6ff; --accent: #5b8cff;
+    --accent-dim: #2a4fa8; --mid: #7a90c0; --border: rgba(240,244,255,0.08);
+    --border-vis: rgba(240,244,255,0.14);
+    --green: #2ecc71; --amber: #f5a623; --teal: #1a8fa0; --purple: #6b2fbe;
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--black); color: var(--white); font-family: 'DM Sans', sans-serif; font-weight: 300; overflow-x: hidden; cursor: none; }
+  .cursor { position: fixed; top: 0; left: 0; z-index: 9999; width: 10px; height: 10px; background: var(--accent); border-radius: 50%; pointer-events: none; transform: translate(-50%,-50%); }
+  .cursor-ring { position: fixed; top: 0; left: 0; z-index: 9998; width: 38px; height: 38px; border: 1px solid rgba(91,140,255,0.45); border-radius: 50%; pointer-events: none; transform: translate(-50%,-50%); }
+  body::before { content: ''; position: fixed; inset: 0; z-index: 1; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; opacity: 0.35; }
+
+  /* NAV */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 28px 48px; display: flex; align-items: center; justify-content: space-between; background: rgba(10,15,30,0.8); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+  .nav-logo { font-family: 'Space Mono', monospace; font-size: 0.7rem; letter-spacing: 0.18em; color: var(--mid); text-transform: uppercase; text-decoration: none; transition: color 0.2s; }
+  .nav-logo:hover { color: var(--white); }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a { font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--mid); text-decoration: none; transition: color 0.2s; position: relative; }
+  .nav-links a::after { content: ''; position: absolute; bottom: -3px; left: 0; width: 0; height: 1px; background: var(--accent); transition: width 0.3s; }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a:hover::after { width: 100%; }
+
+  .edge-text { position: fixed; right: 20px; top: 50%; transform: translateY(-50%) rotate(90deg); font-family: 'Space Mono', monospace; font-size: 0.55rem; letter-spacing: 0.25em; text-transform: uppercase; color: rgba(122,144,192,0.2); z-index: 50; pointer-events: none; white-space: nowrap; }
+  .page { max-width: 940px; margin: 0 auto; padding: 0 48px 140px; position: relative; z-index: 10; }
+
+  /* HERO */
+  .cs-hero { padding-top: 160px; padding-bottom: 80px; border-bottom: 1px solid var(--border); }
+  .cs-eyebrow { font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; opacity: 0; animation: fadeUp 0.5s ease forwards 0.1s; display: flex; align-items: center; gap: 16px; }
+  .cs-eyebrow::before { content: ''; display: inline-block; width: 32px; height: 1px; background: var(--accent-dim); }
+  .cs-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.5rem, 7vw, 7rem); line-height: 0.9; margin-bottom: 40px; opacity: 0; animation: fadeUp 0.6s ease forwards 0.2s; }
+  .cs-title .outlined { display: block; color: transparent; -webkit-text-stroke: 1.5px rgba(240,244,255,0.22); }
+  .cs-meta-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-bottom: 48px; opacity: 0; animation: fadeUp 0.6s ease forwards 0.35s; }
+  .cs-meta-cell { background: var(--off-black); padding: 20px 22px; }
+  .cs-meta-label { font-family: 'Space Mono', monospace; font-size: 0.54rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mid); margin-bottom: 6px; }
+  .cs-meta-val { font-size: 0.9rem; color: var(--white); font-weight: 400; line-height: 1.4; }
+  .cs-intro { font-family: 'DM Serif Display', serif; font-style: italic; font-size: clamp(1.3rem, 2.2vw, 1.7rem); line-height: 1.55; color: var(--cream); opacity: 0; animation: fadeUp 0.6s ease forwards 0.5s; border-left: 2px solid var(--accent-dim); padding-left: 28px; }
+
+  /* SECTIONS */
+  .cs-section { padding: 72px 0; border-bottom: 1px solid var(--border); }
+  .cs-section:last-child { border-bottom: none; }
+  .section-label { font-family: 'Space Mono', monospace; font-size: 0.58rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; display: flex; align-items: center; gap: 14px; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border-vis); }
+  .section-heading { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.5rem, 4.5vw, 4rem); line-height: 1; color: var(--white); margin-bottom: 36px; }
+  .body-text { font-size: 1rem; line-height: 1.85; color: var(--cream); opacity: 0.88; max-width: 700px; }
+  .body-text strong { font-weight: 500; color: var(--white); }
+  .body-text + .body-text { margin-top: 20px; }
+
+  /* GRIDS */
+  .obj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 40px; }
+  .obj-cell { background: var(--off-black); padding: 28px; transition: background 0.3s; }
+  .obj-cell:hover { background: var(--navy); }
+  .obj-num { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--accent-dim); margin-bottom: 8px; }
+  .obj-title { font-size: 0.95rem; font-weight: 500; color: var(--white); margin-bottom: 8px; }
+  .obj-body { font-size: 0.83rem; line-height: 1.7; color: var(--mid); }
+
+  .method-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 40px; }
+  .method-cell { background: var(--off-black); padding: 28px; }
+  .method-icon { font-family: 'Space Mono', monospace; font-size: 0.54rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+  .method-val { font-family: 'DM Serif Display', serif; font-style: italic; font-size: 1.2rem; color: var(--white); margin-bottom: 8px; line-height: 1.3; }
+  .method-detail { font-size: 0.82rem; line-height: 1.7; color: var(--mid); }
+
+  /* STAT ROW */
+  .stat-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 40px; }
+  .stat-cell { background: var(--off-black); padding: 28px 24px; text-align: center; transition: background 0.3s; }
+  .stat-cell:hover { background: var(--navy); }
+  .stat-cell-num { font-family: 'Bebas Neue', sans-serif; font-size: 3.2rem; line-height: 1; color: var(--white); margin-bottom: 6px; }
+  .stat-cell-num span { color: var(--accent); }
+  .stat-cell-label { font-family: 'Space Mono', monospace; font-size: 0.56rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--mid); }
+
+  /* QUOTE */
+  .quote-block { margin: 20px 0; border-left: 2px solid var(--accent-dim); padding: 20px 28px; background: rgba(91,140,255,0.04); }
+  .quote-text { font-family: 'DM Serif Display', serif; font-style: italic; font-size: 1.05rem; line-height: 1.65; color: var(--cream); margin-bottom: 10px; }
+  .quote-attr { font-family: 'Space Mono', monospace; font-size: 0.57rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mid); }
+  .quote-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 32px; }
+
+  /* TWO TRACK LAYOUT */
+  .two-track { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 40px; }
+  .track-cell { background: var(--off-black); padding: 32px; }
+  .track-title { font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 16px; }
+  .track-title.track-a { color: var(--accent); }
+  .track-title.track-b { color: var(--amber); }
+  .track-h { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--white); line-height: 1; margin-bottom: 16px; }
+  .track-body { font-size: 0.84rem; line-height: 1.7; color: var(--mid); }
+  .track-list { list-style: none; margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .track-list li { font-size: 0.82rem; line-height: 1.6; color: var(--mid); display: flex; align-items: flex-start; gap: 8px; }
+  .track-list li::before { content: '→'; color: var(--accent); flex-shrink: 0; font-size: 0.75rem; margin-top: 2px; }
+  .track-list.amber li::before { color: var(--amber); }
+
+  /* SCORE CHART */
+  .score-chart-wrap { margin-top: 40px; border: 1px solid var(--border); background: var(--off-black); padding: 36px 36px 28px; }
+  .score-chart-title { font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 28px; }
+  .score-item { margin-bottom: 24px; }
+  .score-item:last-child { margin-bottom: 0; }
+  .score-item-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+  .score-item-label { font-size: 0.88rem; font-weight: 400; color: var(--cream); }
+  .score-item-val { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: var(--white); line-height: 1; }
+  .score-item-val span { color: var(--accent); font-size: 0.8rem; font-family: 'Space Mono', monospace; font-weight: 300; margin-left: 4px; }
+  .score-track { position: relative; height: 8px; background: rgba(240,244,255,0.06); margin-bottom: 6px; }
+  .score-fill { height: 100%; width: 0; transition: width 1.2s cubic-bezier(0.16,1,0.3,1); position: absolute; left: 0; top: 0; }
+  .score-subdims { display: flex; gap: 24px; margin-top: 8px; }
+  .score-subdim { font-family: 'Space Mono', monospace; font-size: 0.5rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); }
+  .score-subdim span { color: var(--white); font-size: 0.7rem; font-family: 'Bebas Neue', sans-serif; display: block; margin-bottom: 2px; }
+  .score-axis { display: flex; justify-content: space-between; margin-top: 16px; padding-top: 8px; border-top: 1px solid var(--border); }
+  .score-axis-label { font-family: 'Space Mono', monospace; font-size: 0.48rem; color: var(--mid); letter-spacing: 0.08em; }
+
+  /* PHASE ROW */
+  .phase-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 40px; }
+  .phase-cell { padding: 0; }
+  .phase-header { padding: 14px 18px; }
+  .phase-num { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; line-height: 1; margin-bottom: 4px; opacity: 0.3; }
+  .phase-name { font-size: 0.82rem; font-weight: 500; color: var(--white); line-height: 1.3; }
+  .phase-body { background: var(--off-black); padding: 16px 18px; border-top: 1px solid var(--border); }
+  .phase-desc { font-size: 0.78rem; line-height: 1.6; color: var(--mid); margin-bottom: 12px; }
+  .phase-cell:nth-child(1) .phase-header { background: var(--accent-dim); }
+  .phase-cell:nth-child(2) .phase-header { background: #1d4e89; }
+  .phase-cell:nth-child(3) .phase-header { background: var(--teal); }
+  .phase-cell:nth-child(4) .phase-header { background: #1a5e2a; }
+
+  .pain-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .pain-list li { font-size: 0.76rem; line-height: 1.5; color: var(--mid); display: flex; gap: 6px; }
+  .pain-list li::before { content: '!'; color: #ff6b6b; font-family: 'Space Mono', monospace; font-size: 0.62rem; flex-shrink: 0; margin-top: 1px; }
+
+  /* CHALLENGE ROWS */
+  .challenge-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 40px; }
+  .challenge-item { display: grid; grid-template-columns: 220px 1fr; gap: 0; background: var(--border); }
+  .challenge-label { padding: 24px; display: flex; flex-direction: column; justify-content: center; }
+  .challenge-tag { font-family: 'Space Mono', monospace; font-size: 0.5rem; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 8px; }
+  .challenge-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: var(--white); line-height: 1; }
+  .challenge-body-wrap { background: var(--off-black); padding: 24px 28px; }
+  .challenge-body { font-size: 0.88rem; line-height: 1.75; color: var(--cream); opacity: 0.85; }
+
+  /* KM AREAS */
+  .km-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 40px; }
+  .km-cell { background: var(--off-black); padding: 28px; transition: background 0.3s; }
+  .km-cell:hover { background: var(--navy); }
+  .km-tag { display: inline-block; font-family: 'Space Mono', monospace; font-size: 0.5rem; letter-spacing: 0.18em; text-transform: uppercase; padding: 4px 10px; margin-bottom: 14px; }
+  .km-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: var(--white); line-height: 1; margin-bottom: 12px; }
+  .km-body { font-size: 0.84rem; line-height: 1.7; color: var(--mid); margin-bottom: 16px; }
+  .km-quote { font-family: 'DM Serif Display', serif; font-style: italic; font-size: 0.88rem; line-height: 1.6; color: var(--cream); opacity: 0.7; padding-left: 14px; border-left: 1px solid var(--border-vis); }
+
+  /* USER GROUPS */
+  .user-groups { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 40px; }
+  .ug-cell { background: var(--off-black); padding: 24px; transition: background 0.3s; }
+  .ug-cell:hover { background: var(--navy); }
+  .ug-accent { height: 3px; margin-bottom: 16px; }
+  .ug-name { font-size: 0.9rem; font-weight: 500; color: var(--white); margin-bottom: 8px; line-height: 1.3; }
+  .ug-desc { font-size: 0.78rem; line-height: 1.65; color: var(--mid); }
+
+  /* OPPORTUNITIES */
+  .opp-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 40px; }
+  .opp-item { background: var(--off-black); display: grid; grid-template-columns: 64px 1fr; gap: 0; transition: background 0.3s; }
+  .opp-item:hover { background: var(--navy); }
+  .opp-num { display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; border-right: 1px solid var(--border); }
+  .opp-content { padding: 24px 28px; }
+  .opp-title { font-size: 0.95rem; font-weight: 500; color: var(--white); margin-bottom: 8px; }
+  .opp-body { font-size: 0.84rem; line-height: 1.7; color: var(--mid); }
+
+  /* NEXT STEPS */
+  .nextsteps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 40px; }
+  .ns-cell { background: var(--off-black); padding: 28px; display: grid; grid-template-columns: 40px 1fr; gap: 16px; align-items: start; transition: background 0.3s; }
+  .ns-cell:hover { background: var(--navy); }
+  .ns-num { font-family: 'Bebas Neue', sans-serif; font-size: 2.4rem; color: var(--accent-dim); line-height: 1; }
+  .ns-title { font-size: 0.9rem; font-weight: 500; color: var(--white); margin-bottom: 8px; line-height: 1.3; }
+  .ns-body { font-size: 0.8rem; line-height: 1.65; color: var(--mid); }
+
+  /* OUTCOME BAND */
+  .outcome-band { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 40px; }
+  .outcome-cell { background: var(--off-black); padding: 32px 28px; text-align: center; }
+  .outcome-num { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; color: var(--accent); margin-bottom: 8px; line-height: 1; }
+  .outcome-label { font-family: 'Space Mono', monospace; font-size: 0.56rem; letter-spacing: 0.13em; text-transform: uppercase; color: var(--mid); }
+
+  /* DIMENSION TABLE */
+  .dim-table { width: 100%; border-collapse: collapse; margin-top: 36px; }
+  .dim-table th { font-family: 'Space Mono', monospace; font-size: 0.54rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border-vis); }
+  .dim-table td { font-size: 0.84rem; color: var(--cream); padding: 14px 16px; border-bottom: 1px solid var(--border); }
+  .dim-table tr:hover td { background: rgba(91,140,255,0.04); }
+  .dim-table .score-big { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; line-height: 1; }
+  .dim-table .mini-bar-wrap { height: 4px; background: rgba(240,244,255,0.06); position: relative; margin-top: 5px; }
+  .dim-table .mini-bar { height: 100%; position: absolute; left: 0; top: 0; width: 0; transition: width 1s ease; }
+
+  /* REC */
+  .rec-list { display: flex; flex-direction: column; gap: 8px; margin-top: 24px; }
+  .rec-item { display: flex; align-items: flex-start; gap: 10px; font-size: 0.84rem; line-height: 1.6; color: var(--mid); }
+  .rec-item::before { content: '→'; color: var(--accent); font-size: 0.78rem; flex-shrink: 0; margin-top: 2px; }
+  .rec-item strong { color: var(--cream); font-weight: 400; }
+
+  /* NEXT NAV */
+  .next-case { margin-top: 80px; padding-top: 48px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .next-label { font-family: 'Space Mono', monospace; font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mid); margin-bottom: 8px; }
+  .next-title { font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; color: var(--white); line-height: 1; }
+  .next-arrow { width: 56px; height: 56px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--mid); font-size: 1.2rem; transition: border-color 0.2s, color 0.2s, transform 0.2s; text-decoration: none; }
+  .next-arrow:hover { border-color: var(--accent); color: var(--accent); transform: translateX(4px); }
+
+  /* FOOTER */
+  .page-footer { position: fixed; bottom: 0; left: 0; right: 0; border-top: 1px solid var(--border); padding: 16px 48px; display: flex; align-items: center; justify-content: space-between; z-index: 50; background: rgba(10,15,30,0.85); backdrop-filter: blur(12px); }
+  .footer-left, .footer-right { font-family: 'Space Mono', monospace; font-size: 0.58rem; letter-spacing: 0.15em; color: var(--mid); text-transform: uppercase; }
+  .footer-dot { display: inline-block; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; margin-right: 8px; animation: pulse 2s ease-in-out infinite; }
+
+  /* ANNOTATIONS */
+  .callout-box { background: var(--off-black); border: 1px solid var(--border-vis); border-left: 3px solid var(--accent-dim); padding: 20px 24px; margin-top: 24px; }
+  .callout-box.amber { border-left-color: var(--amber); }
+  .callout-box.green { border-left-color: var(--green); }
+  .callout-label { font-family: 'Space Mono', monospace; font-size: 0.5rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mid); margin-bottom: 8px; }
+  .callout-text { font-size: 0.88rem; line-height: 1.7; color: var(--cream); opacity: 0.85; }
+
+  /* REVEAL */
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.8); } }
+
+  @media (max-width: 860px) {
+    .page { padding: 0 28px 120px; } nav { padding: 22px 28px; }
+    .cs-meta-row { grid-template-columns: 1fr 1fr; }
+    .obj-grid, .quote-grid, .two-track, .km-grid { grid-template-columns: 1fr; }
+    .stat-row { grid-template-columns: 1fr 1fr; }
+    .outcome-band { grid-template-columns: 1fr 1fr; }
+    .phase-row { grid-template-columns: 1fr 1fr; }
+    .user-groups { grid-template-columns: 1fr 1fr; }
+    .nextsteps-grid { grid-template-columns: 1fr; }
+    .challenge-item { grid-template-columns: 1fr; }
+    .edge-text { display: none; } .page-footer { padding: 14px 28px; }
+  }
+  @media (max-width: 540px) {
+    .cs-meta-row, .stat-row { grid-template-columns: 1fr 1fr; }
+    .next-case { flex-direction: column; gap: 24px; align-items: flex-start; }
+    .user-groups { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="edge-text">Case Study — FM Global Knowledge Platform</div>
+
+<nav>
+  <a href="index.html" class="nav-logo">KP — Portfolio</a>
+  <ul class="nav-links">
+    <li><a href="work.html">Work</a></li>
+    <li><a href="krishna-about.html">About</a></li>
+    <li><a href="krishna-contact.html">Contact</a></li>
+  </ul>
+</nav>
+
+<div class="page">
+
+  <!-- HERO -->
+  <header class="cs-hero">
+    <p class="cs-eyebrow">Case Study · UX Research</p>
+    <h1 class="cs-title">FM Global<br><span class="outlined">Knowledge Platform</span></h1>
+    <div class="cs-meta-row">
+      <div class="cs-meta-cell"><div class="cs-meta-label">Client</div><div class="cs-meta-val">FM Global — Property Insurance</div></div>
+      <div class="cs-meta-cell"><div class="cs-meta-label">Methods</div><div class="cs-meta-val">Ethnographic Interviews · Generative Survey</div></div>
+      <div class="cs-meta-cell"><div class="cs-meta-label">Participants</div><div class="cs-meta-val">34 SMEs + 398 Survey Respondents</div></div>
+      <div class="cs-meta-cell"><div class="cs-meta-label">Scope</div><div class="cs-meta-val">Authorship Platform + Knowledge Management</div></div>
+    </div>
+    <p class="cs-intro">A dual-track generative research initiative exploring how FM Global creates, manages, and consumes its Operating Standards, Operating Requirements, and Data Sheets — the foundational documents driving its entire engineering and underwriting operation.</p>
+  </header>
+
+  <!-- 01 BACKGROUND -->
+  <section class="cs-section reveal">
+    <p class="section-label">01 — Background</p>
+    <h2 class="section-heading">The Challenge</h2>
+    <p class="body-text">FM Global's Operating Standards (OSs), Operating Requirements (ORs), and Underwriting/Data Requirements (URs/DSs) are the foundational documents that operationalize the organization's engineering and underwriting practices. Historically managed through <strong>manual, fragmented processes</strong>, the company set out to digitize and productize these documents — a transformation requiring deep understanding of two distinct audiences.</p>
+    <p class="body-text" style="margin-top:20px;">The research had to answer: <strong>How do Subject Matter Experts currently author these documents — and where does that process break down?</strong> And simultaneously: <strong>How do field engineers and other consumers experience these documents day-to-day?</strong></p>
+
+    <div class="two-track">
+      <div class="track-cell">
+        <div class="track-title track-a">Track 01 — Authorship</div>
+        <div class="track-h">Creating the Knowledge</div>
+        <div class="track-body">The people who build and maintain OS/OR/DS content. A deeply manual, knowledge-intensive process under constant pressure from industry change velocity.</div>
+        <ul class="track-list">
+          <li>Subject Matter Experts who own and revise standards</li>
+          <li>Leads and managers who oversee revision lifecycles</li>
+          <li>34 ethnographic interviews, avg. 60 min each</li>
+          <li>Focus: goals, pain points, tools, workflows</li>
+        </ul>
+      </div>
+      <div class="track-cell" style="border-left: 1px solid var(--border);">
+        <div class="track-title track-b">Track 02 — Knowledge Management</div>
+        <div class="track-h">Consuming the Knowledge</div>
+        <div class="track-body">The much larger population who rely on these documents for field visits, risk assessments, training, and underwriting decisions every day.</div>
+        <ul class="track-list amber">
+          <li>Field Engineers, Account Engineers, Plan Reviewers</li>
+          <li>MOETs, FM Approvals, and specialist consultants</li>
+          <li>1,789 invitees — 398 responses (22% response rate)</li>
+          <li>Focus: baseline scores, training gaps, future desires</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 RESEARCH APPROACH -->
+  <section class="cs-section reveal">
+    <p class="section-label">02 — Research Approach</p>
+    <h2 class="section-heading">Methodology</h2>
+    <p class="body-text">Two distinct methodologies were deployed in parallel, each tailored to its audience — then synthesized to inform a single, unified platform strategy.</p>
+
+    <div class="stat-row">
+      <div class="stat-cell">
+        <div class="stat-cell-num">34</div>
+        <div class="stat-cell-label">Ethnographic Interviews</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-cell-num">60<span>min</span></div>
+        <div class="stat-cell-label">Average Session Length</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-cell-num">1,789</div>
+        <div class="stat-cell-label">Survey Invitees</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-cell-num">398</div>
+        <div class="stat-cell-label">Survey Responses</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-cell-num">22<span>%</span></div>
+        <div class="stat-cell-label">Response Rate</div>
+      </div>
+    </div>
+
+    <div class="method-row" style="margin-top:1px;">
+      <div class="method-cell">
+        <div class="method-icon">Phase 01</div>
+        <div class="method-val">Ethnographic Interviews</div>
+        <div class="method-detail">In-depth 1:1 sessions following a structured guide covering functional, social, and emotional goals alongside current-state pain points and tool usage patterns.</div>
+      </div>
+      <div class="method-cell" style="border-left: 1px solid var(--border);">
+        <div class="method-icon">Phase 02</div>
+        <div class="method-val">Generative Survey</div>
+        <div class="method-detail">Quantitative baseline measurement across Usefulness, Satisfaction, Usability, and Trust dimensions — plus open-ended prompts on ideal future-state experiences.</div>
+      </div>
+      <div class="method-cell" style="border-left: 1px solid var(--border);">
+        <div class="method-icon">Synthesis</div>
+        <div class="method-val">Cross-Track Analysis</div>
+        <div class="method-detail">Findings from both tracks were synthesized to surface systemic opportunities that serve both authorship and consumption — not two separate products, but one platform.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 AUTHORSHIP WORKFLOW -->
+  <section class="cs-section reveal">
+    <p class="section-label">03 — Authorship Findings</p>
+    <h2 class="section-heading">SME Workflow</h2>
+    <p class="body-text">Through 34 ethnographic interviews, four core workflow stages emerged defining how Subject Matter Experts create and maintain documents. Each stage revealed distinct goals, tooling patterns, and significant pain points.</p>
+
+    <div class="phase-row">
+      <div class="phase-cell">
+        <div class="phase-header">
+          <div class="phase-num">01</div>
+          <div class="phase-name">Identify & Assess</div>
+        </div>
+        <div class="phase-body">
+          <div class="phase-desc">Monitor industry changes, assess business impact, prioritize what needs updating.</div>
+          <ul class="pain-list">
+            <li>Manual, time-consuming scanning of industry news</li>
+            <li>Siloed internal data — no unified view</li>
+            <li>Tacit knowledge lost; no revision history</li>
+            <li>Constant pressure from fast-moving industry change</li>
+          </ul>
+        </div>
+      </div>
+      <div class="phase-cell" style="border-left:1px solid var(--border);">
+        <div class="phase-header">
+          <div class="phase-num">02</div>
+          <div class="phase-name">Define & Prepare</div>
+        </div>
+        <div class="phase-body">
+          <div class="phase-desc">Scope the revision, assemble the team, set timeline and priorities.</div>
+          <ul class="pain-list">
+            <li>No standard tool to track what needs changing</li>
+            <li>No way to review past decisions or participants</li>
+            <li>Assembling the right team takes too long</li>
+            <li>Scope decisions made informally across many meetings</li>
+          </ul>
+        </div>
+      </div>
+      <div class="phase-cell" style="border-left:1px solid var(--border);">
+        <div class="phase-header">
+          <div class="phase-num">03</div>
+          <div class="phase-name">Modify & Confirm</div>
+        </div>
+        <div class="phase-body">
+          <div class="phase-desc">Write, test, and validate revisions across impacted systems.</div>
+          <ul class="pain-list">
+            <li>Content management is a constant struggle</li>
+            <li>No effective project management tool for SMEs</li>
+            <li>UW tools not designed for 'what-if' scenario modeling</li>
+            <li>Dozens of downstream calculators impacted by any change</li>
+            <li>Impossible to retire deprecated spreadsheets from the field</li>
+          </ul>
+        </div>
+      </div>
+      <div class="phase-cell" style="border-left:1px solid var(--border);">
+        <div class="phase-header">
+          <div class="phase-num">04</div>
+          <div class="phase-name">Execute & Monitor</div>
+        </div>
+        <div class="phase-body">
+          <div class="phase-desc">Publish, communicate changes, track adoption and outcomes.</div>
+          <ul class="pain-list">
+            <li>UW cannot respond quickly due to system complexity</li>
+            <li>Current systems don't communicate with each other</li>
+            <li>Very difficult to track downstream impact of changes</li>
+            <li>Changes communicated via quarterly batch updates — too slow</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 SME QUOTES -->
+  <section class="cs-section reveal">
+    <p class="section-label">04 — SME Voices</p>
+    <h2 class="section-heading">What Authors Said</h2>
+    <p class="body-text">Across 34 sessions, recurring themes emerged in SMEs' own words — capturing the frustration of operating in a fragmented, manual environment with high institutional stakes.</p>
+
+    <div class="quote-grid" style="margin-top:40px;">
+      <div class="quote-block" style="margin:0;">
+        <div class="quote-text">"I have to email 5 different people just to get access to a document that should already be in my reach. And then wait days for a response."</div>
+        <div class="quote-attr">— Subject Matter Expert, Knowledge Access</div>
+      </div>
+      <div class="quote-block" style="margin:0;">
+        <div class="quote-text">"There's no version history. If something changes, you don't know what changed, who changed it, or why. That institutional knowledge just disappears."</div>
+        <div class="quote-attr">— SME Lead, Content Management</div>
+      </div>
+      <div class="quote-block" style="margin:0;">
+        <div class="quote-text">"Every time I update an OR, I have to manually hunt down every calculator that references it. There's no map. You only find out something broke when someone calls you."</div>
+        <div class="quote-attr">— Underwriting SME, Modify & Confirm Phase</div>
+      </div>
+      <div class="quote-block" style="margin:0;">
+        <div class="quote-text">"Publishing shouldn't be a bottleneck. But right now it goes through only a handful of people who also have to handle XML tagging, formatting, and team coordination."</div>
+        <div class="quote-attr">— SME, Execute & Monitor Phase</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 OVERARCHING CHALLENGES -->
+  <section class="cs-section reveal">
+    <p class="section-label">05 — Synthesis</p>
+    <h2 class="section-heading">Overarching Challenges</h2>
+    <p class="body-text">Synthesizing across all four workflow stages, four systemic challenges emerged that cut across the entire authorship process and must be addressed holistically in any platform solution.</p>
+
+    <div class="challenge-list">
+      <div class="challenge-item">
+        <div class="challenge-label" style="background: rgba(43,79,168,0.25);">
+          <div class="challenge-tag" style="color: var(--accent);">Challenge 01</div>
+          <div class="challenge-name">Content Management</div>
+        </div>
+        <div class="challenge-body-wrap">
+          <div class="challenge-body">SMEs manage a sprawling ecosystem of documents manually — OSs, ORs, URs, calculators, checklists, training materials, loss histories, field comments, and update histories. There is no unified content management system, leading to inconsistent formatting, writing styles, and a fragile feedback loop between what gets authored and what field users actually receive.</div>
+        </div>
+      </div>
+      <div class="challenge-item" style="background: var(--border);">
+        <div class="challenge-label" style="background: rgba(29,78,137,0.3);">
+          <div class="challenge-tag" style="color: #5ba3ff;">Challenge 02</div>
+          <div class="challenge-name">Knowledge Access</div>
+        </div>
+        <div class="challenge-body-wrap">
+          <div class="challenge-body">SMEs cannot access the body of knowledge they need in a timely way. They are forced to visit a physical library that was never fully digitized, email multiple stakeholders for access, and wait days for responses. Valuable institutional knowledge is lost in manual storage processes, and redundant information in documentation creates confusion that is only discovered by accident.</div>
+        </div>
+      </div>
+      <div class="challenge-item" style="background: var(--border);">
+        <div class="challenge-label" style="background: rgba(26,143,160,0.25);">
+          <div class="challenge-tag" style="color: var(--teal);">Challenge 03</div>
+          <div class="challenge-name">Publishing</div>
+        </div>
+        <div class="challenge-body-wrap">
+          <div class="challenge-body">The publication process is handled by only a few people and requires manual upload/download, XML tagging, table formatting, and team operations management. While faster publishing directly improves operations, there is organizational tension between SMEs who want to accelerate updates and those who feel the current pace already overwhelms the field with changes they can barely keep up with.</div>
+        </div>
+      </div>
+      <div class="challenge-item" style="background: var(--border);">
+        <div class="challenge-label" style="background: rgba(26,94,42,0.3);">
+          <div class="challenge-tag" style="color: var(--green);">Challenge 04</div>
+          <div class="challenge-name">Data Modeling</div>
+        </div>
+        <div class="challenge-body-wrap">
+          <div class="challenge-body">Field Engineers rely on interactive calculators and tables that cannot be embedded in static PDFs — they are currently distributed by email. Underwriting SMEs lack an effective way to model data across a book of business, requiring manual projections and recalculations every time a policy is updated. This fundamental gap between document format and functional need is a core design opportunity.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 KM SURVEY RESULTS -->
+  <section class="cs-section reveal">
+    <p class="section-label">06 — Survey Findings</p>
+    <h2 class="section-heading">Baseline Experience Scores</h2>
+    <p class="body-text">The generative survey established baseline experience scores for each document type across four dimensions: Usefulness, Satisfaction, Usability, and Trust. These scores represent the starting benchmark against which all future platform improvements will be measured.</p>
+
+    <div class="score-chart-wrap">
+      <div class="score-chart-title">Baseline Experience — Score out of 100 per document type</div>
+
+      <div class="score-item">
+        <div class="score-item-header">
+          <span class="score-item-label">Operating Standards (OS)</span>
+          <span class="score-item-val">59 <span>/ 100 overall — 340 respondents</span></span>
+        </div>
+        <div class="score-track">
+          <div class="score-fill" data-w="59%" style="background: var(--accent-dim);"></div>
+        </div>
+        <div class="score-subdims">
+          <div class="score-subdim"><span>68</span>Usefulness</div>
+          <div class="score-subdim"><span>58</span>Satisfaction</div>
+          <div class="score-subdim" style="color: #ff6b6b;"><span style="color:#ff6b6b;">50</span>Usability ↓ lowest</div>
+          <div class="score-subdim"><span>77</span>Trust</div>
+        </div>
+      </div>
+
+      <div class="score-item">
+        <div class="score-item-header">
+          <span class="score-item-label">Operating Requirements (OR)</span>
+          <span class="score-item-val">60 <span>/ 100 overall — 353 respondents</span></span>
+        </div>
+        <div class="score-track">
+          <div class="score-fill" data-w="60%" style="background: #1d4e89;"></div>
+        </div>
+        <div class="score-subdims">
+          <div class="score-subdim"><span>67</span>Usefulness</div>
+          <div class="score-subdim"><span>56</span>Satisfaction</div>
+          <div class="score-subdim" style="color: #ff6b6b;"><span style="color:#ff6b6b;">52</span>Usability ↓ lowest</div>
+          <div class="score-subdim"><span>75</span>Trust</div>
+        </div>
+      </div>
+
+      <div class="score-item" style="margin-bottom:0;">
+        <div class="score-item-header">
+          <span class="score-item-label">Data Sheets (DS)</span>
+          <span class="score-item-val">65 <span>/ 100 overall — 318 respondents</span></span>
+        </div>
+        <div class="score-track">
+          <div class="score-fill" data-w="65%" style="background: var(--teal);"></div>
+        </div>
+        <div class="score-subdims">
+          <div class="score-subdim"><span>72</span>Usefulness</div>
+          <div class="score-subdim"><span>63</span>Satisfaction</div>
+          <div class="score-subdim" style="color: #ff6b6b;"><span style="color:#ff6b6b;">57</span>Usability ↓ lowest</div>
+          <div class="score-subdim"><span>78</span>Trust</div>
+        </div>
+      </div>
+
+      <div class="score-axis">
+        <span class="score-axis-label">0 — Not useful at all</span>
+        <span class="score-axis-label">50 — Marginal</span>
+        <span class="score-axis-label">75 — Good</span>
+        <span class="score-axis-label">100 — Exceptional</span>
+      </div>
+    </div>
+
+    <div class="callout-box" style="margin-top:24px;">
+      <div class="callout-label">Key Signal</div>
+      <div class="callout-text">Usability scores were <strong>consistently the lowest dimension</strong> across all three document types — even lower than Satisfaction. This is the clearest platform signal from the quantitative data: users trust and find value in the content, but the interface and format make it harder to use than it should be.</div>
+    </div>
+  </section>
+
+  <!-- 07 DIMENSION BREAKDOWN TABLE -->
+  <section class="cs-section reveal">
+    <p class="section-label">07 — Quantitative Detail</p>
+    <h2 class="section-heading">Score Breakdown by Dimension</h2>
+    <p class="body-text">Full dimension-by-dimension comparison across all three document types, surfacing the specific gaps that will inform platform feature prioritization.</p>
+
+    <table class="dim-table">
+      <thead>
+        <tr>
+          <th>Document Type</th>
+          <th>Overall</th>
+          <th>Usefulness</th>
+          <th>Satisfaction</th>
+          <th>Usability</th>
+          <th>Trust</th>
+          <th>n</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong style="color:var(--white);">Operating Standards</strong></td>
+          <td><span class="score-big" style="color:var(--accent);">59</span></td>
+          <td>68<div class="mini-bar-wrap"><div class="mini-bar" data-w="68%" style="background:var(--accent-dim);"></div></div></td>
+          <td>58<div class="mini-bar-wrap"><div class="mini-bar" data-w="58%" style="background:var(--accent-dim);"></div></div></td>
+          <td style="color:#ff6b6b;">50<div class="mini-bar-wrap"><div class="mini-bar" data-w="50%" style="background:#ff6b6b;"></div></div></td>
+          <td>77<div class="mini-bar-wrap"><div class="mini-bar" data-w="77%" style="background:var(--accent);"></div></div></td>
+          <td style="color:var(--mid);">340</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--white);">Operating Requirements</strong></td>
+          <td><span class="score-big" style="color:#5ba3ff;">60</span></td>
+          <td>67<div class="mini-bar-wrap"><div class="mini-bar" data-w="67%" style="background:var(--accent-dim);"></div></div></td>
+          <td>56<div class="mini-bar-wrap"><div class="mini-bar" data-w="56%" style="background:var(--accent-dim);"></div></div></td>
+          <td style="color:#ff6b6b;">52<div class="mini-bar-wrap"><div class="mini-bar" data-w="52%" style="background:#ff6b6b;"></div></div></td>
+          <td>75<div class="mini-bar-wrap"><div class="mini-bar" data-w="75%" style="background:var(--accent);"></div></div></td>
+          <td style="color:var(--mid);">353</td>
+        </tr>
+        <tr style="border-bottom:none;">
+          <td><strong style="color:var(--white);">Data Sheets</strong></td>
+          <td><span class="score-big" style="color:var(--teal);">65</span></td>
+          <td>72<div class="mini-bar-wrap"><div class="mini-bar" data-w="72%" style="background:var(--accent-dim);"></div></div></td>
+          <td>63<div class="mini-bar-wrap"><div class="mini-bar" data-w="63%" style="background:var(--accent-dim);"></div></div></td>
+          <td style="color:#ff6b6b;">57<div class="mini-bar-wrap"><div class="mini-bar" data-w="57%" style="background:#ff6b6b;"></div></div></td>
+          <td>78<div class="mini-bar-wrap"><div class="mini-bar" data-w="78%" style="background:var(--accent);"></div></div></td>
+          <td style="color:var(--mid);">318</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 08 KM IMPROVEMENT AREAS -->
+  <section class="cs-section reveal">
+    <p class="section-label">08 — Knowledge Management Insights</p>
+    <h2 class="section-heading">6 Key Improvement Areas</h2>
+    <p class="body-text">The generative survey surfaced six major improvement areas for how document consumers experience OS, OR, and DS content. Findings were validated with open-ended responses and will inform subsequent qualitative listening sessions.</p>
+
+    <div class="km-grid">
+      <div class="km-cell">
+        <div class="km-tag" style="background: rgba(91,140,255,0.15); color: var(--accent);">Training</div>
+        <div class="km-title">Insufficient Training on Content</div>
+        <div class="km-body">Users receive insufficient training on Data Sheets — especially concerning given that Data Sheets are public-facing documents shared directly with clients. Newer engineers feel underequipped when using these documents in the field.</div>
+        <div class="km-quote">"Since these are our public documents that we share with clients, we use them a lot — but we almost never discuss them in a training environment." <br><span style="font-family:'Space Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mid);margin-top:8px;display:block;">— Sr. Consultant Engineer</span></div>
+      </div>
+      <div class="km-cell" style="border-left:1px solid var(--border);">
+        <div class="km-tag" style="background: rgba(245,166,35,0.12); color: var(--amber);">Changes</div>
+        <div class="km-title">Pace of Change is Overwhelming</div>
+        <div class="km-body">The frequency and breadth of changes makes it very difficult for users to stay current — particularly for standards that are not frequently used. Field engineers describe change fatigue that leads to missed updates and compliance risk.</div>
+        <div class="km-quote">"The frequency and vast scope of changes makes it very difficult to stay abreast — especially for standards not often used. Slow down the pace!" <br><span style="font-family:'Space Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mid);margin-top:8px;display:block;">— Field Engineer</span></div>
+      </div>
+      <div class="km-cell" style="border-top:1px solid var(--border);">
+        <div class="km-tag" style="background: rgba(29,78,137,0.25); color: #5ba3ff;">Functions</div>
+        <div class="km-title">Need for Interactive Platform</div>
+        <div class="km-body">Users want an interactive, web-based platform where they can work across multiple OS and OR documents simultaneously, integrated with their report-writing tools. The current PDF model feels fundamentally disconnected from how work actually happens.</div>
+        <div class="km-quote">"The dream interface would be software/web-based where you can interact with different ORs and OSs all at once, with an integrated report writing function." <br><span style="font-family:'Space Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mid);margin-top:8px;display:block;">— Field Engineer</span></div>
+      </div>
+      <div class="km-cell" style="border-top:1px solid var(--border); border-left:1px solid var(--border);">
+        <div class="km-tag" style="background: rgba(26,143,160,0.15); color: var(--teal);">Viewing</div>
+        <div class="km-title">Documents Are Too Long & Scattered</div>
+        <div class="km-body">Documents are perceived as "too big" with critical bits of information scattered across multiple pages. Newer engineers struggle to review them efficiently before site visits, leading to wasted time or underprepared inspections.</div>
+        <div class="km-quote">"Way too big with bits and pieces of info spread over many documents. No way for newer engineers to review practically before each visit." <br><span style="font-family:'Space Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mid);margin-top:8px;display:block;">— Account Engineer</span></div>
+      </div>
+      <div class="km-cell" style="border-top:1px solid var(--border);">
+        <div class="km-tag" style="background: rgba(46,204,113,0.12); color: var(--green);">Search</div>
+        <div class="km-title">Search Needs to Be Intelligent</div>
+        <div class="km-body">Users need a dynamic, intelligent search tool that predicts intent and supports both keyword and hierarchical tree-based navigation for different thinking styles. The current search experience feels like it was built for a library catalog, not a knowledge platform.</div>
+        <div class="km-quote">"Need a searchable platform — a 'Fmoogle of sorts', built on SEO, keyword search sophisticated enough to predict what the user is wanting." <br><span style="font-family:'Space Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mid);margin-top:8px;display:block;">— GMFE</span></div>
+      </div>
+      <div class="km-cell" style="border-top:1px solid var(--border); border-left:1px solid var(--border);">
+        <div class="km-tag" style="background: rgba(107,47,190,0.15); color: var(--purple);">Navigation</div>
+        <div class="km-title">Navigation Crashes & Confuses</div>
+        <div class="km-body">Current navigation is clunky, crashes often, and requires significant acquired knowledge to use. Hotlinks between OS/OR/DS documents and a simple back button are among the highest-volume requests — basic UX that is currently missing.</div>
+        <div class="km-quote">"The navigation crashes often and requires significant acquired knowledge. Adding hotlinks and a simple back button would make navigation more efficient." <br><span style="font-family:'Space Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mid);margin-top:8px;display:block;">— Sr. Engineering Specialist</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 DOCUMENT ECOSYSTEM -->
+  <section class="cs-section reveal">
+    <p class="section-label">09 — Ecosystem</p>
+    <h2 class="section-heading">Who Uses These Documents</h2>
+    <p class="body-text">OS/OR/DS documents are not standalone artifacts — they exist within a larger ecosystem of materials, tools, and training resources. A unified platform must account for all six user groups, each with distinct use cases and information needs.</p>
+
+    <div class="user-groups">
+      <div class="ug-cell">
+        <div class="ug-accent" style="background: var(--accent);"></div>
+        <div class="ug-name">Subject Matter Experts (SMEs)</div>
+        <div class="ug-desc">OS owners and colleagues who create, revise, and own the standards. Primary authorship platform users. Responsible for the accuracy and currency of all content.</div>
+      </div>
+      <div class="ug-cell" style="border-left:1px solid var(--border);">
+        <div class="ug-accent" style="background: #5ba3ff;"></div>
+        <div class="ug-name">Field Engineers (FE)</div>
+        <div class="ug-desc">Use documents for pre-visit preparation, during-visit reference, and post-visit analysis. Support and mentor junior engineers. Highest volume users of OS and OR content.</div>
+      </div>
+      <div class="ug-cell" style="border-left:1px solid var(--border);">
+        <div class="ug-accent" style="background: var(--teal);"></div>
+        <div class="ug-name">Account Engineers (AE)</div>
+        <div class="ug-desc">Use documents at a higher strategic level; less technical depth required but contextual and cross-reference access is essential for client conversations and risk decisions.</div>
+      </div>
+      <div class="ug-cell" style="border-top:1px solid var(--border);">
+        <div class="ug-accent" style="background: var(--green);"></div>
+        <div class="ug-name">Plan Reviewers</div>
+        <div class="ug-desc">Consult documents for guidance on new construction and renovation project reviews. Need deep cross-referencing between ORs, OSs, and specific hazard-type documents.</div>
+      </div>
+      <div class="ug-cell" style="border-top:1px solid var(--border); border-left:1px solid var(--border);">
+        <div class="ug-accent" style="background: var(--purple);"></div>
+        <div class="ug-name">MOETs</div>
+        <div class="ug-desc">Managers of Office Engineering & Training use documents as training curriculum. Need consistent, accurate, accessible content to build reliable onboarding programs for new FEs.</div>
+      </div>
+      <div class="ug-cell" style="border-top:1px solid var(--border); border-left:1px solid var(--border);">
+        <div class="ug-accent" style="background: var(--amber);"></div>
+        <div class="ug-name">FM Approvals</div>
+        <div class="ug-desc">Partner with SMEs on specific technical topics (flood, fire protection, specialty hazards). Require deep cross-linking between OS and approval-specific requirements.</div>
+      </div>
+    </div>
+
+    <div class="callout-box green" style="margin-top:24px;">
+      <div class="callout-label">Key Implication</div>
+      <div class="callout-text">All six user groups must be considered in designing an effective platform. The document ecosystem extends far beyond the authorship workflow — it supports field visits, client risk assessments, training programs, and underwriting decisions. A successful product must serve both the people who create these documents and the much larger population who rely on them every day.</div>
+    </div>
+  </section>
+
+  <!-- 10 STRATEGIC OPPORTUNITIES -->
+  <section class="cs-section reveal">
+    <p class="section-label">10 — Strategic Direction</p>
+    <h2 class="section-heading">Strategic Opportunities</h2>
+    <p class="body-text">Across both research tracks, the findings converge on a clear set of platform opportunities. These are not isolated feature requests but systemic design opportunities that, if addressed together, would transform how FM Global creates, manages, and consumes its core operating documents.</p>
+
+    <div class="opp-list">
+      <div class="opp-item">
+        <div class="opp-num" style="color: var(--accent);">01</div>
+        <div class="opp-content">
+          <div class="opp-title">Unified Knowledge Repository</div>
+          <div class="opp-body">A fully digitized, searchable, and centrally accessible library replacing the fragmented ecosystem of PDFs, emails, and physical archives. Must support intelligent search, cross-linking between documents, and complete version history with decision logging.</div>
+        </div>
+      </div>
+      <div class="opp-item" style="border-top:1px solid var(--border);">
+        <div class="opp-num" style="color: #5ba3ff;">02</div>
+        <div class="opp-content">
+          <div class="opp-title">Authorship Workflow Platform</div>
+          <div class="opp-body">A purpose-built tool supporting the full SME lifecycle — from identifying a need for revision through scoping, drafting, testing, and publishing — with built-in project management, decision logging, and team coordination so tacit knowledge is captured and preserved.</div>
+        </div>
+      </div>
+      <div class="opp-item" style="border-top:1px solid var(--border);">
+        <div class="opp-num" style="color: var(--teal);">03</div>
+        <div class="opp-content">
+          <div class="opp-title">Real-Time Change Communication</div>
+          <div class="opp-body">Replace the quarterly batch update model with a targeted, real-time notification system that tells the right people about the right changes with context — reducing the noise while increasing urgency where needed. Personalized by role, document ownership, and frequency of use.</div>
+        </div>
+      </div>
+      <div class="opp-item" style="border-top:1px solid var(--border);">
+        <div class="opp-num" style="color: var(--green);">04</div>
+        <div class="opp-content">
+          <div class="opp-title">Interactive Data Modeling</div>
+          <div class="opp-body">Embed interactive calculators, data tables, and "what-if" scenario tools directly into the digital document experience — eliminating email distribution of spreadsheets and enabling dynamic underwriting projections that update in real time as standards change.</div>
+        </div>
+      </div>
+      <div class="opp-item" style="border-top:1px solid var(--border);">
+        <div class="opp-num" style="color: var(--purple);">05</div>
+        <div class="opp-content">
+          <div class="opp-title">Contextual Integration with Field Tools</div>
+          <div class="opp-body">Integrate OS/OR/DS directly into report-writing and field engineering platforms (Polaris and MyVisit) so that engineers surface the right guidance at the moment of need — during a site visit, not after returning to the office.</div>
+        </div>
+      </div>
+      <div class="opp-item" style="border-top:1px solid var(--border);">
+        <div class="opp-num" style="color: var(--amber);">06</div>
+        <div class="opp-content">
+          <div class="opp-title">Analytics & Adoption Measurement</div>
+          <div class="opp-body">Build in the ability to track how published changes are adopted in the field, monitor exception requests, and measure the downstream business impact of standards revisions — closing the feedback loop for SMEs and creating accountability for change velocity.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 NEXT STEPS -->
+  <section class="cs-section reveal">
+    <p class="section-label">11 — Roadmap</p>
+    <h2 class="section-heading">Research Next Steps</h2>
+    <p class="body-text">Six research phases have been scoped to deepen and broaden the initial findings — moving from generative research toward design validation and market context.</p>
+
+    <div class="nextsteps-grid">
+      <div class="ns-cell">
+        <div class="ns-num">01</div>
+        <div>
+          <div class="ns-title">Qualitative Listening Sessions</div>
+          <div class="ns-body">1:1 interviews with MOETs, GMAEs, GMFEs, OCEs, Plan Reviewers, and FM Approvals to deepen understanding of their OR/OS/DS experience beyond what the survey could capture — including workarounds, mental models, and ideal state.</div>
+        </div>
+      </div>
+      <div class="ns-cell" style="border-left:1px solid var(--border);">
+        <div class="ns-num">02</div>
+        <div>
+          <div class="ns-title">External User Research</div>
+          <div class="ns-body">Survey and interview external users — clients, brokers, contractors, and industry/regulatory professionals — to understand their Data Sheet experience and how it affects their perception of FM Global as a risk engineering partner.</div>
+        </div>
+      </div>
+      <div class="ns-cell" style="border-top:1px solid var(--border);">
+        <div class="ns-num">03</div>
+        <div>
+          <div class="ns-title">Field Engineer Contextual Inquiry</div>
+          <div class="ns-body">Shadow Field Engineers using OR/OS/DS in context alongside Polaris and MyVisit to document the real integration friction and design opportunity — understanding what they reference, when, and what prevents seamless access.</div>
+        </div>
+      </div>
+      <div class="ns-cell" style="border-top:1px solid var(--border); border-left:1px solid var(--border);">
+        <div class="ns-num">04</div>
+        <div>
+          <div class="ns-title">OR Integration Study</div>
+          <div class="ns-body">Document how users currently use Operating Requirements in relation to the report writing platform to design a seamless, integrated experience that reduces context switching and improves the quality of field reports.</div>
+        </div>
+      </div>
+      <div class="ns-cell" style="border-top:1px solid var(--border);">
+        <div class="ns-num">05</div>
+        <div>
+          <div class="ns-title">Data Sheets Experience Design</div>
+          <div class="ns-body">Research and ideate on the ideal future-state experience for clients interacting with Data Sheets, including personalization, app-format delivery, and how the product could be differentiated from FM Global's competitors.</div>
+        </div>
+      </div>
+      <div class="ns-cell" style="border-top:1px solid var(--border); border-left:1px solid var(--border);">
+        <div class="ns-num">06</div>
+        <div>
+          <div class="ns-title">Competitive Benchmarking</div>
+          <div class="ns-body">Conduct competitive and analogous benchmarking to identify best-in-class patterns for knowledge management, authorship workflows, and document search — drawing from insurance, legal, engineering, and SaaS documentation platforms.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12 REFLECTION -->
+  <section class="cs-section reveal">
+    <p class="section-label">12 — Reflection</p>
+    <h2 class="section-heading">Research Outcomes</h2>
+
+    <div class="outcome-band">
+      <div class="outcome-cell">
+        <div class="outcome-num">34</div>
+        <div class="outcome-label">SME Interviews Completed</div>
+      </div>
+      <div class="outcome-cell">
+        <div class="outcome-num">398</div>
+        <div class="outcome-label">Survey Responses Analyzed</div>
+      </div>
+      <div class="outcome-cell">
+        <div class="outcome-num">6</div>
+        <div class="outcome-label">Strategic Opportunities Defined</div>
+      </div>
+      <div class="outcome-cell">
+        <div class="outcome-num">6</div>
+        <div class="outcome-label">Research Phases Scoped</div>
+      </div>
+    </div>
+
+    <div class="quote-block" style="margin-top:40px;">
+      <div class="quote-text">"This project illustrated a core tension in enterprise product design: the people who create knowledge and the people who consume it have fundamentally different needs, mental models, and time horizons. The most important implication was that these are not two separate products. The quality of what SMEs author directly determines the experience of the field engineers who rely on it — a platform that serves both sides has the potential to accelerate FM Global's entire engineering and underwriting operation."</div>
+      <div class="quote-attr">— Researcher Reflection</div>
+    </div>
+
+    <div class="rec-list" style="margin-top:40px;">
+      <div class="rec-item">Design for the authorship-to-consumption pipeline, not two disconnected tools</div>
+      <div class="rec-item">Prioritize Usability — it is the single most consistent gap across all document types and user groups</div>
+      <div class="rec-item">Build change communication infrastructure before expanding content volume</div>
+      <div class="rec-item">Integrate contextually with existing field tools (Polaris, MyVisit) rather than requiring context switching</div>
+      <div class="rec-item">Establish this baseline as a living benchmark — resurvey at regular intervals to measure platform impact</div>
+    </div>
+  </section>
+
+  <div class="next-case reveal">
+    <div>
+      <div class="next-label">Next Case Study</div>
+      <div class="next-title">Branch Journey Mapping</div>
+    </div>
+    <a href="cs-branchjourney.html" class="next-arrow">→</a>
+  </div>
+
+</div>
+
+<footer class="page-footer">
+  <span class="footer-left"><span class="footer-dot"></span>Available for opportunities</span>
+  <span class="footer-right">Krishna Panyala © 2026</span>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx=0, my=0, rx=0, ry=0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.transform = `translate(${mx}px,${my}px) translate(-50%,-50%)`;
+  });
+  (function loop() {
+    rx += (mx-rx)*0.12; ry += (my-ry)*0.12;
+    ring.style.transform = `translate(${rx}px,${ry}px) translate(-50%,-50%)`;
+    requestAnimationFrame(loop);
+  })();
+  document.querySelectorAll('a,button').forEach(el => {
+    el.addEventListener('mouseenter', () => { cursor.style.background='transparent'; cursor.style.border='1px solid var(--accent)'; });
+    el.addEventListener('mouseleave', () => { cursor.style.background='var(--accent)'; cursor.style.border='none'; });
+  });
+
+  // Intersection observer for reveal + bar animations
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+
+        // Score bars
+        e.target.querySelectorAll('.score-fill[data-w]').forEach((el, i) => {
+          setTimeout(() => { el.style.width = el.dataset.w; }, 100 + i * 100);
+        });
+
+        // Mini table bars
+        e.target.querySelectorAll('.mini-bar[data-w]').forEach((el, i) => {
+          setTimeout(() => { el.style.width = el.dataset.w; }, 80 + i * 40);
+        });
+
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.07 });
+
+  document.querySelectorAll('.reveal').forEach(r => io.observe(r));
+</script>
+</body>
+</html>

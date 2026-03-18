@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Krishna Panyala — Chat Satisfaction Survey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=Space+Mono&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --black: #0a0f1e; --off-black: #0d1428; --navy: #0f1b3d;
+    --white: #f0f4ff; --cream: #dde6ff; --accent: #5b8cff;
+    --accent-dim: #2a4fa8; --mid: #7a90c0; --border: rgba(240,244,255,0.08);
+    --border-vis: rgba(240,244,255,0.14);
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--black); color: var(--white); font-family: 'DM Sans', sans-serif; font-weight: 300; overflow-x: hidden; cursor: none; }
+  .cursor { position: fixed; top: 0; left: 0; z-index: 9999; width: 10px; height: 10px; background: var(--accent); border-radius: 50%; pointer-events: none; transform: translate(-50%,-50%); }
+  .cursor-ring { position: fixed; top: 0; left: 0; z-index: 9998; width: 38px; height: 38px; border: 1px solid rgba(91,140,255,0.45); border-radius: 50%; pointer-events: none; transform: translate(-50%,-50%); }
+  body::before { content: ''; position: fixed; inset: 0; z-index: 1; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; opacity: 0.35; }
+
+  /* NAV */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 28px 48px; display: flex; align-items: center; justify-content: space-between; background: rgba(10,15,30,0.8); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+  .nav-logo { font-family: 'Space Mono', monospace; font-size: 0.7rem; letter-spacing: 0.18em; color: var(--mid); text-transform: uppercase; text-decoration: none; transition: color 0.2s; }
+  .nav-logo:hover { color: var(--white); }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a { font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--mid); text-decoration: none; transition: color 0.2s; position: relative; }
+  .nav-links a::after { content: ''; position: absolute; bottom: -3px; left: 0; width: 0; height: 1px; background: var(--accent); transition: width 0.3s; }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a:hover::after { width: 100%; }
+
+  .edge-text { position: fixed; right: 20px; top: 50%; transform: translateY(-50%) rotate(90deg); font-family: 'Space Mono', monospace; font-size: 0.55rem; letter-spacing: 0.25em; text-transform: uppercase; color: rgba(122,144,192,0.2); z-index: 50; pointer-events: none; white-space: nowrap; }
+  .page { max-width: 940px; margin: 0 auto; padding: 0 48px 140px; position: relative; z-index: 10; }
+
+  /* HERO */
+  .cs-hero { padding-top: 160px; padding-bottom: 80px; border-bottom: 1px solid var(--border); }
+  .cs-eyebrow { font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; opacity: 0; animation: fadeUp 0.5s ease forwards 0.1s; display: flex; align-items: center; gap: 16px; }
+  .cs-eyebrow::before { content: ''; display: inline-block; width: 32px; height: 1px; background: var(--accent-dim); }
+  .cs-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.5rem, 7vw, 7rem); line-height: 0.9; margin-bottom: 40px; opacity: 0; animation: fadeUp 0.6s ease forwards 0.2s; }
+  .cs-title .outlined { display: block; color: transparent; -webkit-text-stroke: 1.5px rgba(240,244,255,0.22); }
+  .cs-meta-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-bottom: 48px; opacity: 0; animation: fadeUp 0.6s ease forwards 0.35s; }
+  .cs-meta-cell { background: var(--off-black); padding: 20px 22px; }
+  .cs-meta-label { font-family: 'Space Mono', monospace; font-size: 0.54rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mid); margin-bottom: 6px; }
+  .cs-meta-val { font-size: 0.9rem; color: var(--white); font-weight: 400; line-height: 1.4; }
+  .cs-intro { font-family: 'DM Serif Display', serif; font-style: italic; font-size: clamp(1.3rem, 2.2vw, 1.7rem); line-height: 1.55; color: var(--cream); opacity: 0; animation: fadeUp 0.6s ease forwards 0.5s; border-left: 2px solid var(--accent-dim); padding-left: 28px; }
+
+  /* SECTIONS */
+  .cs-section { padding: 72px 0; border-bottom: 1px solid var(--border); }
+  .cs-section:last-child { border-bottom: none; }
+  .section-label { font-family: 'Space Mono', monospace; font-size: 0.58rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; display: flex; align-items: center; gap: 14px; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border-vis); }
+  .section-heading { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.5rem, 4.5vw, 4rem); line-height: 1; color: var(--white); margin-bottom: 36px; }
+  .body-text { font-size: 1rem; line-height: 1.85; color: var(--cream); opacity: 0.88; max-width: 700px; }
+  .body-text strong { font-weight: 500; color: var(--white); }
+
+  /* GRIDS */
+  .obj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 40px; }
+  .obj-cell { background: var(--off-black); padding: 28px; transition: background 0.3s; }
+  .obj-cell:hover { background: var(--navy); }
+  .obj-num { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--accent-dim); margin-bottom: 8px; }
+  .obj-title { font-size: 0.95rem; font-weight: 500; color: var(--white); margin-bottom: 8px; }
+  .obj-body { font-size: 0.83rem; line-height: 1.7; color: var(--mid); }
+
+  .method-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 40px; }
+  .method-cell { background: var(--off-black); padding: 28px; }
+  .method-icon { font-family: 'Space Mono', monospace; font-size: 0.54rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+  .method-val { font-family: 'DM Serif Display', serif; font-style: italic; font-size: 1.2rem; color: var(--white); margin-bottom: 8px; line-height: 1.3; }
+  .method-detail { font-size: 0.82rem; line-height: 1.7; color: var(--mid); }
+
+  /* STAT CALLOUT */
+  .stat-callout { display: flex; align-items: center; gap: 20px; padding: 20px 24px; border: 1px solid var(--border); background: var(--off-black); margin: 16px 0; }
+  .stat-big { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; line-height: 1; color: var(--white); flex-shrink: 0; }
+  .stat-big span { color: var(--accent); }
+  .stat-desc { font-size: 0.88rem; line-height: 1.6; color: var(--mid); }
+  .stat-desc strong { color: var(--cream); font-weight: 400; }
+
+  /* STAT ROW */
+  .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 40px; }
+  .stat-cell { background: var(--off-black); padding: 28px 24px; text-align: center; transition: background 0.3s; }
+  .stat-cell:hover { background: var(--navy); }
+  .stat-cell-num { font-family: 'Bebas Neue', sans-serif; font-size: 3.2rem; line-height: 1; color: var(--white); margin-bottom: 6px; }
+  .stat-cell-num span { color: var(--accent); }
+  .stat-cell-label { font-family: 'Space Mono', monospace; font-size: 0.56rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--mid); }
+
+  /* QUOTE */
+  .quote-block { margin: 20px 0; border-left: 2px solid var(--accent-dim); padding: 20px 28px; background: rgba(91,140,255,0.04); }
+  .quote-text { font-family: 'DM Serif Display', serif; font-style: italic; font-size: 1.05rem; line-height: 1.65; color: var(--cream); margin-bottom: 10px; }
+  .quote-attr { font-family: 'Space Mono', monospace; font-size: 0.57rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mid); }
+
+  /* QUOTE GRID */
+  .quote-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 32px; }
+
+  /* REC */
+  .rec-list { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+  .rec-item { display: flex; align-items: flex-start; gap: 10px; font-size: 0.84rem; line-height: 1.6; color: var(--mid); }
+  .rec-item::before { content: '→'; color: var(--accent); font-size: 0.78rem; flex-shrink: 0; margin-top: 2px; }
+  .rec-item strong { color: var(--cream); font-weight: 400; }
+
+  /* ── CUSTOM CHARTS ── */
+
+  /* Score Bar — horizontal bar showing score vs goal vs 7 max */
+  .score-chart-wrap { margin-top: 40px; border: 1px solid var(--border); background: var(--off-black); padding: 36px 36px 28px; }
+  .score-chart-title { font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 28px; }
+  .score-item { margin-bottom: 8px; }
+  .score-item:last-child { margin-bottom: 0; }
+  .score-item-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+  .score-item-label { font-size: 0.88rem; font-weight: 400; color: var(--cream); }
+  .score-item-val { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--white); line-height: 1; }
+  .score-item-val span { color: var(--accent); font-size: 0.9rem; font-family: 'Space Mono', monospace; font-weight: 300; margin-left: 4px; }
+  .score-track { position: relative; height: 8px; background: rgba(240,244,255,0.06); margin-bottom: 22px; }
+  .score-fill { height: 100%; background: var(--accent-dim); width: 0; transition: width 1.2s cubic-bezier(0.16,1,0.3,1); position: absolute; left: 0; top: 0; }
+  .score-fill.met { background: var(--accent); }
+  .score-fill.exceeded { background: #7dffb3; }
+  /* goal line */
+  .score-goal-line { position: absolute; top: -6px; bottom: -6px; width: 2px; background: rgba(240,244,255,0.4); z-index: 2; }
+  .score-goal-label { position: absolute; top: 16px; left: 6px; font-family: 'Space Mono', monospace; font-size: 0.48rem; color: rgba(240,244,255,0.5); letter-spacing: 0.1em; white-space: nowrap; transform: none; }
+  /* axis */
+  .score-axis { display: flex; justify-content: space-between; margin-top: 10px; }
+  .score-axis span { font-family: 'Space Mono', monospace; font-size: 0.5rem; color: var(--mid); letter-spacing: 0.08em; }
+
+  /* Confidence interval chart */
+  .ci-chart-wrap { margin-top: 40px; border: 1px solid var(--border); background: var(--off-black); padding: 36px; }
+  .ci-chart-title { font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+  .ci-chart-sub { font-size: 0.82rem; color: var(--mid); margin-bottom: 32px; line-height: 1.6; }
+  .ci-row { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+  .ci-row:last-child { margin-bottom: 0; }
+  .ci-label { font-size: 0.85rem; color: var(--cream); width: 180px; flex-shrink: 0; }
+  .ci-track { flex: 1; height: 28px; background: rgba(240,244,255,0.04); position: relative; }
+  /* goal line inside ci-track */
+  .ci-goal { position: absolute; top: 0; bottom: 0; width: 2px; background: rgba(240,244,255,0.2); }
+  .ci-goal-label { position: absolute; top: -18px; font-family: 'Space Mono', monospace; font-size: 0.48rem; color: var(--mid); transform: translateX(-50%); white-space: nowrap; }
+  .ci-bar { position: absolute; top: 50%; transform: translateY(-50%); height: 8px; background: var(--accent-dim); border-radius: 0; transition: width 1s ease, left 1s ease; }
+  .ci-bar.met { background: var(--accent); }
+  .ci-dot { position: absolute; top: 50%; transform: translate(-50%,-50%); width: 12px; height: 12px; background: var(--white); border-radius: 50%; border: 2px solid var(--accent); }
+  .ci-val { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; color: var(--white); width: 52px; text-align: right; flex-shrink: 0; }
+
+  /* Open comments donut + bars */
+  .comments-layout { display: grid; grid-template-columns: 200px 1fr; gap: 48px; align-items: start; margin-top: 40px; }
+  .donut-wrap { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .donut-label { font-family: 'Space Mono', monospace; font-size: 0.56rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mid); text-align: center; }
+
+  /* Horizontal bar chart for comments */
+  .hbar-chart { display: flex; flex-direction: column; gap: 14px; }
+  .hbar-row { display: flex; flex-direction: column; gap: 6px; }
+  .hbar-header { display: flex; justify-content: space-between; align-items: baseline; }
+  .hbar-name { font-size: 0.84rem; color: var(--cream); }
+  .hbar-pct { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: var(--accent); line-height: 1; }
+  .hbar-track { height: 6px; background: rgba(240,244,255,0.06); position: relative; }
+  .hbar-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--accent-dim); width: 0; transition: width 1.2s cubic-bezier(0.16,1,0.3,1); }
+  .hbar-fill.top { background: var(--accent); }
+
+  /* Topics table */
+  .topics-table { width: 100%; border-collapse: collapse; margin-top: 36px; }
+  .topics-table th { font-family: 'Space Mono', monospace; font-size: 0.54rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border-vis); }
+  .topics-table td { font-size: 0.84rem; color: var(--cream); padding: 12px 16px; border-bottom: 1px solid var(--border); }
+  .topics-table tr:hover td { background: rgba(91,140,255,0.04); }
+  .topics-table tr:last-child td { border-bottom: none; }
+  .topics-table .bar-cell { width: 40%; }
+  .topics-table .mini-bar { height: 4px; background: var(--accent-dim); margin-top: 4px; width: 0; transition: width 1s ease; }
+  .topics-table .mini-bar.top { background: var(--accent); }
+
+  /* Outcome */
+  .outcome-band { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 40px; }
+  .outcome-cell { background: var(--off-black); padding: 32px 28px; text-align: center; }
+  .outcome-num { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; color: var(--accent); margin-bottom: 8px; line-height: 1; }
+  .outcome-label { font-family: 'Space Mono', monospace; font-size: 0.56rem; letter-spacing: 0.13em; text-transform: uppercase; color: var(--mid); }
+
+  /* NEXT */
+  .next-case { margin-top: 80px; padding-top: 48px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .next-label { font-family: 'Space Mono', monospace; font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mid); margin-bottom: 8px; }
+  .next-title { font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; color: var(--white); line-height: 1; }
+  .next-arrow { width: 56px; height: 56px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--mid); font-size: 1.2rem; transition: border-color 0.2s, color 0.2s, transform 0.2s; text-decoration: none; }
+  .next-arrow:hover { border-color: var(--accent); color: var(--accent); transform: translateX(4px); }
+
+  /* FOOTER */
+  .page-footer { position: fixed; bottom: 0; left: 0; right: 0; border-top: 1px solid var(--border); padding: 16px 48px; display: flex; align-items: center; justify-content: space-between; z-index: 50; background: rgba(10,15,30,0.85); backdrop-filter: blur(12px); }
+  .footer-left, .footer-right { font-family: 'Space Mono', monospace; font-size: 0.58rem; letter-spacing: 0.15em; color: var(--mid); text-transform: uppercase; }
+  .footer-dot { display: inline-block; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; margin-right: 8px; animation: pulse 2s ease-in-out infinite; }
+
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.8); } }
+
+  @media (max-width: 860px) {
+    .page { padding: 0 28px 120px; } nav { padding: 22px 28px; }
+    .cs-meta-row, .method-row { grid-template-columns: 1fr 1fr; }
+    .obj-grid, .quote-grid { grid-template-columns: 1fr; }
+    .stat-row { grid-template-columns: 1fr 1fr; }
+    .outcome-band { grid-template-columns: 1fr; }
+    .comments-layout { grid-template-columns: 1fr; }
+    .ci-label { width: 120px; }
+    .edge-text { display: none; } .page-footer { padding: 14px 28px; }
+  }
+  @media (max-width: 540px) {
+    .cs-meta-row, .stat-row { grid-template-columns: 1fr 1fr; }
+    .next-case { flex-direction: column; gap: 24px; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="edge-text">Case Study — Chat Satisfaction</div>
+
+<nav>
+  <a href="index.html" class="nav-logo">KP — Portfolio</a>
+  <ul class="nav-links">
+    <li><a href="work.html">Work</a></li>
+    <li><a href="krishna-about.html">About</a></li>
+    <li><a href="krishna-contact.html">Contact</a></li>
+  </ul>
+</nav>
+
+<div class="page">
+
+  <!-- HERO -->
+  <header class="cs-hero">
+    <p class="cs-eyebrow">Case Study · UX Research</p>
+    <h1 class="cs-title">Chat Satisfaction<br><span class="outlined">Survey Report</span></h1>
+    <div class="cs-meta-row">
+      <div class="cs-meta-cell"><div class="cs-meta-label">Client</div><div class="cs-meta-val">Financial Services / Branch Network</div></div>
+      <div class="cs-meta-cell"><div class="cs-meta-label">Method</div><div class="cs-meta-val">Quantitative Survey + Open Comment Analysis</div></div>
+      <div class="cs-meta-cell"><div class="cs-meta-label">Participants</div><div class="cs-meta-val">325 Branch Associates (FAs & BOAs)</div></div>
+      <div class="cs-meta-cell"><div class="cs-meta-label">Product</div><div class="cs-meta-val">Live Chat & Chatbot</div></div>
+    </div>
+    <p class="cs-intro">The first satisfaction readout for Chat — a baseline measurement to understand how branch associates experienced both the live chat tool and the chatbot, and to establish a benchmark for tracking progress over time.</p>
+  </header>
+
+  <!-- 01 BACKGROUND -->
+  <section class="cs-section reveal">
+    <p class="section-label">01 — Background</p>
+    <h2 class="section-heading">Why This Study</h2>
+    <p class="body-text">Chat was a new-ish product in the associate toolkit — but without a satisfaction baseline, there was no way to measure whether improvements were working, how the product compared to benchmarks, or where to prioritize future investment.</p>
+    <p class="body-text" style="margin-top: 20px;">This study was designed to answer three questions: <strong>How satisfied are associates with Chat?</strong> Does usage frequency affect that satisfaction? And what single change would have the biggest positive impact on their experience?</p>
+
+    <div class="stat-row" style="margin-top: 40px;">
+      <div class="stat-cell">
+        <div class="stat-cell-num">325</div>
+        <div class="stat-cell-label">Survey Respondents</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-cell-num">2<span style="color:var(--accent);">K</span></div>
+        <div class="stat-cell-label">Invites Sent</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-cell-num">90</div>
+        <div class="stat-cell-label">Day Lookback Period</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 OBJECTIVES -->
+  <section class="cs-section reveal">
+    <p class="section-label">02 — Research Objectives</p>
+    <h2 class="section-heading">What We Measured</h2>
+    <div class="obj-grid">
+      <div class="obj-cell">
+        <div class="obj-num">01</div>
+        <div class="obj-title">Measure Satisfaction Over Time</div>
+        <div class="obj-body">Establish a repeatable baseline so teams can compare future scores to this measurement and detect real, statistically significant changes.</div>
+      </div>
+      <div class="obj-cell">
+        <div class="obj-num">02</div>
+        <div class="obj-title">Benchmark Against External Standards</div>
+        <div class="obj-body">Convert scores to the System Usability Scale (SUS) — the most widely used standardized usability survey — to compare against the industry average of 68.</div>
+      </div>
+      <div class="obj-cell">
+        <div class="obj-num">03</div>
+        <div class="obj-title">Compare Frequent vs. Infrequent Users</div>
+        <div class="obj-body">Understand whether heavy users experience Chat differently than occasional users — and whether any differences are statistically meaningful.</div>
+      </div>
+      <div class="obj-cell">
+        <div class="obj-num">04</div>
+        <div class="obj-title">Surface the Highest-Impact Enhancement</div>
+        <div class="obj-body">Ask lower-scoring associates directly — what single change would most improve their Chat experience? Capture unfiltered open commentary.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 METHODOLOGY -->
+  <section class="cs-section reveal">
+    <p class="section-label">03 — Methodology</p>
+    <h2 class="section-heading">How We Designed the Study</h2>
+    <div class="method-row">
+      <div class="method-cell">
+        <div class="method-icon">Survey Instrument</div>
+        <div class="method-val">UMUX-Lite + Custom Efficiency Question</div>
+        <div class="method-detail">Four core constructs rated on a 1–7 scale: Satisfaction, Need Fulfillment, Ease of Use, and Efficiency. A custom efficiency question supplemented the standard UMUX wording to capture nuance.</div>
+      </div>
+      <div class="method-cell">
+        <div class="method-icon">Sampling Strategy</div>
+        <div class="method-val">Stratified by Usage Frequency</div>
+        <div class="method-detail">Top 1,500 users (40–6 uses in 90 days) plus a 500-associate sample of low users (1–2 uses). Mix of Financial Advisors and Branch Office Administrators.</div>
+      </div>
+      <div class="method-cell">
+        <div class="method-icon">Statistical Approach</div>
+        <div class="method-val">98% Confidence Intervals</div>
+        <div class="method-detail">Confidence intervals rather than simple averages were used for all comparisons — ensuring decisions were based on population-level estimates, not sample noise.</div>
+      </div>
+    </div>
+
+    <!-- Confidence interval explainer -->
+    <div class="quote-block" style="margin-top: 36px;">
+      <div class="quote-text">"Even if sample average scores exceed previous scores, unless the confidence interval exceeds the goal, it is entirely possible that differences are due to random chance — not a real change in the experience."</div>
+      <div class="quote-attr">— Methodology Note, Survey Report</div>
+    </div>
+  </section>
+
+  <!-- 04 USAGE CONTEXT -->
+  <section class="cs-section reveal">
+    <p class="section-label">04 — Usage Context</p>
+    <h2 class="section-heading">What Chat Was Used For</h2>
+    <p class="body-text">Respondents used Chat across 16 service departments, generating 1,078 total chat interactions. Understanding the distribution of use cases helped contextualize satisfaction scores — associates navigating complex topics like estates or annuities may have different needs than those handling routine banking queries.</p>
+
+    <table class="topics-table">
+      <thead>
+        <tr>
+          <th>Department</th>
+          <th># of Chats</th>
+          <th class="bar-cell">Volume</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>DISB Banking</td><td>276</td><td><div class="mini-bar top" data-w="100%"></div></td></tr>
+        <tr><td>Opening and Maintaining Accounts</td><td>166</td><td><div class="mini-bar top" data-w="60%"></div></td></tr>
+        <tr><td>Estate Service</td><td>126</td><td><div class="mini-bar" data-w="46%"></div></td></tr>
+        <tr><td>Annuity Service</td><td>104</td><td><div class="mini-bar" data-w="38%"></div></td></tr>
+        <tr><td>Cost & Tax Service</td><td>87</td><td><div class="mini-bar" data-w="32%"></div></td></tr>
+        <tr><td>Online Client Support</td><td>63</td><td><div class="mini-bar" data-w="23%"></div></td></tr>
+        <tr><td>Financial Solutions Service</td><td>50</td><td><div class="mini-bar" data-w="18%"></div></td></tr>
+        <tr><td>Mutual Funds 529 Advisory Trades</td><td>45</td><td><div class="mini-bar" data-w="16%"></div></td></tr>
+        <tr><td>Transfers–Rollovers Service</td><td>43</td><td><div class="mini-bar" data-w="16%"></div></td></tr>
+        <tr><td>Client Relations / Order Service</td><td>39</td><td><div class="mini-bar" data-w="14%"></div></td></tr>
+        <tr><td>Other Departments (6)</td><td>79</td><td><div class="mini-bar" data-w="29%"></div></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 05 SURVEY SCORES -->
+  <section class="cs-section reveal">
+    <p class="section-label">05 — Survey Scores</p>
+    <h2 class="section-heading">How Chat Scored</h2>
+    <p class="body-text">Associates rated Chat on four dimensions, each on a 1–7 scale. The <strong>composite score met the goal of 5.5</strong>, falling within the predicted confidence interval of 5.3–5.6. Ease of Use was the standout — the only dimension to clearly exceed the goal. Efficiency was the weakest performer.</p>
+
+    <!-- Composite score callout -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 40px;">
+      <div style="background: var(--off-black); padding: 32px 36px;">
+        <div style="font-family: 'Space Mono', monospace; font-size: 0.56rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px;">Composite Score</div>
+        <div style="font-family: 'Bebas Neue', sans-serif; font-size: 5rem; line-height: 1; color: var(--white);">5.5<span style="font-size: 2rem; color: var(--mid);">/7</span></div>
+        <div style="font-family: 'Space Mono', monospace; font-size: 0.58rem; color: var(--mid); margin-top: 8px;">Confidence interval: 5.3 – 5.6</div>
+      </div>
+      <div style="background: var(--off-black); padding: 32px 36px; border-left: 1px solid var(--border);">
+        <div style="font-family: 'Space Mono', monospace; font-size: 0.56rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px;">Goal</div>
+        <div style="font-family: 'Bebas Neue', sans-serif; font-size: 5rem; line-height: 1; color: var(--accent-dim);">5.5<span style="font-size: 2rem; color: var(--mid);">/7</span></div>
+        <div style="font-family: 'Space Mono', monospace; font-size: 0.58rem; color: var(--accent); margin-top: 8px;">✓ Met</div>
+      </div>
+    </div>
+
+    <!-- Score bars -->
+    <div class="score-chart-wrap" style="margin-top: 24px;">
+      <div class="score-chart-title">Score by Dimension (1–7 Scale · Goal = 5.5)</div>
+
+      <div class="score-item">
+        <div class="score-item-header">
+          <span class="score-item-label">Ease of Use</span>
+          <span class="score-item-val">~5.7<span>↑ Exceeded goal</span></span>
+        </div>
+        <div class="score-track">
+          <div class="score-goal-line" style="left: 78.6%;"><span class="score-goal-label">Goal 5.5</span></div>
+          <div class="score-fill exceeded" data-w="81.4%"></div>
+        </div>
+      </div>
+
+      <div class="score-item">
+        <div class="score-item-header">
+          <span class="score-item-label">Satisfaction</span>
+          <span class="score-item-val">~5.5<span>✓ Met goal</span></span>
+        </div>
+        <div class="score-track">
+          <div class="score-goal-line" style="left: 78.6%;"></div>
+          <div class="score-fill met" data-w="78.6%"></div>
+        </div>
+      </div>
+
+      <div class="score-item">
+        <div class="score-item-header">
+          <span class="score-item-label">Need Fulfillment</span>
+          <span class="score-item-val">~5.4<span>≈ Slightly below</span></span>
+        </div>
+        <div class="score-track">
+          <div class="score-goal-line" style="left: 78.6%;"></div>
+          <div class="score-fill met" data-w="77.1%"></div>
+        </div>
+      </div>
+
+      <div class="score-item">
+        <div class="score-item-header">
+          <span class="score-item-label">Efficiency (Custom + Standard)</span>
+          <span class="score-item-val">~5.3<span>↓ Below goal</span></span>
+        </div>
+        <div class="score-track">
+          <div class="score-goal-line" style="left: 78.6%;"></div>
+          <div class="score-fill" data-w="75.7%"></div>
+        </div>
+      </div>
+
+      <div class="score-axis">
+        <span>1 (Strongly Unfavorable)</span>
+        <span>4 (Neutral)</span>
+        <span>7 (Strongly Favorable)</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 FREQ vs INFREQ -->
+  <section class="cs-section reveal">
+    <p class="section-label">06 — Frequency Analysis</p>
+    <h2 class="section-heading">Frequent vs. Infrequent Users</h2>
+    <p class="body-text">Frequent users (10+ chats in 90 days) appeared to score Chat slightly higher than infrequent users — but <strong>a T-test found no statistical significance in the difference.</strong> The variation is most likely attributable to sampling error, not a genuine difference in experience between the two groups.</p>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 40px;">
+      <div style="background: var(--off-black); padding: 28px 32px;">
+        <div style="font-family: 'Space Mono', monospace; font-size: 0.56rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px;">Frequent Users (10+ chats)</div>
+        <div style="font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem; color: var(--white); line-height: 1; margin-bottom: 8px;">Slightly Higher</div>
+        <div style="font-size: 0.82rem; color: var(--mid); line-height: 1.6;">Appears higher across most dimensions — but within the margin of sampling error.</div>
+      </div>
+      <div style="background: var(--off-black); padding: 28px 32px; border-left: 1px solid var(--border);">
+        <div style="font-family: 'Space Mono', monospace; font-size: 0.56rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mid); margin-bottom: 16px;">Statistical Finding</div>
+        <div style="font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem; color: var(--accent-dim); line-height: 1; margin-bottom: 8px;">No Significant Difference</div>
+        <div style="font-size: 0.82rem; color: var(--mid); line-height: 1.6;">T-test confirms: differences are likely due to sample selection, not a real gap in experience.</div>
+      </div>
+    </div>
+
+    <div class="quote-block" style="margin-top: 28px;">
+      <div class="quote-text">"The difference may be due to the result of sampling error and does not necessarily indicate a difference between the two groups."</div>
+      <div class="quote-attr">— Survey Analysis, Frequency Comparison</div>
+    </div>
+  </section>
+
+  <!-- 07 SUS BENCHMARK -->
+  <section class="cs-section reveal">
+    <p class="section-label">07 — Benchmark Comparison</p>
+    <h2 class="section-heading">How Chat Compares to Industry</h2>
+    <p class="body-text">UMUX-Lite scores can be statistically converted to the System Usability Scale (SUS) — the most widely used standardized usability benchmark. The average SUS score across all products is 68. <strong>Chat's predicted SUS score met the internal goal of 75 and exceeded the industry average.</strong></p>
+
+    <!-- SUS comparison visual -->
+    <div style="margin-top: 40px; border: 1px solid var(--border); background: var(--off-black); padding: 36px;">
+      <div style="font-family: 'Space Mono', monospace; font-size: 0.58rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 32px;">SUS Score Comparison (0–100 Scale)</div>
+
+      <div style="display: flex; flex-direction: column; gap: 24px;">
+        <!-- Industry average -->
+        <div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+            <span style="font-size: 0.85rem; color: var(--mid);">Industry Average (SUS)</span>
+            <span style="font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--mid);">68</span>
+          </div>
+          <div style="height: 8px; background: rgba(240,244,255,0.06); position: relative;">
+            <div class="score-fill" data-w="68%" style="background: rgba(122,144,192,0.35);"></div>
+          </div>
+        </div>
+
+        <!-- Internal goal -->
+        <div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+            <span style="font-size: 0.85rem; color: var(--cream);">Internal Goal</span>
+            <span style="font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--cream);">75</span>
+          </div>
+          <div style="height: 8px; background: rgba(240,244,255,0.06); position: relative;">
+            <div class="score-fill" data-w="75%" style="background: var(--accent-dim);"></div>
+          </div>
+        </div>
+
+        <!-- Chat predicted -->
+        <div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+            <span style="font-size: 0.85rem; color: var(--white); font-weight: 500;">Chat — Predicted SUS Score</span>
+            <span style="font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--accent);">~75–78</span>
+          </div>
+          <div style="height: 8px; background: rgba(240,244,255,0.06); position: relative;">
+            <div class="score-fill met" data-w="77%" style="background: var(--accent);"></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; margin-top: 12px; padding: 0 0;">
+        <span style="font-family: 'Space Mono', monospace; font-size: 0.5rem; color: var(--mid);">0 — Not Usable</span>
+        <span style="font-family: 'Space Mono', monospace; font-size: 0.5rem; color: var(--mid);">50 — Marginal</span>
+        <span style="font-family: 'Space Mono', monospace; font-size: 0.5rem; color: var(--mid);">100 — Best Imaginable</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 OPEN COMMENTS -->
+  <section class="cs-section reveal">
+    <p class="section-label">08 — Open Comments</p>
+    <h2 class="section-heading">What Associates Said</h2>
+    <p class="body-text">Associates who gave a rating of 3 or below on any dimension were asked an optional open-ended question: <em style="color: var(--white);">"What single enhancement could be made to Chat that would have the largest positive impact on your experience?"</em> 62 comments were analyzed.</p>
+
+    <!-- Comments breakdown chart -->
+    <div class="comments-layout">
+
+      <!-- Donut-style callout -->
+      <div class="donut-wrap">
+        <svg width="160" height="160" viewBox="0 0 160 160">
+          <!-- Background circle -->
+          <circle cx="80" cy="80" r="60" fill="none" stroke="rgba(240,244,255,0.06)" stroke-width="20"/>
+          <!-- Anti-bot: 40% = 144deg -->
+          <circle cx="80" cy="80" r="60" fill="none" stroke="#5b8cff" stroke-width="20"
+            stroke-dasharray="150.8 226.2" stroke-dashoffset="0" transform="rotate(-90 80 80)"
+            class="donut-arc" data-len="150.8" style="stroke-dasharray: 0 377; transition: stroke-dasharray 1.2s cubic-bezier(0.16,1,0.3,1) 0.3s;"/>
+          <!-- Live agent: 22% = 79.2deg -->
+          <circle cx="80" cy="80" r="60" fill="none" stroke="#2a4fa8" stroke-width="20"
+            stroke-dasharray="83 294" stroke-dashoffset="-150.8" transform="rotate(-90 80 80)"
+            class="donut-arc" data-len="83" style="stroke-dasharray: 0 377; transition: stroke-dasharray 1.2s cubic-bezier(0.16,1,0.3,1) 0.5s;"/>
+          <!-- Other -->
+          <circle cx="80" cy="80" r="60" fill="none" stroke="rgba(122,144,192,0.2)" stroke-width="20"
+            stroke-dasharray="143.2 233.8" stroke-dashoffset="-233.8" transform="rotate(-90 80 80)"/>
+          <text x="80" y="74" text-anchor="middle" font-family="'Bebas Neue', sans-serif" font-size="26" fill="#f0f4ff">62%</text>
+          <text x="80" y="92" text-anchor="middle" font-family="'Space Mono', monospace" font-size="7" fill="#7a90c0" letter-spacing="1">TOP 2 THEMES</text>
+        </svg>
+        <div class="donut-label">Anti-Bot + Live Agent<br>Access combined</div>
+      </div>
+
+      <!-- Bar breakdown -->
+      <div class="hbar-chart">
+        <div class="hbar-row">
+          <div class="hbar-header">
+            <span class="hbar-name">Anti-Bot Sentiment</span>
+            <span class="hbar-pct">~40%</span>
+          </div>
+          <div class="hbar-track"><div class="hbar-fill top" data-w="100%"></div></div>
+          <div style="font-size: 0.78rem; color: var(--mid); margin-top: 4px; line-height: 1.5;">Associates cited "waste of time" and reduced efficiency as key frustrations.</div>
+        </div>
+
+        <div class="hbar-row">
+          <div class="hbar-header">
+            <span class="hbar-name">Always Connect to Live Agent</span>
+            <span class="hbar-pct">~22%</span>
+          </div>
+          <div class="hbar-track"><div class="hbar-fill" data-w="55%"></div></div>
+          <div style="font-size: 0.78rem; color: var(--mid); margin-top: 4px; line-height: 1.5;">Complex questions not in JL require a human — associates wanted direct access.</div>
+        </div>
+
+        <div class="hbar-row">
+          <div class="hbar-header">
+            <span class="hbar-name">Other Feedback</span>
+            <span class="hbar-pct">~38%</span>
+          </div>
+          <div class="hbar-track"><div class="hbar-fill" data-w="38%"></div></div>
+          <div style="font-size: 0.78rem; color: var(--mid); margin-top: 4px; line-height: 1.5;">Miscellaneous comments on speed, response quality, and general UX.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quotes -->
+    <div class="quote-grid" style="margin-top: 40px;">
+      <div class="quote-block" style="margin: 0;">
+        <div class="quote-text">"Chatbot is total waste of my time, it can never answer questions I have."</div>
+        <div class="quote-attr">— Anti-Bot Sentiment</div>
+      </div>
+      <div class="quote-block" style="margin: 0;">
+        <div class="quote-text">"Connecting with a live agent has worked great, but it does take awhile to get past the Bot to get to someone live."</div>
+        <div class="quote-attr">— Live Agent Access Frustration</div>
+      </div>
+      <div class="quote-block" style="margin: 0;">
+        <div class="quote-text">"I think the Chat bot idea is great, but it seems to duplicate the search engine we already have."</div>
+        <div class="quote-attr">— Relevancy Concern</div>
+      </div>
+      <div class="quote-block" style="margin: 0;">
+        <div class="quote-text">"I feel if it can't find what you're looking for then it should directly connect you to a live person to chat with."</div>
+        <div class="quote-attr">— Live Agent Access Request</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 KEY TAKEAWAYS -->
+  <section class="cs-section reveal">
+    <p class="section-label">09 — Key Takeaways</p>
+    <h2 class="section-heading">What This Tells Us</h2>
+    <p class="body-text">This first readout gives the team both a foundation and a direction. The composite score meeting the goal is a positive signal — but the efficiency gap and chatbot friction point to where the most meaningful improvements can be made.</p>
+
+    <div class="obj-grid" style="margin-top: 40px;">
+      <div class="obj-cell">
+        <div class="obj-num" style="color: var(--accent);">✓</div>
+        <div class="obj-title">Baseline Established</div>
+        <div class="obj-body">Future surveys can now be compared against this readout to detect statistically significant improvements — or regressions.</div>
+      </div>
+      <div class="obj-cell">
+        <div class="obj-num" style="color: var(--accent);">↑</div>
+        <div class="obj-title">SUS Exceeds Industry Average</div>
+        <div class="obj-body">Chat's predicted SUS score of ~75–78 beats the 68 industry average — a strong starting position relative to comparable products.</div>
+      </div>
+      <div class="obj-cell">
+        <div class="obj-num" style="color: var(--mid);">↓</div>
+        <div class="obj-title">Efficiency Is the Weak Point</div>
+        <div class="obj-body">Both the custom and standard efficiency questions fell below goal. This is corroborated directly by open comments — speed and task completion are where associates feel the most friction.</div>
+      </div>
+      <div class="obj-cell">
+        <div class="obj-num" style="color: var(--mid);">!</div>
+        <div class="obj-title">Chatbot Trust Gap</div>
+        <div class="obj-body">62% of open comments centered on bot friction and desire for live agent access. The chatbot is not meeting the bar associates need for complex queries — a clear product improvement opportunity.</div>
+      </div>
+    </div>
+
+    <div class="rec-list" style="margin-top: 36px;">
+      <div class="rec-item">Run follow-up surveys at regular intervals to track progress against this baseline</div>
+      <div class="rec-item">Prioritize chatbot improvements — specifically reducing friction before live agent handoff</div>
+      <div class="rec-item">Investigate efficiency gap: where are tasks taking longer than expected, and why?</div>
+      <div class="rec-item">Consider a streamlined "connect to live agent" pathway for associates with complex queries</div>
+    </div>
+  </section>
+
+  <!-- 10 IMPACT -->
+  <section class="cs-section reveal">
+    <p class="section-label">10 — Impact</p>
+    <h2 class="section-heading">Research Outcomes</h2>
+    <div class="outcome-band">
+      <div class="outcome-cell">
+        <div class="outcome-num">5.5</div>
+        <div class="outcome-label">Composite Score — Goal Met</div>
+      </div>
+      <div class="outcome-cell">
+        <div class="outcome-num">75<span style="font-size:1.8rem;">+</span></div>
+        <div class="outcome-label">Predicted SUS — Exceeds Avg of 68</div>
+      </div>
+      <div class="outcome-cell">
+        <div class="outcome-num">62</div>
+        <div class="outcome-label">Open Comments Analyzed</div>
+      </div>
+    </div>
+
+    <div class="quote-block" style="margin-top: 40px;">
+      <div class="quote-text">"Meeting the composite goal on a first readout is meaningful — but the real value of this study is the benchmark it creates and the bot friction it names. That's where the next phase of work begins."</div>
+      <div class="quote-attr">— Research Insight</div>
+    </div>
+  </section>
+
+  <div class="next-case reveal">
+    <div>
+      <div class="next-label">Next Case Study</div>
+      <div class="next-title">HQ Smart City Design Research</div>
+    </div>
+    <a href="cs-smartcity.html" class="next-arrow">→</a>
+  </div>
+
+</div>
+
+<footer class="page-footer">
+  <span class="footer-left"><span class="footer-dot"></span>Available for opportunities</span>
+  <span class="footer-right">Krishna Panyala © 2026</span>
+</footer>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.transform = `translate(${mx}px,${my}px) translate(-50%,-50%)`;
+  });
+  (function loop() {
+    rx += (mx-rx)*0.12; ry += (my-ry)*0.12;
+    ring.style.transform = `translate(${rx}px,${ry}px) translate(-50%,-50%)`;
+    requestAnimationFrame(loop);
+  })();
+  document.querySelectorAll('a,button').forEach(el => {
+    el.addEventListener('mouseenter', () => { cursor.style.background='transparent'; cursor.style.border='1px solid var(--accent)'; });
+    el.addEventListener('mouseleave', () => { cursor.style.background='var(--accent)'; cursor.style.border='none'; });
+  });
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+
+        // Animate all bar fills
+        e.target.querySelectorAll('[data-w]').forEach((el, i) => {
+          setTimeout(() => { el.style.width = el.dataset.w; }, 150 + i * 60);
+        });
+
+        // Animate donut arcs
+        e.target.querySelectorAll('.donut-arc').forEach((arc, i) => {
+          const len = parseFloat(arc.dataset.len);
+          const total = 377;
+          setTimeout(() => {
+            arc.style.strokeDasharray = `${len} ${total - len}`;
+          }, 300 + i * 200);
+        });
+
+        // Animate mini-bars in table
+        e.target.querySelectorAll('.mini-bar[data-w]').forEach((bar, i) => {
+          setTimeout(() => { bar.style.width = bar.dataset.w; }, 100 + i * 40);
+        });
+
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.07 });
+
+  document.querySelectorAll('.reveal').forEach(r => io.observe(r));
+</script>
+</body>
+</html>
