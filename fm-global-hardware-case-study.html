@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FM Global Hardware Research — Krishna Panyala</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black:      #0a0f1e;
+    --off-black:  #0d1428;
+    --navy:       #0f1b3d;
+    --white:      #f0f4ff;
+    --cream:      #dde6ff;
+    --accent:     #5b8cff;
+    --accent-dim: #2a4fa8;
+    --mid:        #7a90c0;
+    --border:     rgba(240,244,255,0.08);
+    --border-vis: rgba(240,244,255,0.14);
+  }
+
+  html { scroll-behavior: smooth; }
+  body { 
+    background: var(--black); 
+    color: var(--white); 
+    font-family: 'DM Sans', sans-serif; 
+    font-weight: 300; 
+    overflow-x: hidden; 
+    cursor: none;
+    line-height: 1.6;
+  }
+
+  /* CURSOR */
+  .cursor { position: fixed; top: 0; left: 0; z-index: 9999; width: 10px; height: 10px; background: var(--accent); border-radius: 50%; pointer-events: none; transform: translate(-50%,-50%); transition: background 0.2s, border 0.2s; }
+  .cursor-ring { position: fixed; top: 0; left: 0; z-index: 9998; width: 38px; height: 38px; border: 1px solid rgba(91,140,255,0.45); border-radius: 50%; pointer-events: none; transform: translate(-50%,-50%); transition: width 0.2s, height 0.2s; }
+
+  /* GRAIN */
+  body::before { content: ''; position: fixed; inset: 0; z-index: 1; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; opacity: 0.35; }
+
+  /* NAV */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 26px 48px; display: flex; align-items: center; justify-content: space-between; background: rgba(10,15,30,0); backdrop-filter: blur(0px); border-bottom: 1px solid transparent; transition: background 0.4s, backdrop-filter 0.4s, border-color 0.4s; }
+  nav.scrolled { background: rgba(10,15,30,0.88); backdrop-filter: blur(14px); border-color: var(--border); }
+  .nav-logo { font-family: 'Space Mono', monospace; font-size: 0.7rem; letter-spacing: 0.18em; color: var(--mid); text-transform: uppercase; text-decoration: none; transition: color 0.2s; }
+  .nav-logo:hover { color: var(--white); }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a { font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--mid); text-decoration: none; transition: color 0.2s; position: relative; }
+  .nav-links a::after { content: ''; position: absolute; bottom: -3px; left: 0; width: 0; height: 1px; background: var(--accent); transition: width 0.3s; }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a:hover::after { width: 100%; }
+
+  /* CASE STUDY HERO */
+  .cs-hero {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    padding: 140px 48px 80px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cs-hero-content {
+    max-width: 900px;
+    position: relative;
+    z-index: 10;
+  }
+
+  .cs-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+  }
+
+  .cs-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3.5rem, 7vw, 7rem);
+    line-height: 0.95;
+    color: var(--white);
+    margin-bottom: 32px;
+  }
+
+  .cs-subtitle {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: clamp(1.3rem, 2vw, 1.8rem);
+    line-height: 1.4;
+    color: var(--cream);
+    max-width: 700px;
+    margin: 0 auto 48px;
+  }
+
+  .cs-meta {
+    display: flex;
+    gap: 48px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .cs-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .cs-meta-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+
+  .cs-meta-value {
+    font-size: 0.95rem;
+    color: var(--white);
+  }
+
+  /* CONTENT SECTIONS */
+  .content-section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 80px 48px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 4.5vw, 4rem);
+    line-height: 1;
+    color: var(--white);
+    margin-bottom: 32px;
+  }
+
+  .section-text {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--mid);
+    max-width: 720px;
+  }
+
+  .section-text p {
+    margin-bottom: 20px;
+  }
+
+  .section-text strong {
+    color: var(--white);
+    font-weight: 500;
+  }
+
+  .section-text em {
+    color: var(--accent);
+    font-style: normal;
+  }
+
+  /* STATS GRID */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 32px;
+    margin: 48px 0;
+  }
+
+  .stat-card {
+    background: rgba(91,140,255,0.04);
+    border: 1px solid var(--border-vis);
+    padding: 32px;
+    transition: background 0.3s, border-color 0.3s;
+  }
+
+  .stat-card:hover {
+    background: rgba(91,140,255,0.08);
+    border-color: var(--accent-dim);
+  }
+
+  .stat-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.5rem;
+    line-height: 1;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .stat-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+
+  /* INSIGHTS */
+  .insight-box {
+    background: var(--navy);
+    border-left: 3px solid var(--accent);
+    padding: 32px;
+    margin: 32px 0;
+  }
+
+  .insight-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .insight-text {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--cream);
+  }
+
+  /* QUOTE */
+  .quote-block {
+    max-width: 800px;
+    margin: 48px auto;
+    padding: 48px;
+    position: relative;
+  }
+
+  .quote-block::before {
+    content: '"';
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-family: 'DM Serif Display', serif;
+    font-size: 8rem;
+    line-height: 1;
+    color: rgba(91,140,255,0.12);
+  }
+
+  .quote-text {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 1.4rem;
+    line-height: 1.6;
+    color: var(--cream);
+    position: relative;
+    z-index: 2;
+  }
+
+  /* TABLE */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 32px 0;
+    font-size: 0.92rem;
+  }
+
+  .data-table th {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mid);
+    text-align: left;
+    padding: 16px;
+    border-bottom: 1px solid var(--border-vis);
+  }
+
+  .data-table td {
+    padding: 20px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--white);
+  }
+
+  .data-table tr:hover {
+    background: rgba(91,140,255,0.04);
+  }
+
+  .rank-badge {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    background: var(--accent-dim);
+    color: var(--white);
+    border-radius: 50%;
+    text-align: center;
+    line-height: 28px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  /* FINDINGS LIST */
+  .findings-list {
+    margin: 32px 0;
+  }
+
+  .finding-item {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 24px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .finding-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    color: var(--accent-dim);
+  }
+
+  .finding-content h4 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+
+  .finding-content p {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--mid);
+  }
+
+  /* TWO COLUMN */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    margin: 48px 0;
+  }
+
+  .col-box {
+    background: rgba(91,140,255,0.04);
+    border: 1px solid var(--border-vis);
+    padding: 32px;
+  }
+
+  .col-box h4 {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .col-box p {
+    font-size: 0.92rem;
+    line-height: 1.7;
+    color: var(--mid);
+  }
+
+  /* FOOTER */
+  .page-footer {
+    border-top: 1px solid var(--border);
+    padding: 24px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+
+  .footer-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: #4ade80;
+    border-radius: 50%;
+    margin-right: 8px;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+  }
+
+  .reveal.visible {
+    animation: fadeUp 0.7s ease forwards;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .cs-hero { padding: 120px 24px 60px; }
+    .content-section { padding: 60px 24px; }
+    .two-col { grid-template-columns: 1fr; gap: 24px; }
+    .stats-grid { grid-template-columns: 1fr; }
+    .cs-meta { gap: 24px; }
+    nav { padding: 20px 24px; }
+  }
+
+  /* DATA VISUALIZATIONS */
+  .bar-chart {
+    margin: 48px 0;
+  }
+
+  .bar-row {
+    display: grid;
+    grid-template-columns: 140px 1fr 80px;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .bar-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mid);
+    text-align: right;
+  }
+
+  .bar-track {
+    height: 32px;
+    background: rgba(91,140,255,0.08);
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-dim), var(--accent));
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    transition: width 1s ease;
+  }
+
+  .bar-fill.animate {
+    animation: barGrow 1.2s ease forwards;
+  }
+
+  @keyframes barGrow {
+    from { width: 0; }
+  }
+
+  .bar-value {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--white);
+    text-align: right;
+  }
+
+  .bar-percentage {
+    font-size: 0.65rem;
+    color: var(--mid);
+    margin-left: 4px;
+  }
+
+  /* VISUAL CALLOUT */
+  .visual-callout {
+    background: linear-gradient(135deg, rgba(91,140,255,0.12), rgba(91,140,255,0.04));
+    border: 1px solid var(--accent-dim);
+    padding: 48px;
+    margin: 48px 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .visual-callout::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--accent);
+  }
+
+  .visual-callout-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    color: var(--white);
+    margin-bottom: 16px;
+  }
+
+  .visual-callout-text {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--cream);
+  }
+
+  /* COMPARISON GRID */
+  .comparison-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    background: var(--accent-dim);
+    margin: 48px 0;
+    border: 2px solid var(--accent-dim);
+  }
+
+  .comparison-item {
+    background: var(--black);
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .comparison-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.2rem;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .comparison-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+
+  .comparison-desc {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--white);
+  }
+
+  /* PERCENTAGE BREAKDOWN */
+  .percentage-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .percentage-bar {
+    flex: 1;
+    height: 48px;
+    background: rgba(91,140,255,0.08);
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .percentage-fill {
+    height: 100%;
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: width 1s ease;
+  }
+
+  .percentage-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    color: var(--white);
+    position: relative;
+    z-index: 2;
+  }
+
+  .percentage-text {
+    min-width: 200px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="Home.html" class="nav-logo">KP — Portfolio</a>
+  <ul class="nav-links">
+    <li><a href="work.html">Work</a></li>
+    <li><a href="krishna-about.html">About</a></li>
+    <li><a href="krishna-contact.html">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="cs-hero">
+  <div class="cs-hero-content reveal">
+    <div class="cs-tag">UX Research · Enterprise Hardware</div>
+    <h1 class="cs-title">FM GLOBAL<br>HARDWARE RESEARCH</h1>
+    <p class="cs-subtitle">
+      User-centered research to inform device selection for field engineers—balancing battery life, portability, and real-world usability across 650+ participants.
+    </p>
+    <div class="cs-meta">
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Method</div>
+        <div class="cs-meta-value">Qualtrics Survey</div>
+      </div>
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Participants</div>
+        <div class="cs-meta-value">650+ Field Engineers</div>
+      </div>
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Deliverable</div>
+        <div class="cs-meta-value">Hardware Recommendations</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PURPOSE -->
+<section class="content-section reveal">
+  <div class="section-label">01 — Context</div>
+  <h2 class="section-title">Purpose &amp; Goals</h2>
+  <div class="section-text">
+    <p>This research initiative aimed to <strong>collect field engineer input to inform the selection of devices for testing</strong>—understanding priorities, identifying dealbreakers, and uncovering the most valuable applications needed during field visits.</p>
+    <p>The consolidated artifact serves multiple purposes:</p>
+  </div>
+  <div class="findings-list">
+    <div class="finding-item">
+      <div class="finding-number">01</div>
+      <div class="finding-content">
+        <h4>Share Recommendations</h4>
+        <p>Deliver actionable hardware recommendations paired with user considerations.</p>
+      </div>
+    </div>
+    <div class="finding-item">
+      <div class="finding-number">02</div>
+      <div class="finding-content">
+        <h4>Synthesize Findings</h4>
+        <p>Combine survey data with ongoing and past research into a unified view.</p>
+      </div>
+    </div>
+    <div class="finding-item">
+      <div class="finding-number">03</div>
+      <div class="finding-content">
+        <h4>Guide Future Research</h4>
+        <p>Identify areas of focus for upcoming usability testing and validation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM STATEMENT -->
+<section class="content-section reveal">
+  <div class="section-label">02 — Research Framing</div>
+  <h2 class="section-title">The Challenge</h2>
+  <div class="section-text">
+    <p>Field Engineers at FM Global rely on mobile devices to conduct site visits, document risk assessments, and prepare detailed reports. However, <strong>existing hardware was creating friction</strong>—poor battery life, inadequate performance, and mismatched capabilities were disrupting workflows and undermining the quality of client interactions.</p>
+    <p>Before investing in new hardware, the organization needed a <em>data-informed understanding</em> of what field engineers actually need to succeed.</p>
+  </div>
+  
+  <div class="insight-box">
+    <div class="insight-title">Problem Statement</div>
+    <div class="insight-text">
+      Field engineers need reliable, fit-for-purpose devices that support their work across three distinct phases: <strong>pre-visit planning</strong>, <strong>on-site assessment</strong>, and <strong>post-visit reporting</strong>. The current hardware fails to meet these needs, creating workarounds, inefficiencies, and risks to both engineer safety and client relationships.
+    </div>
+  </div>
+
+  <div class="section-text">
+    <p><strong>Research Goals — What We Set Out to Understand:</strong></p>
+  </div>
+  
+  <div class="findings-list">
+    <div class="finding-item">
+      <div class="finding-number">01</div>
+      <div class="finding-content">
+        <h4>Battery Requirements</h4>
+        <p>Identify the minimum number of battery hours field engineers expect their device to last between charges during a full site visit.</p>
+      </div>
+    </div>
+    <div class="finding-item">
+      <div class="finding-number">02</div>
+      <div class="finding-content">
+        <h4>Critical Capabilities</h4>
+        <p>Determine which applications and features are most valuable during field visits—and which are dealbreakers if unavailable.</p>
+      </div>
+    </div>
+    <div class="finding-item">
+      <div class="finding-number">03</div>
+      <div class="finding-content">
+        <h4>Input Method Preferences</h4>
+        <p>Understand which input methods (stylus, keyboard, touch, voice) field engineers prefer for different tasks and contexts.</p>
+      </div>
+    </div>
+    <div class="finding-item">
+      <div class="finding-number">04</div>
+      <div class="finding-content">
+        <h4>Device Configuration</h4>
+        <p>Assess whether field engineers prefer one versatile device or two specialized devices (one for planning/reporting, one for site visits).</p>
+      </div>
+    </div>
+    <div class="finding-item">
+      <div class="finding-number">05</div>
+      <div class="finding-content">
+        <h4>Audience Segmentation</h4>
+        <p>Identify variations across location, seniority, urban/rural settings, and specialty areas (e.g., Chemical, Flood, Wind) that might require different device configurations.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- METHOD -->
+<section class="content-section reveal">
+  <div class="section-label">03 — Methodology</div>
+  <h2 class="section-title">Survey Design &amp; Execution</h2>
+  <div class="section-text">
+    <p>We designed a <strong>Qualtrics survey</strong> that ran from <em>January 31 to February 14</em>, inviting approximately <strong>1,100 field engineers</strong> via email from leadership. The survey was structured to capture both quantitative patterns and qualitative nuance across the field engineer experience.</p>
+  </div>
+
+  <div class="insight-box">
+    <div class="insight-title">Survey Structure — Three Question Types</div>
+    <div class="insight-text">
+      The survey combined <strong>demographic profiling</strong>, <strong>behavioral estimation</strong>, and <strong>preference ranking</strong> to build a complete picture of field engineer needs and current pain points.
+    </div>
+  </div>
+
+  <div class="findings-list">
+    <div class="finding-item">
+      <div class="finding-number">01</div>
+      <div class="finding-content">
+        <h4>Demographic & Context Questions</h4>
+        <p><strong>What we asked:</strong> Office location, role, specialty (e.g., Flood, Chemical, Wind), years of experience, urban/rural/suburban visit breakdown.</p>
+        <p><strong>Why it matters:</strong> Understanding audience segmentation allows us to identify whether different groups (senior vs. junior, chemical vs. earthquake specialists, rural vs. urban) have distinct device needs.</p>
+      </div>
+    </div>
+    <div class="finding-item">
+      <div class="finding-number">02</div>
+      <div class="finding-content">
+        <h4>Behavioral Estimation Questions</h4>
+        <p><strong>What we asked:</strong> Estimated battery hours needed per visit, percentage of time using each input method (touch, stylus, keyboard, voice) across three phases—pre-visit planning, during site visit, and report writing.</p>
+        <p><strong>Why it matters:</strong> Behavior varies across workflow phases. A device optimized for report writing (keyboard-heavy) might not work well on-site (stylus + touch). Understanding these patterns informs whether one device can handle all phases or if specialization is needed.</p>
+      </div>
+    </div>
+    <div class="finding-item">
+      <div class="finding-number">03</div>
+      <div class="finding-content">
+        <h4>Preference & Priority Ranking</h4>
+        <p><strong>What we asked:</strong> Rank 10 capabilities from most to least valuable during a site visit (e.g., taking freehand notes, marking up sketches, taking photos, connecting to internet). Choose between one versatile device or two specialized devices.</p>
+        <p><strong>Why it matters:</strong> Rankings reveal what's non-negotiable versus nice-to-have. If "taking notes freehand" ranks #1 but current stylus battery dies mid-visit, that's a critical failure mode. Device configuration preferences (1 vs. 2 devices) help assess whether engineers value convenience or specialization.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="col-box">
+      <h4>Survey Platform</h4>
+      <p>Qualtrics survey with email invitations sent from Scott Anderson (GMFE, OCE, OCM) and local GMFEs. Participation was voluntary and open to all invitees.</p>
+    </div>
+    <div class="col-box">
+      <h4>Open-Ended Responses</h4>
+      <p>We included open-ended questions throughout to capture nuance: "Anything else you'd like to add about input methods?" and "Describe issues using your device outside your home country."</p>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-number">598</div>
+      <div class="stat-label">Field Engineers</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">74</div>
+      <div class="stat-label">GMFE</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">11</div>
+      <div class="stat-label">MOET</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">15</div>
+      <div class="stat-label">OCE</div>
+    </div>
+  </div>
+</section>
+
+<!-- KEY FINDINGS -->
+<section class="content-section reveal">
+  <div class="section-label">04 — Executive Summary</div>
+  <h2 class="section-title">Key Findings</h2>
+  
+  <div class="visual-callout">
+    <div class="visual-callout-title">Battery Life is Non-Negotiable</div>
+    <div class="visual-callout-text">
+      <strong>45% of field engineers</strong> need their device to last <strong>6-8 hours</strong> without charging during a site visit. Combined with the 22% who need 8-10 hours, this means <em>two-thirds of field engineers require 6+ hours of battery life</em>—yet prior research shows current devices only last 2-4 hours. This is a critical mismatch.
+    </div>
+  </div>
+
+  <div class="bar-chart">
+    <div class="bar-row">
+      <div class="bar-label">Less than 2 hrs</div>
+      <div class="bar-track">
+        <div class="bar-fill animate" style="width: 3%;">
+          <span style="font-size: 0.7rem; color: var(--white);">18</span>
+        </div>
+      </div>
+      <div class="bar-value">3%</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">2-4 hrs</div>
+      <div class="bar-track">
+        <div class="bar-fill animate" style="width: 10%;">
+          <span style="font-size: 0.7rem; color: var(--white);">59</span>
+        </div>
+      </div>
+      <div class="bar-value">10%</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">4-6 hrs</div>
+      <div class="bar-track">
+        <div class="bar-fill animate" style="width: 23%;">
+          <span style="font-size: 0.7rem; color: var(--white);">135</span>
+        </div>
+      </div>
+      <div class="bar-value">23%</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">6-8 hrs</div>
+      <div class="bar-track">
+        <div class="bar-fill animate" style="width: 45%; background: linear-gradient(90deg, var(--accent), #7aa3ff);">
+          <span style="font-size: 0.75rem; font-weight: 700; color: var(--white);">270</span>
+        </div>
+      </div>
+      <div class="bar-value" style="color: var(--accent); font-weight: 700;">45%</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">8-10 hrs</div>
+      <div class="bar-track">
+        <div class="bar-fill animate" style="width: 22%;">
+          <span style="font-size: 0.7rem; color: var(--white);">136</span>
+        </div>
+      </div>
+      <div class="bar-value">22%</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">More than 10 hrs</div>
+      <div class="bar-track">
+        <div class="bar-fill animate" style="width: 5%;">
+          <span style="font-size: 0.7rem; color: var(--white);">31</span>
+        </div>
+      </div>
+      <div class="bar-value">5%</div>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <div class="insight-title">The Battery Gap</div>
+    <div class="insight-text">
+      Prior research found that <strong>74% of existing devices only last 2-4 hours</strong>, while <strong>71% of field visits last longer than 5 hours</strong>. This creates a critical failure mode: engineers are forced to ration device usage, rely on personal phones, or revert to pen and paper—all workarounds that undermine the purpose of providing field hardware.
+    </div>
+  </div>
+
+  <div class="comparison-grid">
+    <div class="comparison-item">
+      <div class="comparison-value">2-4 hrs</div>
+      <div class="comparison-label">Current Device Battery</div>
+      <div class="comparison-desc">74% of existing devices only last this long</div>
+    </div>
+    <div class="comparison-item">
+      <div class="comparison-value">6-8 hrs</div>
+      <div class="comparison-label">Required Battery Life</div>
+      <div class="comparison-desc">45% of engineers need at least this much</div>
+    </div>
+  </div>
+
+  <div class="section-text">
+    <p><strong>Most Valuable Capabilities During Site Visits:</strong></p>
+    <p>We asked field engineers to rank 10 capabilities from most to least valuable. The top capabilities had the most consistent rankings, indicating strong consensus:</p>
+  </div>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Capability</th>
+        <th>Avg Rank</th>
+        <th>Consistency</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="rank-badge">1</span></td>
+        <td>Taking notes "freehand" (OneNote experience)</td>
+        <td>2.6</td>
+        <td><span style="color: var(--mid);">Moderate variance</span></td>
+      </tr>
+      <tr>
+        <td><span class="rank-badge">2</span></td>
+        <td>Marking up sketches via Drawboard</td>
+        <td>1.9</td>
+        <td><span style="color: #4ade80;">Highly consistent</span></td>
+      </tr>
+      <tr>
+        <td><span class="rank-badge">3</span></td>
+        <td>Taking pictures/video</td>
+        <td>2.1</td>
+        <td><span style="color: #4ade80;">Highly consistent</span></td>
+      </tr>
+      <tr>
+        <td><span class="rank-badge">4</span></td>
+        <td>Notes on past Risk Report (Drawboard)</td>
+        <td>2.4</td>
+        <td><span style="color: var(--accent);">Consistent</span></td>
+      </tr>
+      <tr>
+        <td><span class="rank-badge">5</span></td>
+        <td>Connecting to site devices for final conference</td>
+        <td>2.0</td>
+        <td><span style="color: #4ade80;">Highly consistent</span></td>
+      </tr>
+      <tr>
+        <td style="opacity: 0.5;">6</td>
+        <td style="opacity: 0.5;">Connecting to internet (Google search)</td>
+        <td style="opacity: 0.5;">2.1</td>
+        <td style="opacity: 0.5;">Consistent</td>
+      </tr>
+      <tr>
+        <td style="opacity: 0.5;">7</td>
+        <td style="opacity: 0.5;">Taking notes on Risk Report – Hardcopy</td>
+        <td style="opacity: 0.5;">3.1</td>
+        <td style="opacity: 0.5;">Low consistency</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="insight-box">
+    <div class="insight-title">Insight — Note-Taking is Core</div>
+    <div class="insight-text">
+      The top three capabilities—<strong>freehand notes</strong>, <strong>sketch markup</strong>, and <strong>photos</strong>—all support the same goal: <em>capturing site observations efficiently during the visit</em>. This validates the hypothesis that field engineers prioritize documentation tools over computational tools (like calculation apps) while on-site.
+    </div>
+  </div>
+</section>
+
+<!-- CHALLENGES -->
+<section class="content-section reveal">
+  <div class="section-label">05 — International Challenges</div>
+  <h2 class="section-title">Working Outside Your Home Country</h2>
+  
+  <div class="section-text">
+    <p>Field engineers who travel internationally face additional friction. While some challenges mirror domestic issues, <strong>connectivity emerges as the dominant pain point</strong>—hotspots fail, hotel WiFi is unreliable, and workarounds require downloading everything ahead of time.</p>
+  </div>
+
+  <div class="bar-chart">
+    <div class="bar-row">
+      <div class="bar-label">No unique issues</div>
+      <div class="bar-track">
+        <div class="bar-fill animate" style="width: 38%;">
+          <span style="font-size: 0.7rem; color: var(--white);">28</span>
+        </div>
+      </div>
+      <div class="bar-value">38%</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">Internet connectivity</div>
+      <div class="bar-track">
+        <div class="bar-fill animate" style="width: 31%; background: linear-gradient(90deg, #ef4444, #f87171);">
+          <span style="font-size: 0.75rem; font-weight: 700; color: var(--white);">23</span>
+        </div>
+      </div>
+      <div class="bar-value" style="color: #f87171; font-weight: 700;">31%</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">Charging adapters</div>
+      <div class="bar-track">
+        <div class="bar-fill animate" style="width: 9.5%;">
+          <span style="font-size: 0.7rem; color: var(--white);">7</span>
+        </div>
+      </div>
+      <div class="bar-value">9.5%</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">Size / weight</div>
+      <div class="bar-track">
+        <div class="bar-fill animate" style="width: 6.8%;">
+          <span style="font-size: 0.7rem; color: var(--white);">5</span>
+        </div>
+      </div>
+      <div class="bar-value">6.8%</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="col-box" style="border-left: 3px solid #ef4444;">
+      <h4 style="color: #f87171;">Connectivity Failures</h4>
+      <p>"I could not connect to Internet from my hotel nor via my hotspot."</p>
+      <p style="margin-top: 12px;">"If outside Europe the personal hotspot does not work necessarily."</p>
+      <p style="margin-top: 12px; font-size: 0.85rem; color: var(--mid);">Workaround: "None although I didn't need to connect to the internet as I had everything loaded in EFC."</p>
+    </div>
+    <div class="col-box" style="border-left: 3px solid var(--accent);">
+      <h4 style="color: var(--accent);">Adapter Burden</h4>
+      <p>"None. Just remember your adaptor for charging the tablet and in turn, the stylus."</p>
+      <p style="margin-top: 12px; font-size: 0.85rem; color: var(--mid);">Mental load: Forgetting an adapter means the device won't work—adding stress to travel prep.</p>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <div class="insight-title">Insight — Connectivity is Critical</div>
+    <div class="insight-text">
+      Though 38% reported "same issues as in my home country," <strong>31% specifically cited internet connectivity</strong> as a pain point unique to international travel. Hotspot unreliability and hotel WiFi failures force engineers to pre-download all necessary data—a workaround that adds prep time and creates risk if unexpected information is needed on-site.
+    </div>
+  </div>
+</section>
+
+<!-- TRADEOFFS -->
+<section class="content-section reveal">
+  <div class="section-label">06 — Device Configuration</div>
+  <h2 class="section-title">Identified Tradeoffs</h2>
+  
+  <div class="section-text">
+    <p>Field engineers face inherent tradeoffs when choosing device configurations. No single device excels at everything—portability competes with screen size, battery capacity competes with weight, and versatility competes with specialized performance.</p>
+  </div>
+
+  <div class="visual-callout">
+    <div class="visual-callout-title">One Device vs. Two Devices</div>
+    <div class="visual-callout-text">
+      No clear consensus emerged—and that's revealing. The question itself exposes a fundamental tension: <strong>one device that "does everything adequately"</strong> means accepting performance tradeoffs, while <strong>two specialized devices</strong> means managing more equipment, more charging, and more complexity.
+    </div>
+  </div>
+
+  <div class="findings-list">
+    <div class="finding-item">
+      <div class="finding-number">01</div>
+      <div class="finding-content">
+        <h4>Stylus Battery Reliability</h4>
+        <p><strong>Battery-powered stylus</strong> (requires AAAA battery replacement) vs <strong>Rechargeable stylus</strong> (shorter runtime, dies mid-visit)</p>
+        <p style="margin-top: 8px; color: var(--mid); font-size: 0.9rem;">"I use the stylus from my 'old' tablet that has a AAAA replaceable battery, with the tether. Don't like that the new stylus has to be charged all the time and has no hole for tether."</p>
+      </div>
+    </div>
+    <div class="finding-item">
+      <div class="finding-number">02</div>
+      <div class="finding-content">
+        <h4>Screen Size vs. Portability</h4>
+        <p><strong>Larger screen with detached keyboard</strong> (better for report writing, awkward to carry) vs <strong>On-screen keyboard only</strong> (more portable, limited screen real estate)</p>
+        <p style="margin-top: 8px; color: var(--mid); font-size: 0.9rem;">"Onscreen keyboard does not really work due to limited screen real estate." vs "It's difficult to type while on the move and inefficient to pull out and re-attach a keyboard."</p>
+      </div>
+    </div>
+    <div class="finding-item">
+      <div class="finding-number">03</div>
+      <div class="finding-content">
+        <h4>Performance vs. Convenience</h4>
+        <p><strong>Two devices</strong> (laptop for reports, lightweight tablet for site visits) vs <strong>One versatile device</strong> (no duplication, but compromises performance)</p>
+        <p style="margin-top: 8px; color: var(--mid); font-size: 0.9rem;">"Having a powerful laptop that you keep at home/hotel for prep and reporting, complemented by a tablet with digitizer for site visits is another good idea."</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quote-block">
+    <p class="quote-text">
+      For the two devices question, I would only prefer this method if there were no drawbacks. If there were drawbacks—low battery life, other issues—then I would prefer one device. A pertinent detail would be easy transfer capabilities for information between the two devices. Otherwise, this would greatly extend the time required and defeat the point.
+    </p>
+  </div>
+
+  <div class="insight-box">
+    <div class="insight-title">Critical Insight</div>
+    <div class="insight-text">
+      One device for everything is a compromise. The tablet <em>lacks performance</em> for report writing and is <em>too bulky</em> on site. To succeed, a two-device strategy must ensure the benefits of fit-for-purpose tools <strong>outweigh the complexity</strong> of managing more equipment. This requires careful coordination across battery performance, ease of use, and seamless data transfer.
+    </div>
+  </div>
+
+  <div class="comparison-grid">
+    <div class="comparison-item">
+      <div class="comparison-value">1 Device</div>
+      <div class="comparison-label">Versatility</div>
+      <div class="comparison-desc">Does everything adequately, but nothing excellently. Compromise on performance or portability.</div>
+    </div>
+    <div class="comparison-item">
+      <div class="comparison-value">2 Devices</div>
+      <div class="comparison-label">Specialization</div>
+      <div class="comparison-desc">Optimized for specific tasks, but adds complexity in syncing, charging, and carrying.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRIOR RESEARCH -->
+<section class="content-section reveal">
+  <div class="section-label">07 — Additional Context</div>
+  <h2 class="section-title">Prior Research Insights</h2>
+  
+  <div class="section-text">
+    <p>Previous surveys on adjacent topics informed this study:</p>
+  </div>
+
+  <div class="findings-list">
+    <div class="finding-item">
+      <div class="finding-number">74%</div>
+      <div class="finding-content">
+        <h4>Battery Mismatch</h4>
+        <p>Existing devices last 2-4 hours, while 71% of visits last longer than 5 hours—a clear gap between device performance and business need.</p>
+      </div>
+    </div>
+    <div class="finding-item">
+      <div class="finding-number">141</div>
+      <div class="finding-content">
+        <h4>Tablet Preference</h4>
+        <p>Respondents want a tablet with adequate battery, less weight, better camera, and one-hand usability.</p>
+      </div>
+    </div>
+    <div class="finding-item">
+      <div class="finding-number">128</div>
+      <div class="finding-content">
+        <h4>Multiple Devices</h4>
+        <p>Many use tablet + phone: tablet for notes and sketches, phone for photos and quick email checks.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VISIT TRAILINGS -->
+<section class="content-section reveal">
+  <div class="section-label">08 — Field Observations</div>
+  <h2 class="section-title">Visit Trailings — Preliminary Findings</h2>
+  
+  <div class="findings-list">
+    <div class="finding-item">
+      <div class="finding-number">01</div>
+      <div class="finding-content">
+        <h4>Tablet is Awkward to Carry</h4>
+        <p><strong>Opportunity:</strong> Improve comfort, reduce safety and damage risks—make device easier to secure on body. Carrying the bulky tablet makes climbing ladders less safe. Keyboard disconnected and fell ~20 feet.</p>
+      </div>
+    </div>
+    <div class="finding-item">
+      <div class="finding-number">02</div>
+      <div class="finding-content">
+        <h4>Bluetooth Mouse Requires Extra Adapter</h4>
+        <p><strong>Opportunity:</strong> Limit need for adapters—ensure accessories are compatible with device ports. "If I want to use a mouse, it should just work."</p>
+      </div>
+    </div>
+    <div class="finding-item">
+      <div class="finding-number">03</div>
+      <div class="finding-content">
+        <h4>Stylus Battery Dies Quickly</h4>
+        <p><strong>Opportunity:</strong> Improve stylus battery to ensure this valued tool is always available. "This is a new tablet. I ration my stylus use because it dies quicker than my tablet."</p>
+      </div>
+    </div>
+    <div class="finding-item">
+      <div class="finding-number">04</div>
+      <div class="finding-content">
+        <h4>Handwriting Challenges</h4>
+        <p><strong>Opportunity:</strong> Explore note-taking methods that don't rely on handwriting. "I don't use the stylus because my handwriting is too hard to read. I type with the keyboard."</p>
+      </div>
+    </div>
+    <div class="finding-item">
+      <div class="finding-number">05</div>
+      <div class="finding-content">
+        <h4>Bright Light / Sunny Conditions</h4>
+        <p><strong>Opportunity:</strong> Improve readability—Polaris dark mode. Tablet is difficult to use in bright light.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section class="content-section reveal">
+  <div class="section-label">09 — What's Next</div>
+  <h2 class="section-title">Roadmap &amp; Testing Plan</h2>
+  
+  <div class="insight-box">
+    <div class="insight-title">Open Opportunity</div>
+    <div class="insight-text">
+      How does a companion device perform with field engineers in real-world conditions?
+    </div>
+  </div>
+
+  <div class="section-text">
+    <p><strong>Decisions Needed:</strong></p>
+  </div>
+
+  <div class="findings-list">
+    <div class="finding-item">
+      <div class="finding-number">01</div>
+      <div class="finding-content">
+        <h4>Determine the Team</h4>
+        <p>1 UX Researcher, 1 Designer, 1 Technical Lead. Pod works closely from research plan development → participate in sessions → synthesis → readout.</p>
+      </div>
+    </div>
+    <div class="finding-item">
+      <div class="finding-number">02</div>
+      <div class="finding-content">
+        <h4>Shortlist Devices</h4>
+        <p>Which device(s) do we want to test based on these findings?</p>
+      </div>
+    </div>
+    <div class="finding-item">
+      <div class="finding-number">03</div>
+      <div class="finding-content">
+        <h4>Timeline</h4>
+        <p>When do insights need to be delivered to inform procurement decisions?</p>
+      </div>
+    </div>
+    <div class="finding-item">
+      <div class="finding-number">04</div>
+      <div class="finding-content">
+        <h4>Success Criteria</h4>
+        <p>How will we determine "success?" What KPIs do we strive to address?</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="page-footer">
+  <span class="footer-l"><span class="footer-dot"></span>Available for opportunities</span>
+  <span class="footer-r">Krishna Panyala © 2026</span>
+</footer>
+
+<script>
+// Cursor
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; 
+  my = e.clientY;
+  cursor.style.left = mx + 'px'; 
+  cursor.style.top = my + 'px';
+});
+
+(function animRing() {
+  rx += (mx - rx) * 0.12; 
+  ry += (my - ry) * 0.12;
+  ring.style.left = rx + 'px'; 
+  ring.style.top = ry + 'px';
+  requestAnimationFrame(animRing);
+})();
+
+document.querySelectorAll('a, button').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cursor.style.background = 'transparent';
+    cursor.style.border = '1px solid var(--accent)';
+    ring.style.width = '52px'; 
+    ring.style.height = '52px';
+  });
+  el.addEventListener('mouseleave', () => {
+    cursor.style.background = 'var(--accent)';
+    cursor.style.border = 'none';
+    ring.style.width = '38px'; 
+    ring.style.height = '38px';
+  });
+});
+
+// Nav scroll effect
+const nav = document.getElementById('mainNav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+}, { passive: true });
+
+// Scroll reveal
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { 
+    if (e.isIntersecting) { 
+      e.target.classList.add('visible');
+      
+      // Animate bar charts when they come into view
+      if (e.target.querySelector('.bar-chart')) {
+        const bars = e.target.querySelectorAll('.bar-fill');
+        bars.forEach((bar, index) => {
+          setTimeout(() => {
+            bar.style.transition = 'width 1.2s ease';
+            bar.style.width = bar.getAttribute('style').match(/width:\s*(\d+%)/)[1];
+          }, index * 100);
+        });
+      }
+      
+      io.unobserve(e.target); 
+    } 
+  });
+}, { threshold: 0.06 });
+
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
