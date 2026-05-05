@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wealth Management Tool PEP Results — Krishna Panyala</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black:      #0a0f1e;
+    --off-black:  #0d1428;
+    --navy:       #0f1b3d;
+    --white:      #f0f4ff;
+    --cream:      #dde6ff;
+    --accent:     #5b8cff;
+    --accent-dim: #2a4fa8;
+    --mid:        #7a90c0;
+    --border:     rgba(240,244,255,0.08);
+    --border-vis: rgba(240,244,255,0.14);
+    --success:    #4ade80;
+    --warning:    #fbbf24;
+    --danger:     #f87171;
+  }
+
+  html { scroll-behavior: smooth; }
+  body { 
+    background: var(--black); 
+    color: var(--white); 
+    font-family: 'DM Sans', sans-serif; 
+    font-weight: 300; 
+    overflow-x: hidden; 
+    cursor: none;
+    line-height: 1.6;
+  }
+
+  /* CURSOR */
+  .cursor { position: fixed; top: 0; left: 0; z-index: 9999; width: 10px; height: 10px; background: var(--accent); border-radius: 50%; pointer-events: none; transform: translate(-50%,-50%); transition: background 0.2s, border 0.2s; }
+  .cursor-ring { position: fixed; top: 0; left: 0; z-index: 9998; width: 38px; height: 38px; border: 1px solid rgba(91,140,255,0.45); border-radius: 50%; pointer-events: none; transform: translate(-50%,-50%); transition: width 0.2s, height 0.2s; }
+
+  /* GRAIN */
+  body::before { content: ''; position: fixed; inset: 0; z-index: 1; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; opacity: 0.35; }
+
+  /* NAV */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 26px 48px; display: flex; align-items: center; justify-content: space-between; background: rgba(10,15,30,0); backdrop-filter: blur(0px); border-bottom: 1px solid transparent; transition: background 0.4s, backdrop-filter 0.4s, border-color 0.4s; }
+  nav.scrolled { background: rgba(10,15,30,0.88); backdrop-filter: blur(14px); border-color: var(--border); }
+  .nav-logo { font-family: 'Space Mono', monospace; font-size: 0.7rem; letter-spacing: 0.18em; color: var(--mid); text-transform: uppercase; text-decoration: none; transition: color 0.2s; }
+  .nav-logo:hover { color: var(--white); }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a { font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--mid); text-decoration: none; transition: color 0.2s; position: relative; }
+  .nav-links a::after { content: ''; position: absolute; bottom: -3px; left: 0; width: 0; height: 1px; background: var(--accent); transition: width 0.3s; }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a:hover::after { width: 100%; }
+
+  /* CASE STUDY HERO */
+  .cs-hero {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    padding: 140px 48px 80px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cs-hero-content {
+    max-width: 900px;
+    position: relative;
+    z-index: 10;
+  }
+
+  .cs-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+  }
+
+  .cs-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3.5rem, 7vw, 7rem);
+    line-height: 0.95;
+    color: var(--white);
+    margin-bottom: 32px;
+  }
+
+  .cs-subtitle {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: clamp(1.3rem, 2vw, 1.8rem);
+    line-height: 1.4;
+    color: var(--cream);
+    max-width: 700px;
+    margin: 0 auto 48px;
+  }
+
+  .cs-meta {
+    display: flex;
+    gap: 48px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .cs-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .cs-meta-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+
+  .cs-meta-value {
+    font-size: 0.95rem;
+    color: var(--white);
+  }
+
+  /* CONTENT SECTIONS */
+  .content-section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 80px 48px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 4.5vw, 4rem);
+    line-height: 1;
+    color: var(--white);
+    margin-bottom: 32px;
+  }
+
+  .section-text {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--mid);
+    max-width: 720px;
+  }
+
+  .section-text p {
+    margin-bottom: 20px;
+  }
+
+  .section-text strong {
+    color: var(--white);
+    font-weight: 500;
+  }
+
+  .section-text em {
+    color: var(--accent);
+    font-style: normal;
+  }
+
+  /* STATS GRID */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 24px;
+    margin: 48px 0;
+  }
+
+  .stat-card {
+    background: rgba(91,140,255,0.04);
+    border: 1px solid var(--border-vis);
+    padding: 32px;
+    transition: background 0.3s, border-color 0.3s;
+  }
+
+  .stat-card:hover {
+    background: rgba(91,140,255,0.08);
+    border-color: var(--accent-dim);
+  }
+
+  .stat-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.5rem;
+    line-height: 1;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .stat-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+
+  /* SCORE VISUALIZATION */
+  .score-visual {
+    margin: 48px 0;
+    padding: 48px;
+    background: linear-gradient(135deg, rgba(91,140,255,0.08), rgba(91,140,255,0.02));
+    border: 1px solid var(--border-vis);
+    position: relative;
+  }
+
+  .score-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 48px;
+    margin-bottom: 32px;
+  }
+
+  .score-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 8rem;
+    line-height: 1;
+    color: var(--accent);
+  }
+
+  .score-context {
+    max-width: 300px;
+  }
+
+  .score-context-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 8px;
+  }
+
+  .score-context-text {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--cream);
+  }
+
+  .score-benchmark {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    align-items: center;
+    padding: 20px 24px;
+    background: rgba(248,113,113,0.12);
+    border-left: 3px solid var(--danger);
+  }
+
+  .score-benchmark-text {
+    font-size: 0.9rem;
+    color: var(--cream);
+  }
+
+  .score-benchmark-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem;
+    color: var(--danger);
+  }
+
+  /* HORIZONTAL BAR CHART */
+  .bar-chart {
+    margin: 48px 0;
+  }
+
+  .bar-row {
+    display: grid;
+    grid-template-columns: 160px 1fr 100px;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+
+  .bar-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--white);
+    text-align: right;
+  }
+
+  .bar-track {
+    height: 48px;
+    background: rgba(91,140,255,0.08);
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    transition: width 1.2s ease;
+    position: relative;
+  }
+
+  .bar-fill::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: rgba(255,255,255,0.3);
+  }
+
+  .bar-score {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--white);
+    position: relative;
+    z-index: 2;
+  }
+
+  .bar-value {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--white);
+    text-align: right;
+  }
+
+  .bar-target {
+    position: absolute;
+    height: 100%;
+    width: 2px;
+    background: var(--success);
+    box-shadow: 0 0 8px var(--success);
+  }
+
+  .bar-target::before {
+    content: 'Target';
+    position: absolute;
+    top: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--success);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+  }
+
+  /* COMPARISON CHART */
+  .comparison-chart {
+    margin: 48px 0;
+    display: grid;
+    gap: 20px;
+  }
+
+  .comparison-row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 20px;
+    align-items: center;
+  }
+
+  .comparison-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--white);
+    text-align: right;
+  }
+
+  .comparison-bars {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .comparison-bar {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    position: relative;
+    transition: width 1.2s ease;
+  }
+
+  .comparison-bar.fa {
+    background: linear-gradient(90deg, #ef4444, #f87171);
+  }
+
+  .comparison-bar.cst {
+    background: linear-gradient(90deg, var(--accent-dim), var(--accent));
+  }
+
+  .comparison-score {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--white);
+  }
+
+  .comparison-legend {
+    display: flex;
+    gap: 32px;
+    margin-bottom: 16px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .legend-color {
+    width: 24px;
+    height: 12px;
+  }
+
+  .legend-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+
+  /* INSIGHTS */
+  .insight-box {
+    background: var(--navy);
+    border-left: 3px solid var(--accent);
+    padding: 32px;
+    margin: 32px 0;
+  }
+
+  .insight-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .insight-text {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--cream);
+  }
+
+  /* VISUAL CALLOUT */
+  .visual-callout {
+    background: linear-gradient(135deg, rgba(91,140,255,0.12), rgba(91,140,255,0.04));
+    border: 1px solid var(--accent-dim);
+    padding: 48px;
+    margin: 48px 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .visual-callout::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--accent);
+  }
+
+  .visual-callout-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    color: var(--white);
+    margin-bottom: 16px;
+  }
+
+  .visual-callout-text {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--cream);
+  }
+
+  /* FINDINGS LIST */
+  .findings-list {
+    margin: 32px 0;
+  }
+
+  .finding-item {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 24px;
+    padding: 32px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .finding-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    color: var(--accent-dim);
+  }
+
+  .finding-content h4 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+
+  .finding-content p {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--mid);
+    margin-bottom: 12px;
+  }
+
+  .finding-quote {
+    background: rgba(91,140,255,0.06);
+    border-left: 2px solid var(--accent-dim);
+    padding: 16px 20px;
+    margin-top: 16px;
+    font-style: italic;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--cream);
+  }
+
+  /* QUOTE */
+  .quote-block {
+    max-width: 800px;
+    margin: 48px auto;
+    padding: 48px;
+    position: relative;
+  }
+
+  .quote-block::before {
+    content: '"';
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-family: 'DM Serif Display', serif;
+    font-size: 8rem;
+    line-height: 1;
+    color: rgba(91,140,255,0.12);
+  }
+
+  .quote-text {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 1.4rem;
+    line-height: 1.6;
+    color: var(--cream);
+    position: relative;
+    z-index: 2;
+  }
+
+  /* TWO COLUMN */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin: 48px 0;
+  }
+
+  .col-box {
+    background: rgba(91,140,255,0.04);
+    border: 1px solid var(--border-vis);
+    padding: 32px;
+  }
+
+  .col-box h4 {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .col-box p {
+    font-size: 0.92rem;
+    line-height: 1.7;
+    color: var(--mid);
+  }
+
+  /* FOOTER */
+  .page-footer {
+    border-top: 1px solid var(--border);
+    padding: 24px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+
+  .footer-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: #4ade80;
+    border-radius: 50%;
+    margin-right: 8px;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+  }
+
+  .reveal.visible {
+    animation: fadeUp 0.7s ease forwards;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .cs-hero { padding: 120px 24px 60px; }
+    .content-section { padding: 60px 24px; }
+    .two-col { grid-template-columns: 1fr; gap: 24px; }
+    .stats-grid { grid-template-columns: 1fr; }
+    .cs-meta { gap: 24px; }
+    nav { padding: 20px 24px; }
+    .bar-row { grid-template-columns: 120px 1fr 80px; gap: 12px; }
+    .comparison-row { grid-template-columns: 120px 1fr; }
+    .score-main { flex-direction: column; gap: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="Home.html" class="nav-logo">KP — Portfolio</a>
+  <ul class="nav-links">
+    <li><a href="work.html">Work</a></li>
+    <li><a href="krishna-about.html">About</a></li>
+    <li><a href="krishna-contact.html">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="cs-hero">
+  <div class="cs-hero-content reveal">
+    <div class="cs-tag">Systems Design · Enterprise Platform Architecture</div>
+    <h1 class="cs-title">WEALTH MANAGEMENT<br>SYSTEM ANALYSIS</h1>
+    <p class="cs-subtitle">
+      A systems-thinking approach to understanding user experience across six interconnected platform modules—mapping the architecture of friction points, performance gaps, and usability patterns within a complex financial advisory ecosystem.
+    </p>
+    <div class="cs-meta">
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Approach</div>
+        <div class="cs-meta-value">Systems Analysis</div>
+      </div>
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">System Modules</div>
+        <div class="cs-meta-value">6 Interconnected Areas</div>
+      </div>
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">User Segments</div>
+        <div class="cs-meta-value">FAs & CSTs (233 Users)</div>
+      </div>
+      <div class="cs-meta-item">
+        <div class="cs-meta-label">Deliverable</div>
+        <div class="cs-meta-value">System Performance Map</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OVERVIEW -->
+<section class="content-section reveal">
+  <div class="section-label">01 — System Architecture</div>
+  <h2 class="section-title">Understanding Platform Complexity</h2>
+  <div class="section-text">
+    <p>The wealth management platform is not a monolithic application—it's a <strong>complex system of interconnected modules</strong>, each serving different workflow needs while sharing common data structures, user populations, and business logic. Financial Advisors and Client Service Teams navigate this ecosystem differently, accessing different interfaces and workflows depending on their role.</p>
+    <p>This creates a systems design challenge: <em>How do we measure and improve user experience across a distributed architecture where performance in one module affects perception of the entire system?</em></p>
+  </div>
+
+  <div class="visual-callout">
+    <div class="visual-callout-title">Six Interconnected System Modules</div>
+    <div class="visual-callout-text">
+      Activities → Homepage → Relationship Groups → Contact Management → Financial Accounts → Overall Platform Experience. Each module represents a distinct interface with its own workflows, yet all share the same users, data layer, and design system. <strong>Performance gaps in one module create ripple effects across the entire user experience.</strong>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-number">6</div>
+      <div class="stat-label">System Modules Analyzed</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">2</div>
+      <div class="stat-label">User Segments (Different Workflows)</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">233</div>
+      <div class="stat-label">Users Mapped Across System</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">1</div>
+      <div class="stat-label">Unified Data Architecture</div>
+    </div>
+  </div>
+
+  <div class="section-text">
+    <p><strong>The Research Approach:</strong> Rather than treating each module as an isolated feature set, this analysis applies <em>systems thinking</em>—measuring performance across the entire platform to identify where architectural decisions, workflow dependencies, and interface inconsistencies create friction or amplify user satisfaction.</p>
+  </div>
+</section>
+
+<!-- OVERALL SCORE -->
+<section class="content-section reveal">
+  <div class="section-label">02 — System Performance Baseline</div>
+  <h2 class="section-title">Measuring the Entire Ecosystem</h2>
+
+  <div class="section-text">
+    <p>In complex systems, <strong>individual module performance matters less than the aggregate experience</strong>. Users don't think "the Homepage module scored 4.1"—they think "this platform feels slow and cumbersome." The overall system score provides a baseline for understanding whether the architecture as a whole is meeting user needs.</p>
+  </div>
+
+  <div class="score-visual">
+    <div class="score-main">
+      <div class="score-number">4.3</div>
+      <div class="score-context">
+        <div class="score-context-label">Overall System Performance Score</div>
+        <div class="score-context-text">Aggregate rating across all six interconnected modules, representing the <strong>holistic user experience</strong> of navigating the wealth management platform ecosystem.</div>
+      </div>
+    </div>
+    <div class="score-benchmark">
+      <div class="score-benchmark-text">
+        Compared to benchmarked external digital products, the system is performing <strong>worse than 75% or more</strong> of modern platforms—revealing an <em>architectural competitiveness gap</em>.
+      </div>
+      <div class="score-benchmark-value">11.5</div>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <div class="insight-title">Systems-Level Insight</div>
+    <div class="insight-text">
+      The 4.3 score barely clears the 4.2 threshold, but the <strong>11.5 benchmark percentile</strong> reveals the real problem: <em>users are comparing this enterprise platform to best-in-class consumer experiences</em>—Stripe, Notion, Linear—and finding it lacking. This isn't a feature problem; it's a <strong>systems architecture problem</strong>. The platform's design patterns, interaction models, and information architecture feel dated compared to modern systems.
+    </div>
+  </div>
+</section>
+
+<!-- RATINGS BY AREA -->
+<section class="content-section reveal">
+  <div class="section-label">03 — Module-Level Performance Analysis</div>
+  <h2 class="section-title">System Decomposition: Where Friction Lives</h2>
+
+  <div class="section-text">
+    <p>By decomposing the system into its six constituent modules, we can identify <strong>architectural weak points</strong>—the specific interfaces where design decisions, workflow complexity, or technical constraints create disproportionate friction. This isn't just about identifying "bad features"—it's about understanding <em>which parts of the system architecture need redesign</em>.</p>
+  </div>
+
+  <div class="bar-chart">
+    <div class="bar-row">
+      <div class="bar-label">Activities</div>
+      <div class="bar-track">
+        <div class="bar-target" style="left: 84%;"></div>
+        <div class="bar-fill" style="width: 85%; background: linear-gradient(90deg, var(--accent-dim), var(--accent));" data-width="85%">
+          <span class="bar-score">4.25</span>
+        </div>
+      </div>
+      <div class="bar-value">4.25</div>
+    </div>
+    
+    <div class="bar-row">
+      <div class="bar-label">Homepage</div>
+      <div class="bar-track">
+        <div class="bar-target" style="left: 84%;"></div>
+        <div class="bar-fill" style="width: 82%; background: linear-gradient(90deg, #f59e0b, #fbbf24);" data-width="82%">
+          <span class="bar-score">4.10</span>
+        </div>
+      </div>
+      <div class="bar-value">4.10</div>
+    </div>
+
+    <div class="bar-row">
+      <div class="bar-label">Relationship Group</div>
+      <div class="bar-track">
+        <div class="bar-target" style="left: 84%;"></div>
+        <div class="bar-fill" style="width: 88%; background: linear-gradient(90deg, var(--accent-dim), var(--accent));" data-width="88%">
+          <span class="bar-score">4.40</span>
+        </div>
+      </div>
+      <div class="bar-value">4.40</div>
+    </div>
+
+    <div class="bar-row">
+      <div class="bar-label">Contact Mgmt</div>
+      <div class="bar-track">
+        <div class="bar-target" style="left: 84%;"></div>
+        <div class="bar-fill" style="width: 86%; background: linear-gradient(90deg, var(--accent-dim), var(--accent));" data-width="86%">
+          <span class="bar-score">4.30</span>
+        </div>
+      </div>
+      <div class="bar-value">4.30</div>
+    </div>
+
+    <div class="bar-row">
+      <div class="bar-label">Financial Accounts</div>
+      <div class="bar-track">
+        <div class="bar-target" style="left: 84%;"></div>
+        <div class="bar-fill" style="width: 90%; background: linear-gradient(90deg, var(--accent-dim), #7aa3ff);" data-width="90%">
+          <span class="bar-score">4.50</span>
+        </div>
+      </div>
+      <div class="bar-value">4.50</div>
+    </div>
+
+    <div class="bar-row">
+      <div class="bar-label">Overall Desktop</div>
+      <div class="bar-track">
+        <div class="bar-target" style="left: 84%;"></div>
+        <div class="bar-fill" style="width: 86%; background: linear-gradient(90deg, var(--accent-dim), var(--accent));" data-width="86%">
+          <span class="bar-score">4.30</span>
+        </div>
+      </div>
+      <div class="bar-value">4.30</div>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <div class="insight-title">Critical Finding</div>
+    <div class="insight-text">
+      <strong>Homepage scores below target</strong> at 4.10, indicating significant usability challenges in search and navigation—the most frequent entry point for users. Financial Accounts scores highest at 4.50, suggesting this area is meeting user needs more effectively.
+    </div>
+  </div>
+</section>
+
+<!-- FA VS CST -->
+<section class="content-section reveal">
+  <div class="section-label">04 — User Segment Analysis</div>
+  <h2 class="section-title">One System, Two Distinct User Journeys</h2>
+
+  <div class="section-text">
+    <p>A critical systems design question: <strong>Can a single platform architecture serve two user populations with fundamentally different workflows?</strong> Financial Advisors are mobile, client-facing, and context-switching constantly. Client Service Teams operate from fixed workstations, managing administrative workflows with consistent tooling. The same system modules serve both—but the experience diverges dramatically.</p>
+  </div>
+
+  <div class="visual-callout">
+    <div class="visual-callout-title">The Architecture Serves One User Better Than the Other</div>
+    <div class="visual-callout-text">
+      CSTs rate the system at <strong>4.55</strong> overall, while FAs rate it at <strong>3.70</strong>—a 0.85-point gap. This isn't a training issue or a preference issue. It's a <em>systems architecture mismatch</em>. The platform's design assumptions—stable connectivity, desktop-first interfaces, keyboard-heavy workflows—align with CST needs but create friction for FAs working in dynamic, mobile contexts.
+    </div>
+  </div>
+
+  <div class="comparison-legend">
+    <div class="legend-item">
+      <div class="legend-color" style="background: linear-gradient(90deg, #ef4444, #f87171);"></div>
+      <div class="legend-label">Financial Advisors (n=72)</div>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color" style="background: linear-gradient(90deg, var(--accent-dim), var(--accent));"></div>
+      <div class="legend-label">CST Members (n=161)</div>
+    </div>
+  </div>
+
+  <div class="comparison-chart">
+    <div class="comparison-row">
+      <div class="comparison-label">Activities</div>
+      <div class="comparison-bars">
+        <div class="comparison-bar fa" style="width: 70%;" data-width="70%">
+          <span class="comparison-score">3.50</span>
+        </div>
+        <div class="comparison-bar cst" style="width: 85%;" data-width="85%">
+          <span class="comparison-score">4.25</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="comparison-row">
+      <div class="comparison-label">Homepage</div>
+      <div class="comparison-bars">
+        <div class="comparison-bar fa" style="width: 68%;" data-width="68%">
+          <span class="comparison-score">3.40</span>
+        </div>
+        <div class="comparison-bar cst" style="width: 82%;" data-width="82%">
+          <span class="comparison-score">4.10</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="comparison-row">
+      <div class="comparison-label">Relationship Group</div>
+      <div class="comparison-bars">
+        <div class="comparison-bar fa" style="width: 76%;" data-width="76%">
+          <span class="comparison-score">3.80</span>
+        </div>
+        <div class="comparison-bar cst" style="width: 88%;" data-width="88%">
+          <span class="comparison-score">4.40</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="comparison-row">
+      <div class="comparison-label">Contact Mgmt</div>
+      <div class="comparison-bars">
+        <div class="comparison-bar fa" style="width: 72%;" data-width="72%">
+          <span class="comparison-score">3.60</span>
+        </div>
+        <div class="comparison-bar cst" style="width: 86%;" data-width="86%">
+          <span class="comparison-score">4.30</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="comparison-row">
+      <div class="comparison-label">Financial Accounts</div>
+      <div class="comparison-bars">
+        <div class="comparison-bar fa" style="width: 80%;" data-width="80%">
+          <span class="comparison-score">4.00</span>
+        </div>
+        <div class="comparison-bar cst" style="width: 90%;" data-width="90%">
+          <span class="comparison-score">4.50</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="comparison-row">
+      <div class="comparison-label">Overall Desktop</div>
+      <div class="comparison-bars">
+        <div class="comparison-bar fa" style="width: 74%;" data-width="74%">
+          <span class="comparison-score">3.70</span>
+        </div>
+        <div class="comparison-bar cst" style="width: 91%;" data-width="91%">
+          <span class="comparison-score">4.55</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <div class="insight-title">Systems Design Implication</div>
+    <div class="insight-text">
+      This performance gap reveals an <strong>architectural trade-off</strong>: the system was optimized for desk-bound, administrative workflows (CSTs) at the expense of mobile, client-facing workflows (FAs). Fixing this requires more than UI tweaks—it demands <em>architectural decisions</em> about offline capability, mobile-first design patterns, and context-aware interfaces that adapt to where and how FAs work.
+    </div>
+  </div>
+</section>
+
+<!-- OPEN COMMENTS THEMES -->
+<section class="content-section reveal">
+  <div class="section-label">05 — Decomposing System Failures</div>
+  <h2 class="section-title">From User Complaints to Architectural Patterns</h2>
+
+  <div class="section-text">
+    <p>Qualitative feedback reveals <strong>systemic patterns</strong>—not isolated bugs, but recurring architectural decisions that create friction across multiple modules. By synthesizing 233 open-ended responses, we can map which design patterns are failing and why. This isn't a feature request list; it's a <em>diagnostic map of system-level failures</em>.</p>
+  </div>
+
+  <div class="visual-callout">
+    <div class="visual-callout-title">Three Categories of System Failure</div>
+    <div class="visual-callout-text">
+      <strong>1. Search Architecture</strong> — Users expect unified, exhaustive search, but the system returns partial results based on recency, not relevance.<br><br>
+      <strong>2. Workflow Orchestration</strong> — Multi-step processes (scheduling, network management) require excessive clicks and lack intelligent defaults.<br><br>
+      <strong>3. Information Architecture</strong> — Critical data (CUSIPs, network contacts) is buried or requires obscure knowledge to access.
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-number">Search</div>
+      <div class="stat-label">Most Cited System Failure</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">Scheduling</div>
+      <div class="stat-label">Workflow Complexity Gap</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">Network</div>
+      <div class="stat-label">Information Architecture Issue</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOMEPAGE SEARCH -->
+<section class="content-section reveal">
+  <div class="section-label">06 — Homepage: Search</div>
+  <h2 class="section-title">Search Does Not Meet User Expectations</h2>
+
+  <div class="findings-list">
+    <div class="finding-item">
+      <div class="finding-number">01</div>
+      <div class="finding-content">
+        <h4>Search Does Not Cover All Entities</h4>
+        <p>Users expect a unified and exhaustive search across all entities, but the current system only returns <strong>partial or recent results</strong>, severely limiting discoverability.</p>
+        <div class="finding-quote">
+          "When searching for a client, profile, contact or prospect, it does not search ALL."
+        </div>
+        <div class="finding-quote">
+          "It does not necessarily search 'all clients'… should provide ALL Smiths."
+        </div>
+        <div class="finding-quote">
+          "Fix the search function! Typing in Smith brings up the last 5 accessed accounts."
+        </div>
+      </div>
+    </div>
+
+    <div class="finding-item">
+      <div class="finding-number">02</div>
+      <div class="finding-content">
+        <h4>Default Search Filter Adds Friction</h4>
+        <p>The default search setting does not align with user workflows, forcing <strong>repetitive manual adjustments</strong> and reducing efficiency.</p>
+        <div class="finding-quote">
+          "Search: All - I need to set to default to Search: Profile. Current default 'All' requires dozens of extra clicks."
+        </div>
+      </div>
+    </div>
+
+    <div class="finding-item">
+      <div class="finding-number">03</div>
+      <div class="finding-content">
+        <h4>Search Results Are Inconsistent</h4>
+        <p>Search behavior is unpredictable, returning varying types of results without clear logic, which <strong>confuses users and undermines trust</strong> in the system.</p>
+        <div class="finding-quote">
+          "Sometimes it shows the last person I searched for… sometimes the Relationship Group… sometimes just the address."
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GET A QUOTE -->
+<section class="content-section reveal">
+  <div class="section-label">07 — Homepage: Get a Quote</div>
+  <h2 class="section-title">Quote Tool Requires Obscure Knowledge</h2>
+
+  <div class="visual-callout">
+    <div class="visual-callout-title">Unusable Without Ticker or CUSIP</div>
+    <div class="visual-callout-text">
+      Users must know the exact ticker symbol or CUSIP to retrieve a quote. CUSIPs are difficult to find and not centralized, making the feature <strong>nearly unusable for many</strong>. There is no support for searching by company name, and the lack of autocomplete forces users to switch screens or rely on external tools.
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <div class="insight-title">Opportunity</div>
+    <div class="insight-text">
+      Add company name search with autocomplete and ticker/CUSIP suggestions. Allow users to search "Apple" and see "AAPL (NASDAQ)" as a suggestion—matching how external financial tools work.
+    </div>
+  </div>
+</section>
+
+<!-- CALENDAR & TO-DO -->
+<section class="content-section reveal">
+  <div class="section-label">08 — Homepage: Calendar</div>
+  <h2 class="section-title">Calendar Lacks Weekend Awareness</h2>
+
+  <div class="findings-list">
+    <div class="finding-item">
+      <div class="finding-number">01</div>
+      <div class="finding-content">
+        <h4>No Weekend Logic in To-Do System</h4>
+        <p>The system fails to recognize weekend workflows, requiring <strong>manual effort</strong> from users to manage weekend tasks—something the previous system handled more intuitively.</p>
+        <div class="finding-quote">
+          "I hate that I have to remind myself every Friday to check Saturday and Sunday to-dos because the system can't tell it's a weekend (the old system wasn't like this)."
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- APPOINTMENTS -->
+<section class="content-section reveal">
+  <div class="section-label">09 — Activities: Appointments</div>
+  <h2 class="section-title">Scheduling Friction & Missing Features</h2>
+
+  <div class="findings-list">
+    <div class="finding-item">
+      <div class="finding-number">01</div>
+      <div class="finding-content">
+        <h4>Description Field Should Be Optional</h4>
+        <p>Mandatory fields that aren't always relevant create friction and slow down scheduling workflows.</p>
+        <div class="finding-quote">
+          "The description field in the appointment should not be mandatory, as it is not always necessary."
+        </div>
+      </div>
+    </div>
+
+    <div class="finding-item">
+      <div class="finding-number">02</div>
+      <div class="finding-content">
+        <h4>Limitations in Multi-Client Scheduling</h4>
+        <p>The current system lacks flexibility for <strong>group scheduling</strong>, which is essential for users managing families or client groups.</p>
+        <div class="finding-quote">
+          "When scheduling appointments, users can only invite one client at a time. They want the ability to schedule with multiple clients simultaneously and send them individual email and text notifications."
+        </div>
+      </div>
+    </div>
+
+    <div class="finding-item">
+      <div class="finding-number">03</div>
+      <div class="finding-content">
+        <h4>Need for Text Reminders</h4>
+        <p>Text reminders are critical for improving client attendance and reducing no-shows, especially for virtual meetings.</p>
+        <div class="finding-quote">
+          "Users want the ability to send text reminders to clients when scheduling an appointment."
+        </div>
+        <div class="finding-quote">
+          "Users need the option to send text message reminders for Zoom appointments."
+        </div>
+      </div>
+    </div>
+
+    <div class="finding-item">
+      <div class="finding-number">04</div>
+      <div class="finding-content">
+        <h4>No Visibility into Sent Reminders</h4>
+        <p>Users need visibility into communication history to confirm delivery and troubleshoot missed appointments.</p>
+        <div class="finding-quote">
+          "Why can't we not see if a reminder text or email was sent to a client the day before?"
+        </div>
+      </div>
+    </div>
+
+    <div class="finding-item">
+      <div class="finding-number">05</div>
+      <div class="finding-content">
+        <h4>Lack of Email Preview Before Sending</h4>
+        <p>Users need control and confidence in client communications—previewing messages helps <strong>prevent errors and miscommunication</strong>.</p>
+        <div class="finding-quote">
+          "Before sending an email confirmation, users would like to preview the message to ensure accuracy before it reaches the client."
+        </div>
+      </div>
+    </div>
+
+    <div class="finding-item">
+      <div class="finding-number">06</div>
+      <div class="finding-content">
+        <h4>Need for Split-Screen View (Multi-FA Users)</h4>
+        <p>Users managing multiple financial advisors need a more efficient layout to <strong>view and coordinate across teams</strong>.</p>
+        <div class="finding-quote">
+          "For users who work with multiple FAs, a split-screen view showing appointments and tasks for each FA would be helpful."
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RELATIONSHIP GROUP -->
+<section class="content-section reveal">
+  <div class="section-label">10 — Relationship Group</div>
+  <h2 class="section-title">Network Management is Too Complex</h2>
+
+  <div class="findings-list">
+    <div class="finding-item">
+      <div class="finding-number">01</div>
+      <div class="finding-content">
+        <h4>Updating Network Is Cumbersome</h4>
+        <p>Users struggle to add professional contacts like CPAs and attorneys due to a <strong>multi-step, unintuitive process</strong>. The inability to create profiles directly from the update network view adds complexity.</p>
+        <div class="finding-quote">
+          "CPA's and other COI's (circle of influence) are not easily entered and linked to clients – we like to have the COI's right at the top in the client relationship profile page for ease and efficiency. Gets too buried the SF way."
+        </div>
+        <div class="finding-quote">
+          "Adding a CPA or attorney as part of the client's network is exceptionally difficult. We gave up and just add the CPA & Attorney info to the Relationship notes."
+        </div>
+      </div>
+    </div>
+
+    <div class="finding-item">
+      <div class="finding-number">02</div>
+      <div class="finding-content">
+        <h4>Life Events & Network Features Are Underused</h4>
+        <p>The complexity of entering life events and network members <strong>discourages usage</strong>. Redundant data entry and unclear workflows reduce adoption of these features.</p>
+        <div class="finding-quote">
+          "Adding network members and life events is very confusing. Having to add the same life event multiple times (for each spouse or each member of the relationship group) is a pain. I do not use these features as often as I should due to the complexity of entering."
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <div class="insight-title">Impact</div>
+    <div class="insight-text">
+      Users are abandoning intended features (network connections, life events) and reverting to <strong>freeform notes fields</strong> as workarounds. This defeats the purpose of structured data and limits the platform's ability to surface insights or automate workflows.
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="page-footer">
+  <span class="footer-l"><span class="footer-dot"></span>Available for opportunities</span>
+  <span class="footer-r">Krishna Panyala © 2026</span>
+</footer>
+
+<script>
+// Cursor
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; 
+  my = e.clientY;
+  cursor.style.left = mx + 'px'; 
+  cursor.style.top = my + 'px';
+});
+
+(function animRing() {
+  rx += (mx - rx) * 0.12; 
+  ry += (my - ry) * 0.12;
+  ring.style.left = rx + 'px'; 
+  ring.style.top = ry + 'px';
+  requestAnimationFrame(animRing);
+})();
+
+document.querySelectorAll('a, button').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cursor.style.background = 'transparent';
+    cursor.style.border = '1px solid var(--accent)';
+    ring.style.width = '52px'; 
+    ring.style.height = '52px';
+  });
+  el.addEventListener('mouseleave', () => {
+    cursor.style.background = 'var(--accent)';
+    cursor.style.border = 'none';
+    ring.style.width = '38px'; 
+    ring.style.height = '38px';
+  });
+});
+
+// Nav scroll effect
+const nav = document.getElementById('mainNav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+}, { passive: true });
+
+// Scroll reveal with bar chart animation
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { 
+    if (e.isIntersecting) { 
+      e.target.classList.add('visible');
+      
+      // Animate bar charts
+      const barFills = e.target.querySelectorAll('.bar-fill[data-width]');
+      barFills.forEach((bar, index) => {
+        setTimeout(() => {
+          const width = bar.getAttribute('data-width');
+          bar.style.width = width;
+        }, index * 80);
+      });
+
+      // Animate comparison bars
+      const compBars = e.target.querySelectorAll('.comparison-bar[data-width]');
+      compBars.forEach((bar, index) => {
+        setTimeout(() => {
+          const width = bar.getAttribute('data-width');
+          bar.style.width = width;
+        }, index * 80);
+      });
+      
+      io.unobserve(e.target); 
+    } 
+  });
+}, { threshold: 0.06 });
+
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// Initialize bars at 0 width
+document.querySelectorAll('.bar-fill[data-width], .comparison-bar[data-width]').forEach(bar => {
+  const originalWidth = bar.style.width;
+  bar.setAttribute('data-width', originalWidth);
+  bar.style.width = '0';
+});
+</script>
+
+</body>
+</html>
