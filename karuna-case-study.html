@@ -1,0 +1,1528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karuna — The Invisible Side of Care</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,700;0,900;1,300;1,700;1,900&family=Instrument+Sans:wght@300;400;500;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#080b14;--ink2:#0e1320;--ink3:#141b2e;
+  --w:#fff;--ow:#dde4f5;--mid:#8fa3cc;--mut:#4a5c82;
+  --a:#e8956d;--agl:rgba(232,149,109,.11);--ab:rgba(232,149,109,.28);
+  --a2:#7aa3ff;--a2gl:rgba(122,163,255,.09);
+  --warm:#f5c27a;--wgl:rgba(245,194,122,.08);
+  --teal:#3dd6c8;--tgl:rgba(61,214,200,.07);
+  --ok:#4de09e;--okd:rgba(77,224,158,.09);
+  --err:#ff7a7a;--errd:rgba(255,122,122,.08);
+  --b:rgba(235,240,255,.07);--b2:rgba(235,240,255,.13);--ba:rgba(232,149,109,.28);
+  --sf:'Fraunces',Georgia,serif;--ss:'Instrument Sans',sans-serif;--sm:'DM Mono',monospace;
+  --r:12px;--rl:20px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--ink);color:var(--w);font-family:var(--ss);font-weight:300;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+body::before{content:'';position:fixed;inset:0;z-index:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;opacity:.4;}
+.pw{position:relative;z-index:1;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 0;backdrop-filter:blur(24px) saturate(180%);background:rgba(8,11,20,.9);border-bottom:1px solid var(--b);transition:all .3s;}
+.ni{max-width:1160px;margin:0 auto;padding:0 48px;display:flex;align-items:center;justify-content:space-between;}
+.nw{font-family:var(--sf);font-size:.95rem;font-weight:700;color:var(--a);letter-spacing:.01em;}
+.nl{display:flex;gap:28px;list-style:none;}
+.nl a{font-family:var(--sm);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);text-decoration:none;transition:color .2s;}
+.nl a:hover{color:var(--a);}
+#pb{position:fixed;top:0;left:0;height:2px;width:0%;background:linear-gradient(90deg,var(--a),var(--warm));z-index:1000;transition:width .1s linear;}
+.ctr{max-width:1160px;margin:0 auto;padding:0 48px;}
+.rv{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1);}
+.rv.vis{opacity:1;transform:none;}
+.rv.d1{transition-delay:.1s;}.rv.d2{transition-delay:.2s;}.rv.d3{transition-delay:.3s;}.rv.d4{transition-delay:.4s;}
+.lbl{font-family:var(--sm);font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:var(--a);}
+.lbl-m{color:var(--mid);}
+.lbl-t{color:var(--teal);}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:38px;}
+
+/* ══ HERO: FULL SCREEN IMMERSIVE ══════════════════════════════════ */
+.hero{min-height:100vh;display:flex;align-items:center;padding:120px 0 80px;position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;z-index:0;}
+.hero-bg canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.6;}
+.hero-glow{position:absolute;inset:0;background:radial-gradient(ellipse 55% 60% at 70% 30%,rgba(232,149,109,.08) 0%,transparent 65%),radial-gradient(ellipse 40% 50% at 20% 75%,rgba(61,214,200,.04) 0%,transparent 60%);}
+.hero-inner{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+.hlabel{margin-bottom:24px;display:flex;align-items:center;gap:12px;}
+.hlabel::before{content:'';display:block;width:32px;height:1px;background:var(--a);}
+.htitle{font-family:var(--sf);font-size:clamp(3rem,6.5vw,6.2rem);font-weight:900;line-height:.94;letter-spacing:-.035em;color:var(--w);margin-bottom:28px;}
+.htitle em{font-style:italic;color:var(--a);display:block;}
+.htitle span{display:block;font-size:.55em;font-weight:300;color:var(--ow);margin-top:12px;letter-spacing:-.01em;line-height:1.3;}
+.hsub{font-size:1rem;color:var(--ow);line-height:1.8;max-width:480px;margin-bottom:44px;opacity:.88;}
+.hmeta{display:flex;flex-direction:column;gap:8px;}
+.hmi{display:flex;align-items:center;gap:12px;}
+.hmd{width:4px;height:4px;border-radius:50%;background:var(--a);flex-shrink:0;}
+.hmt{font-family:var(--sm);font-size:.7rem;letter-spacing:.07em;color:var(--mid);text-transform:uppercase;}
+.hpanel{background:linear-gradient(145deg,var(--ink2),rgba(20,15,10,.2));border:1px solid var(--b2);border-radius:var(--rl);padding:48px;position:relative;overflow:hidden;}
+.hpanel::before{content:'';position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,var(--a),var(--warm),transparent);}
+.hpanel::after{content:'45–80%';position:absolute;bottom:-20px;right:-5px;font-family:var(--sf);font-size:6.5rem;font-weight:900;color:rgba(232,149,109,.04);letter-spacing:-.05em;line-height:1;pointer-events:none;}
+.sdiv{height:1px;background:var(--b);margin:22px 0;}
+.snum{font-family:var(--sf);font-size:4.5rem;font-weight:900;letter-spacing:-.04em;line-height:1;margin:8px 0;}
+.sn-a{color:var(--a);}
+.san{font-size:.82rem;color:var(--ow);line-height:1.5;opacity:.8;}
+.tpill{display:inline-flex;align-items:center;gap:8px;background:var(--agl);border:1px solid var(--ba);border-radius:100px;padding:6px 14px;margin-top:14px;}
+.tpill span{font-family:var(--sm);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--a);}
+.tpill em{font-family:var(--sf);font-size:1rem;font-weight:700;font-style:normal;color:var(--a);}
+
+/* SCROLL CUE */
+.scroll-cue{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;z-index:2;animation:bob 2s ease-in-out infinite;}
+@keyframes bob{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(-6px);}}
+.sc-line{width:1px;height:40px;background:linear-gradient(180deg,var(--a),transparent);}
+.sc-lbl{font-family:var(--sm);font-size:.55rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mut);}
+
+/* ══ FULL SCREEN BREAK: HUMAN STAT ══════════════════════════════ */
+.stat-break{padding:120px 0;background:var(--ink2);border-top:1px solid var(--b);border-bottom:1px solid var(--b);position:relative;overflow:hidden;}
+.stat-break::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(232,149,109,.06),transparent 70%);}
+.sb-inner{text-align:center;position:relative;z-index:1;}
+.sb-ghost{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--sf);font-size:clamp(6rem,16vw,14rem);font-weight:900;color:rgba(232,149,109,.025);letter-spacing:-.06em;white-space:nowrap;pointer-events:none;}
+.sb-num{font-family:var(--sf);font-size:clamp(4rem,10vw,9rem);font-weight:900;letter-spacing:-.04em;line-height:1;color:var(--a);margin-bottom:16px;}
+.sb-label{font-family:var(--sm);font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mid);margin-bottom:24px;}
+.sb-body{font-family:var(--sf);font-size:clamp(1.1rem,2.5vw,1.8rem);font-weight:300;font-style:italic;color:var(--ow);max-width:700px;margin:0 auto;line-height:1.4;}
+
+/* ══ SECTION: STANDARD ══════════════════════════════════════════ */
+.sec{padding:112px 0;border-bottom:1px solid var(--b);}
+.sec-dk{background:var(--ink2);}
+.sec-acc{background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(232,149,109,.04),transparent 70%);}
+.shead{margin-bottom:68px;}
+.stitle{font-family:var(--sf);font-size:clamp(2rem,4vw,3.5rem);font-weight:700;line-height:1.1;letter-spacing:-.025em;color:var(--w);margin-bottom:18px;}
+.stitle em{font-style:italic;color:var(--a);}
+.sbody{font-size:1rem;color:var(--ow);max-width:640px;line-height:1.75;opacity:.85;}
+.callout{border-left:3px solid var(--a);padding:22px 26px;background:linear-gradient(90deg,var(--agl),transparent);border-radius:0 var(--r) var(--r) 0;margin:28px 0;}
+.callout p{color:var(--w);font-size:1rem;line-height:1.75;}
+.callout em{color:var(--a);font-style:normal;font-weight:500;}
+.callout-t{border-left-color:var(--teal);background:linear-gradient(90deg,var(--tgl),transparent);}
+.callout-w{border-left-color:var(--warm);background:linear-gradient(90deg,var(--wgl),transparent);}
+
+/* ══ EMPATHY MAP — INTERACTIVE ═══════════════════════════════════ */
+.empathy-arena{display:grid;grid-template-columns:1fr 1fr;gap:2px;border-radius:var(--rl);overflow:hidden;margin-top:44px;border:1px solid var(--b2);}
+.em-quadrant{padding:36px;background:var(--ink3);position:relative;overflow:hidden;cursor:pointer;transition:background .25s,transform .2s;min-height:240px;}
+.em-quadrant:hover{background:rgba(20,27,46,.95);}
+.em-quadrant.active{background:linear-gradient(145deg,rgba(232,149,109,.1),var(--ink3));}
+.em-quadrant::before{content:attr(data-label);position:absolute;bottom:-12px;right:-6px;font-family:var(--sf);font-size:4.5rem;font-weight:900;color:rgba(255,255,255,.025);letter-spacing:-.04em;line-height:1;pointer-events:none;transition:color .3s;}
+.em-quadrant.active::before{color:rgba(232,149,109,.04);}
+.emq-head{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.emq-icon{font-size:1.4rem;}
+.emq-label{font-family:var(--sm);font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--a);}
+.emq-items{display:flex;flex-direction:column;gap:7px;}
+.emq-item{font-size:.84rem;color:var(--ow);line-height:1.55;padding:9px 13px;background:rgba(255,255,255,.04);border-radius:7px;border-left:2px solid transparent;transition:border-color .2s,background .2s;}
+.emq-item:hover{border-left-color:var(--a);background:rgba(232,149,109,.07);}
+.em-center{grid-column:1/-1;padding:24px 36px;background:var(--ink2);border-top:1px solid var(--b2);display:flex;align-items:center;justify-content:space-between;gap:24px;}
+.em-center-person{display:flex;align-items:center;gap:16px;}
+.em-center-avatar{width:52px;height:52px;border-radius:50%;background:var(--agl);border:1px solid var(--ba);display:flex;align-items:center;justify-content:center;font-size:1.4rem;}
+.em-center-info h4{font-family:var(--sf);font-size:1.1rem;font-weight:700;color:var(--w);}
+.em-center-info p{font-size:.8rem;color:var(--mid);}
+.em-meta-chips{display:flex;gap:8px;flex-wrap:wrap;}
+.em-chip{font-family:var(--sm);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border-radius:100px;background:var(--ink3);border:1px solid var(--b2);color:var(--ow);}
+.em-chip-a{background:var(--agl);border-color:var(--ba);color:var(--a);}
+.em-hint{font-family:var(--sm);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);text-align:center;margin-top:12px;}
+
+/* ══ CINEMATIC PARALLEL WORLDS ═══════════════════════════════════ */
+.cinema{position:relative;overflow:hidden;background:var(--ink);}
+.cinema-title{padding:80px 0 60px;text-align:center;position:relative;z-index:2;}
+.cinema-title::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:1px;height:40px;background:linear-gradient(180deg,var(--b2),transparent);}
+.cinema-grid{display:grid;grid-template-columns:1fr 1px 1fr;width:100%;gap:0;align-items:stretch;}
+.cinema-col{display:flex;flex-direction:column;position:relative;}
+.cinema-col-head{padding:28px 36px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--b2);position:sticky;top:56px;z-index:5;backdrop-filter:blur(12px);}
+.cinema-col.patient .cinema-col-head{background:rgba(232,149,109,.07);}
+.cinema-col.doctor .cinema-col-head{background:rgba(122,163,255,.06);}
+.cinema-col-label{font-family:var(--sm);font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;}
+.cinema-col.patient .cinema-col-label{color:var(--a);}
+.cinema-col.doctor .cinema-col-label{color:var(--a2);}
+.ch-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.ch-dot-p{background:var(--a);}
+.ch-dot-d{background:var(--a2);}
+.cinema-divider{background:var(--b2);position:relative;}
+.cinema-divider::before{content:'VS';position:sticky;top:50%;display:block;font-family:var(--sf);font-size:.7rem;font-weight:900;color:rgba(255,255,255,.15);letter-spacing:.12em;text-align:center;transform:rotate(90deg);margin-top:200px;}
+.cinema-moment{padding:0;border-bottom:1px solid var(--b);}
+.cm-time-bar{padding:12px 24px;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.02);}
+.cm-time{font-family:var(--sm);font-size:.65rem;color:var(--mut);letter-spacing:.08em;}
+.cm-content{padding:18px 28px 22px;}
+.cm-title{font-size:.88rem;font-weight:600;color:var(--w);margin-bottom:7px;}
+.cm-body{font-size:.82rem;color:var(--ow);line-height:1.65;opacity:.88;}
+.cm-emotion{display:flex;align-items:center;gap:7px;padding:8px 24px;border-top:1px solid var(--b);}
+.ce-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.ce-red{background:var(--err);}
+.ce-grn{background:var(--ok);}
+.ce-ylw{background:var(--warm);}
+.ce-mid{background:var(--mid);}
+.ce-blue{background:var(--a2);}
+.ce-label{font-family:var(--sm);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);}
+.cinema-moment.stress .cm-content{border-left:3px solid rgba(232,149,109,.5);}
+.cinema-moment.burnout .cm-content{border-left:3px solid rgba(255,122,122,.5);}
+.cinema-moment.highlight .cm-content{border-left:3px solid rgba(61,214,200,.4);}
+.cinema-callout{padding:44px 0;background:var(--ink2);border-top:1px solid var(--b2);border-bottom:1px solid var(--b);}
+.cc-inner{max-width:800px;margin:0 auto;text-align:center;}
+.cc-stat{font-family:var(--sf);font-size:clamp(2rem,5vw,4rem);font-weight:900;color:var(--a);letter-spacing:-.03em;margin-bottom:8px;}
+.cc-body{font-size:1rem;color:var(--ow);line-height:1.75;opacity:.88;}
+
+
+/* Synchronized cinema rows */
+.cinema-divider-head{background:var(--b2);border-bottom:1px solid var(--b2);}
+.cinema-divider-cell{background:var(--b2);}
+.cinema-col-head{display:flex;align-items:center;gap:12px;padding:24px 28px;border-bottom:1px solid var(--b2);}
+.cinema-col.patient .cinema-col-head,.cinema-col-head.p-head{background:rgba(232,149,109,.07);}
+.cinema-col.doctor .cinema-col-head,.cinema-col-head.d-head{background:rgba(122,163,255,.06);}
+
+/* ══ FULL-SCREEN QUOTE ══════════════════════════════════════════ */
+.qfull{padding:110px 0;background:var(--ink2);border-top:1px solid var(--b);border-bottom:1px solid var(--b);position:relative;overflow:hidden;}
+.qfull::before{content:'"';position:absolute;top:-40px;left:20px;font-family:var(--sf);font-size:22rem;font-weight:900;color:rgba(232,149,109,.03);line-height:1;pointer-events:none;}
+.qf-inner{max-width:860px;margin:0 auto;text-align:center;position:relative;z-index:1;}
+.qf-text{font-family:var(--sf);font-size:clamp(1.6rem,3.5vw,2.9rem);font-weight:300;font-style:italic;color:var(--w);line-height:1.3;margin-bottom:24px;}
+.qf-attr{font-family:var(--sm);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--a);}
+
+/* ══ VOICE CARDS ════════════════════════════════════════════════ */
+.vc-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:44px;}
+.vc{background:var(--ink3);border:1px solid var(--b2);padding:36px;position:relative;overflow:hidden;transition:background .25s;}
+.vc:hover{background:rgba(20,27,46,.95);}
+.vc::before{content:'"';position:absolute;top:-12px;right:16px;font-family:var(--sf);font-size:7rem;font-weight:900;color:rgba(232,149,109,.05);line-height:1;pointer-events:none;}
+.vc-name{font-family:var(--sm);font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;color:var(--a);margin-bottom:4px;}
+.vc-meta{font-size:.78rem;color:var(--mid);margin-bottom:18px;}
+.vc-q{font-family:var(--sf);font-size:.95rem;font-style:italic;color:var(--ow);line-height:1.65;padding:12px 16px;border-left:2px solid rgba(232,149,109,.35);background:rgba(232,149,109,.06);border-radius:0 8px 8px 0;margin-bottom:8px;}
+.vc-q.qt{border-left-color:rgba(61,214,200,.4);background:rgba(61,214,200,.04);}
+.vc-q.qb{border-left-color:rgba(122,163,255,.4);background:rgba(122,163,255,.05);}
+
+/* ══ SYNTHESIS MOMENT ═══════════════════════════════════════════ */
+.synth{padding:112px 0;background:var(--ink2);border-bottom:1px solid var(--b);}
+.synth-flow{display:grid;grid-template-columns:1fr 44px 1fr 44px 1fr;gap:0;align-items:center;margin-top:44px;}
+.synth-stage{background:var(--ink3);border:1px solid var(--b2);border-radius:var(--rl);padding:28px;text-align:center;}
+.sa{text-align:center;color:var(--a);font-size:1.4rem;opacity:.5;}
+.si{font-size:2.4rem;margin-bottom:12px;}
+.sl{font-family:var(--sm);font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--a);margin-bottom:8px;}
+.st{font-family:var(--sf);font-size:1.12rem;font-weight:700;color:var(--w);margin-bottom:9px;}
+.sd{font-size:.8rem;color:var(--mid);line-height:1.6;}
+.mc-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:14px;justify-content:center;}
+.mc{font-size:.62rem;padding:3px 9px;border-radius:100px;font-family:var(--sm);}
+.mc1{background:rgba(255,122,122,.14);color:#ff9090;border:1px solid rgba(255,122,122,.2);}
+.mc2{background:rgba(245,194,122,.11);color:var(--warm);border:1px solid rgba(245,194,122,.18);}
+.mc3{background:rgba(122,163,255,.11);color:#7aa3ff;border:1px solid rgba(122,163,255,.18);}
+.mc4{background:rgba(61,214,200,.09);color:var(--teal);border:1px solid rgba(61,214,200,.15);}
+.mc5{background:rgba(168,85,247,.11);color:rgba(168,85,247,.9);border:1px solid rgba(168,85,247,.18);}
+
+/* ══ INSIGHT EXPLORER ═══════════════════════════════════════════ */
+.fhero{padding:140px 0 80px;position:relative;overflow:hidden;background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(232,149,109,.07),transparent 70%);}
+.fhero::before{content:'INSIGHTS';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--sf);font-size:clamp(6rem,16vw,14rem);font-weight:900;color:rgba(232,149,109,.025);letter-spacing:-.05em;white-space:nowrap;pointer-events:none;z-index:0;}
+.fhi{position:relative;z-index:1;text-align:center;}
+.fhtit{font-family:var(--sf);font-size:clamp(2.8rem,6vw,5.5rem);font-weight:900;letter-spacing:-.03em;line-height:1;color:var(--w);margin-bottom:22px;}
+.fhtit em{font-style:italic;color:var(--a);}
+.fhbod{font-size:1.05rem;color:var(--ow);max-width:580px;margin:0 auto 52px;line-height:1.75;opacity:.85;}
+.ins-pills{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+.ip{display:flex;align-items:center;gap:10px;padding:14px 20px;background:var(--ink2);border:1px solid var(--b2);border-radius:var(--r);cursor:pointer;transition:border-color .2s,background .2s,transform .2s;text-align:left;}
+.ip:hover,.ip.on{border-color:var(--ba);background:var(--agl);transform:translateY(-2px);}
+.ip-n{font-family:var(--sf);font-size:1.6rem;font-weight:900;color:rgba(232,149,109,.3);line-height:1;flex-shrink:0;}
+.ip.on .ip-n{color:var(--a);}
+.ip-t{font-size:.84rem;font-weight:600;color:var(--w);line-height:1.3;max-width:155px;}
+
+/* insight panels */
+.ins-arena{margin-top:0;}
+.ins-panel{display:none;}
+.ins-panel.on{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:start;animation:fadeUp .5s cubic-bezier(.16,1,.3,1);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:none;}}
+.fnb{display:inline-flex;align-items:center;gap:9px;margin-bottom:22px;}
+.fn{font-family:var(--sm);font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:var(--w);padding:6px 16px;border:1.5px solid var(--a);border-radius:100px;background:rgba(232,149,109,.15);font-weight:500;}
+.ftit{font-family:var(--sf);font-size:clamp(1.4rem,3vw,2rem);font-weight:700;color:var(--w);line-height:1.25;letter-spacing:-.02em;margin-bottom:22px;}
+.fbt{font-size:.9rem;color:var(--w);line-height:1.75;opacity:.9;margin-bottom:20px;}
+.evl{display:flex;flex-direction:column;gap:7px;}
+.evi{padding:13px 17px;background:rgba(232,149,109,.07);border-left:2px solid rgba(232,149,109,.4);border-radius:0 8px 8px 0;font-size:.84rem;color:var(--ow);line-height:1.6;transition:background .2s;cursor:default;}
+.evi:hover{background:rgba(232,149,109,.11);}
+.evi-q{border-left-color:var(--warm);background:rgba(245,194,122,.05);font-style:italic;}
+.evi-t{border-left-color:var(--teal);background:rgba(61,214,200,.05);}
+.ibox{background:linear-gradient(135deg,var(--agl),transparent);border:1px solid var(--ba);border-radius:var(--r);padding:20px 24px;margin-top:20px;}
+.ibox-l{font-family:var(--sm);font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;color:var(--a);margin-bottom:9px;}
+.ibox-t{font-size:.9rem;color:var(--w);line-height:1.65;}
+.ins-vis{background:var(--ink3);border:1px solid var(--b2);border-radius:var(--rl);padding:36px;position:relative;overflow:hidden;}
+.ins-vis::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--a),var(--warm),transparent);}
+.iv-l{font-family:var(--sm);font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--a);margin-bottom:14px;}
+.iv-big{font-family:var(--sf);font-size:5rem;font-weight:900;letter-spacing:-.04em;line-height:1;margin-bottom:10px;color:var(--a);}
+.gv{display:flex;flex-direction:column;gap:14px;margin-top:4px;}
+.gv-row{display:flex;flex-direction:column;gap:5px;}
+.gv-h{display:flex;justify-content:space-between;font-size:.82rem;color:var(--ow);}
+.gv-p{font-family:var(--sm);font-size:.72rem;color:var(--a);}
+.gv-track{height:7px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden;}
+.gv-fill{height:100%;border-radius:4px;transition:width 1.2s cubic-bezier(.16,1,.3,1);}
+.gv-blue{background:linear-gradient(90deg,var(--a2),rgba(122,163,255,.5));}
+.gv-org{background:linear-gradient(90deg,var(--a),rgba(232,149,109,.5));}
+.bc{display:flex;flex-direction:column;gap:13px;}
+.bc-row{display:flex;flex-direction:column;gap:5px;}
+.bc-h{display:flex;justify-content:space-between;font-size:.82rem;color:var(--ow);}
+.bc-p{font-family:var(--sm);font-size:.72rem;color:var(--a);}
+.bc-track{height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;}
+.bc-fill{height:100%;background:linear-gradient(90deg,var(--a),var(--warm));border-radius:3px;transition:width 1.2s cubic-bezier(.16,1,.3,1);}
+.tflow{display:flex;flex-direction:column;gap:7px;}
+.tf-row{display:flex;align-items:center;gap:8px;}
+.tf-n{padding:10px 14px;border-radius:8px;font-size:.78rem;color:var(--w);font-weight:500;flex:1;text-align:center;}
+.tf-a{background:rgba(122,163,255,.18);border:1px solid rgba(122,163,255,.28);}
+.tf-b{background:rgba(245,194,122,.12);border:1px solid rgba(245,194,122,.22);}
+.tf-c{background:rgba(255,122,122,.12);border:1px solid rgba(255,122,122,.25);color:var(--err);}
+.tf-arr{color:var(--mut);font-size:.9rem;flex-shrink:0;}
+.fv{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.fv-g{border-radius:var(--r);padding:16px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;}
+.fv-in{background:rgba(61,214,200,.1);border:1px solid rgba(61,214,200,.25);}
+.fv-out{background:rgba(255,122,122,.07);border:1px dashed rgba(255,122,122,.3);}
+.fv-ic{font-size:1.6rem;}
+.fv-l{font-family:var(--sm);font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;}
+.fv-in .fv-l{color:var(--teal);}
+.fv-out .fv-l{color:rgba(255,122,122,.7);}
+.fv-note{grid-column:1/-1;font-size:.77rem;color:var(--mid);line-height:1.5;text-align:center;}
+.cm-care{display:flex;flex-direction:column;gap:7px;}
+.cmc-row{display:flex;align-items:center;gap:8px;}
+.cmc{padding:9px 14px;border-radius:8px;font-size:.78rem;color:var(--w);flex:1;text-align:center;}
+.cmc-a{background:rgba(122,163,255,.15);border:1px solid rgba(122,163,255,.25);}
+.cmc-s{background:rgba(255,122,122,.1);border:1px dashed rgba(255,122,122,.3);color:rgba(255,255,255,.5);}
+.cmc-p{background:rgba(61,214,200,.1);border:1px solid rgba(61,214,200,.2);}
+
+/* ══ KARUNA REVEAL ══════════════════════════════════════════════ */
+.k-reveal{padding:140px 0;background:var(--ink);border-bottom:1px solid var(--b);position:relative;overflow:hidden;}
+.k-reveal::before{content:'KARUNA';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--sf);font-size:clamp(5rem,14vw,12rem);font-weight:900;color:rgba(232,149,109,.028);letter-spacing:-.06em;white-space:nowrap;pointer-events:none;z-index:0;}
+.kr-inner{position:relative;z-index:1;text-align:center;}
+.kr-pill{display:inline-flex;align-items:center;gap:9px;background:var(--agl);border:1px solid var(--ba);border-radius:100px;padding:7px 18px;margin-bottom:28px;}
+.kr-pill span{font-family:var(--sm);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--a);}
+.kr-pill em{font-family:var(--sf);font-size:.9rem;font-style:italic;color:var(--a);}
+.kr-title{font-family:var(--sf);font-size:clamp(2.8rem,6.5vw,6rem);font-weight:900;letter-spacing:-.04em;line-height:.95;color:var(--w);margin-bottom:22px;}
+.kr-title em{font-style:italic;color:var(--a);}
+.kr-sub{font-size:1.05rem;color:var(--ow);max-width:560px;margin:0 auto 56px;line-height:1.8;opacity:.85;}
+.con-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:920px;margin:0 auto 48px;}
+.con{background:var(--ink2);border:1px solid var(--b2);border-radius:var(--rl);padding:32px;position:relative;overflow:hidden;transition:border-color .25s,transform .25s;}
+.con:hover{border-color:var(--ba);transform:translateY(-4px);}
+.con::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--a),transparent);}
+.con-n{font-family:var(--sm);font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--a);margin-bottom:12px;}
+.con-title{font-family:var(--sf);font-size:1.1rem;font-weight:700;color:var(--w);margin-bottom:9px;}
+.con-body{font-size:.83rem;color:var(--ow);line-height:1.7;opacity:.88;}
+.con-win{border-color:var(--ba);background:linear-gradient(145deg,rgba(232,149,109,.08),var(--ink2));}
+.con-win::before{background:linear-gradient(90deg,var(--a),var(--warm));}
+.con-badge{display:inline-flex;align-items:center;gap:6px;background:var(--agl);border:1px solid var(--ba);border-radius:100px;padding:4px 12px;margin-top:14px;font-family:var(--sm);font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;color:var(--a);}
+.ws-row{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;max-width:880px;margin:0 auto 48px;}
+.ws{background:var(--ink2);border:1px solid var(--b2);border-radius:var(--r);padding:20px 14px;text-align:center;position:relative;}
+.ws::after{content:'→';position:absolute;right:-9px;top:50%;transform:translateY(-50%);color:var(--mut);font-size:.85rem;}
+.ws:last-child::after{display:none;}
+.ws-n{font-family:var(--sf);font-size:2.2rem;font-weight:900;color:rgba(232,149,109,.28);line-height:1;margin-bottom:7px;}
+.ws-ic{font-size:1.35rem;margin-bottom:7px;}
+.ws-l{font-family:var(--sm);font-size:.53rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ow);line-height:1.4;}
+.vp{background:linear-gradient(145deg,var(--agl),var(--ink3));border:1px solid var(--ba);border-radius:var(--rl);padding:44px;max-width:720px;margin:0 auto;position:relative;overflow:hidden;}
+.vp::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--a),var(--warm),var(--teal));}
+.vp-text{font-family:var(--sf);font-size:1.22rem;font-style:italic;font-weight:300;color:var(--w);line-height:1.65;}
+.vp-text strong{font-style:normal;font-weight:700;color:var(--a);}
+
+/* ══ PMI ════════════════════════════════════════════════════════ */
+.pmi-g{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px;}
+.pmi{border-radius:var(--r);padding:24px;}
+.pmi-p{background:rgba(61,214,200,.07);border:1px solid rgba(61,214,200,.15);}
+.pmi-m{background:rgba(255,122,122,.06);border:1px solid rgba(255,122,122,.13);}
+.pmi-i{background:rgba(245,194,122,.07);border:1px solid rgba(245,194,122,.13);}
+.pmi-h{font-family:var(--sm);font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;font-weight:600;margin-bottom:14px;display:block;}
+.pmi-p .pmi-h{color:var(--teal);}
+.pmi-m .pmi-h{color:var(--err);}
+.pmi-i .pmi-h{color:var(--warm);}
+.pmi ul{list-style:none;display:flex;flex-direction:column;gap:7px;}
+.pmi li{font-size:.82rem;color:var(--ow);line-height:1.6;padding-left:14px;position:relative;}
+.pmi li::before{content:'–';position:absolute;left:0;color:var(--mut);}
+
+/* ══ IMPACT ═════════════════════════════════════════════════════ */
+.imp-sec{padding:112px 0;background:var(--ink2);border-bottom:1px solid var(--b);position:relative;overflow:hidden;}
+.imp-sec::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 50%,rgba(232,149,109,.04),transparent 70%);}
+.imp-in{position:relative;z-index:1;}
+.dgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--b);border-radius:var(--rl);overflow:hidden;border:1px solid var(--b);margin-top:48px;}
+.dc{background:var(--ink2);padding:36px 28px;text-align:center;}
+.dn{font-family:var(--sm);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ow);margin-bottom:9px;}
+.ds{font-family:var(--sf);font-size:3.2rem;font-weight:900;letter-spacing:-.04em;line-height:1;margin-bottom:8px;}
+.ds-a{color:var(--a);}
+.ds-w{color:var(--warm);}
+.ds-t{color:var(--teal);}
+.dd{font-size:.82rem;color:var(--ow);line-height:1.6;opacity:.8;}
+.rmap{display:flex;flex-direction:column;gap:0;margin-top:44px;}
+.rm{display:flex;gap:22px;position:relative;}
+.rm:not(:last-child)::after{content:'';position:absolute;left:19px;top:42px;bottom:0;width:1px;background:var(--b2);}
+.rm-dot{width:40px;height:40px;border-radius:50%;background:var(--agl);border:1px solid var(--ba);display:flex;align-items:center;justify-content:center;font-family:var(--sm);font-size:.62rem;color:var(--a);flex-shrink:0;}
+.rm-body{padding-bottom:32px;flex:1;}
+.rm-ph{font-family:var(--sm);font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;color:var(--a);margin-bottom:5px;}
+.rm-title{font-family:var(--sf);font-size:1.1rem;font-weight:700;color:var(--w);margin-bottom:7px;}
+.rm-desc{font-size:.88rem;color:var(--ow);line-height:1.7;opacity:.85;}
+
+/* accordion */
+.accl{display:flex;flex-direction:column;gap:2px;margin-top:8px;}
+.ai{border:1px solid var(--b);border-radius:var(--r);overflow:hidden;transition:border-color .2s;}
+.ai.open{border-color:var(--ba);}
+.at{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;cursor:pointer;gap:14px;transition:background .2s;}
+.at:hover{background:rgba(232,149,109,.04);}
+.at h3{font-size:.9rem;font-weight:500;color:var(--w);line-height:1.4;}
+.aico{font-size:.75rem;color:var(--a);flex-shrink:0;transition:transform .3s;}
+.ai.open .aico{transform:rotate(180deg);}
+.ab{display:none;padding:20px 24px 26px;border-top:1px solid var(--b);font-size:.87rem;color:var(--ow);line-height:1.8;}
+.ab p{margin-bottom:14px;}
+
+/* footer */
+footer{padding:72px 0 52px;border-top:1px solid var(--b);text-align:center;}
+.fw{font-family:var(--sf);font-size:1.8rem;font-weight:900;color:var(--a);margin-bottom:8px;letter-spacing:-.02em;}
+.fm{font-family:var(--sm);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);}
+
+/* RESPONSIVE */
+@media(max-width:960px){
+  .hero-inner,.g2,.ins-panel.on,.vc-grid,.dgrid,.fv{grid-template-columns:1fr;gap:22px;}
+  .synth-flow{grid-template-columns:1fr;gap:14px;}
+  .sa{display:none;}
+  .con-row,.pmi-g,.ws-row{grid-template-columns:1fr;}
+  .empathy-arena{grid-template-columns:1fr;}
+}
+@media(max-width:680px){
+  .nl{display:none;}.ni,.ctr{padding:0 22px;}
+  .sec{padding:72px 0;}
+}
+
+/* ══ RESEARCH STORY ADDITIONS ══════════════════════════════════════ */
+
+/* Numbered step banner */
+.step-banner{display:flex;align-items:center;gap:16px;padding:14px 0;margin-bottom:44px;border-bottom:1px solid var(--b);}
+.step-n{font-family:var(--sf);font-size:3.5rem;font-weight:900;letter-spacing:-.04em;line-height:1;color:rgba(232,149,109,.2);}
+.step-info{}
+.step-lbl{font-family:var(--sm);font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--a);margin-bottom:3px;}
+.step-title{font-family:var(--sf);font-size:1.5rem;font-weight:700;color:var(--w);line-height:1.2;}
+
+/* Research narrative callout */
+.thinking-box{background:linear-gradient(145deg,rgba(232,149,109,.08),var(--ink3));border:1px solid var(--ab);border-radius:var(--r);padding:24px 28px;position:relative;overflow:hidden;}
+.thinking-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--a),var(--warm),transparent);}
+.tb-lbl{font-family:var(--sm);font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--a);margin-bottom:9px;}
+.tb-text{font-size:.92rem;color:var(--ow);line-height:1.8;}
+.tb-text strong{color:var(--w);font-weight:600;}
+
+/* Research space — 3 circle Venn */
+.venn-wrap{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:start;margin-top:44px;}
+.venn-svg-wrap{position:relative;}
+.venn-labels{display:flex;flex-direction:column;gap:12px;}
+.venn-item{padding:16px 20px;background:var(--ink3);border:1px solid var(--b2);border-radius:var(--r);cursor:pointer;transition:border-color .2s,background .2s;}
+.venn-item:hover,.venn-item.on{border-color:var(--ab);background:var(--agl);}
+.vi-n{font-family:var(--sm);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;margin-bottom:5px;}
+.vi-title{font-size:.9rem;font-weight:600;color:var(--w);margin-bottom:5px;}
+.vi-body{font-size:.8rem;color:var(--mid);line-height:1.6;}
+.venn-ref{margin-top:16px;padding:14px 18px;background:var(--ink2);border:1px solid var(--b);border-radius:var(--r);}
+.vr-lbl{font-family:var(--sm);font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);margin-bottom:6px;}
+.vr-list{display:flex;flex-direction:column;gap:4px;}
+.vr-item{font-size:.78rem;color:var(--mid);padding-left:12px;position:relative;}
+.vr-item::before{content:'—';position:absolute;left:0;color:var(--mut);}
+
+/* Stakeholder map */
+.smap{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;border-radius:var(--rl);overflow:hidden;margin-top:44px;border:1px solid var(--b2);}
+.sm-card{background:var(--ink3);padding:28px;transition:background .2s;cursor:default;}
+.sm-card:hover{background:rgba(20,27,46,.95);}
+.sm-tier{font-family:var(--sm);font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;margin-bottom:6px;}
+.sm-pri .sm-tier{color:var(--a);}
+.sm-sec .sm-tier{color:var(--a2);}
+.sm-ter .sm-tier{color:var(--teal);}
+.sm-role{font-family:var(--sf);font-size:1.05rem;font-weight:700;color:var(--w);margin-bottom:10px;}
+.sm-needs{display:flex;flex-direction:column;gap:5px;}
+.sm-need{font-size:.8rem;color:var(--ow);padding-left:12px;position:relative;line-height:1.5;}
+.sm-need::before{content:'→';position:absolute;left:0;color:var(--mut);}
+.sm-pri{border-left:3px solid var(--a);}
+.sm-sec{border-left:3px solid var(--a2);}
+.sm-ter{border-left:3px solid var(--teal);}
+
+/* 2x2 positioning matrix */
+.matrix-wrap{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:start;margin-top:44px;}
+.matrix-svg-area{position:relative;}
+.matrix-legend{display:flex;flex-direction:column;gap:10px;margin-top:20px;}
+.ml-item{display:flex;align-items:center;gap:10px;font-size:.82rem;color:var(--ow);}
+.ml-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.matrix-insight{margin-top:20px;padding:16px 20px;background:var(--agl);border:1px solid var(--ab);border-radius:var(--r);}
+.mi-lbl{font-family:var(--sm);font-size:.57rem;letter-spacing:.14em;text-transform:uppercase;color:var(--a);margin-bottom:6px;}
+.mi-text{font-size:.84rem;color:var(--ow);line-height:1.65;}
+
+/* SWOT double */
+.swot-pair{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:44px;}
+.swot-card{background:var(--ink3);border:1px solid var(--b2);border-radius:var(--rl);overflow:hidden;}
+.swot-head{padding:18px 24px;border-bottom:1px solid var(--b2);display:flex;align-items:center;gap:10px;}
+.swot-head-title{font-family:var(--sf);font-size:1rem;font-weight:700;color:var(--w);}
+.swot-head-sub{font-family:var(--sm);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mid);}
+.swot-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--b);}
+.swot-q{padding:18px 20px;background:var(--ink3);}
+.swot-q-lbl{font-family:var(--sm);font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px;font-weight:600;}
+.swot-s .swot-q-lbl{color:var(--teal);}
+.swot-w .swot-q-lbl{color:var(--err);}
+.swot-o .swot-q-lbl{color:var(--ok);}
+.swot-t .swot-q-lbl{color:var(--warm);}
+.swot-list{list-style:none;display:flex;flex-direction:column;gap:5px;}
+.swot-list li{font-size:.78rem;color:var(--ow);line-height:1.55;padding-left:12px;position:relative;}
+.swot-list li::before{content:'–';position:absolute;left:0;color:var(--mut);}
+
+/* Design criteria pyramid */
+.criteria-wrap{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:start;margin-top:44px;}
+.criteria-levels{display:flex;flex-direction:column;gap:3px;}
+.cl{border-radius:var(--r);padding:20px 24px;cursor:pointer;transition:filter .2s,transform .2s;}
+.cl:hover{filter:brightness(1.1);transform:translateX(4px);}
+.cl-must{background:rgba(232,149,109,.18);border:1px solid rgba(232,149,109,.3);}
+.cl-should{background:rgba(122,163,255,.14);border:1px solid rgba(122,163,255,.22);}
+.cl-nice{background:rgba(61,214,200,.10);border:1px solid rgba(61,214,200,.16);}
+.cl-tier{font-family:var(--sm);font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;font-weight:600;margin-bottom:6px;}
+.cl-must .cl-tier{color:var(--a);}
+.cl-should .cl-tier{color:var(--a2);}
+.cl-nice .cl-tier{color:var(--teal);}
+.cl-items{display:flex;flex-direction:column;gap:4px;}
+.cl-item{font-size:.82rem;color:var(--ow);line-height:1.5;padding-left:12px;position:relative;}
+.cl-item::before{content:'·';position:absolute;left:0;color:var(--mut);}
+.criteria-context{display:flex;flex-direction:column;gap:16px;}
+.cc-block{padding:18px 22px;background:var(--ink3);border:1px solid var(--b2);border-radius:var(--r);border-left:3px solid var(--b2);}
+.cc-block.m{border-left-color:var(--a);}
+.cc-block.s{border-left-color:var(--a2);}
+.cc-block.n{border-left-color:var(--teal);}
+.cc-lbl{font-family:var(--sm);font-size:.57rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);margin-bottom:5px;}
+.cc-text{font-size:.83rem;color:var(--ow);line-height:1.65;}
+
+/* Concept comparison table */
+.concept-table{margin-top:44px;border:1px solid var(--b2);border-radius:var(--rl);overflow:hidden;}
+.ct-head{display:grid;grid-template-columns:200px 1fr 1fr 1fr;background:var(--ink3);border-bottom:1px solid var(--b2);}
+.ct-h{padding:14px 18px;font-family:var(--sm);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;}
+.ct-h:first-child{color:var(--mid);}
+.ct-h.winner{color:var(--a);background:rgba(232,149,109,.08);}
+.ct-h.other{color:var(--a2);}
+.ct-row{display:grid;grid-template-columns:200px 1fr 1fr 1fr;border-bottom:1px solid var(--b);transition:background .2s;}
+.ct-row:last-child{border-bottom:none;}
+.ct-row:hover{background:rgba(255,255,255,.02);}
+.ct-criterion{padding:14px 18px;font-family:var(--sm);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mid);display:flex;align-items:center;}
+.ct-cell{padding:14px 18px;font-size:.82rem;color:var(--ow);line-height:1.5;display:flex;align-items:center;}
+.ct-cell.winner-col{background:rgba(232,149,109,.04);border-left:1px solid rgba(232,149,109,.12);border-right:1px solid rgba(232,149,109,.12);}
+.ct-yes{color:var(--ok);}
+.ct-no{color:var(--err);}
+.ct-part{color:var(--warm);}
+
+/* Synthesis bridge */
+.bridge{display:flex;flex-direction:column;gap:0;margin-top:44px;}
+.bridge-step{display:flex;gap:0;align-items:stretch;}
+.bridge-step:not(:last-child){margin-bottom:0;}
+.bs-num{width:48px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;}
+.bs-dot{width:32px;height:32px;border-radius:50%;background:var(--agl);border:1px solid var(--ab);display:flex;align-items:center;justify-content:center;font-family:var(--sm);font-size:.6rem;color:var(--a);flex-shrink:0;}
+.bs-line{flex:1;width:1px;background:var(--b2);margin:4px auto 0;}
+.bs-content{flex:1;padding:0 0 32px 20px;}
+.bs-lbl{font-family:var(--sm);font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;color:var(--a);margin-bottom:5px;}
+.bs-title{font-family:var(--sf);font-size:1.1rem;font-weight:700;color:var(--w);margin-bottom:8px;}
+.bs-body{font-size:.88rem;color:var(--ow);line-height:1.75;opacity:.9;}
+.bs-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.bs-chip{font-family:var(--sm);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:100px;background:var(--ink3);border:1px solid var(--b2);color:var(--ow);}
+.bs-chip-a{background:var(--agl);border-color:var(--ab);color:var(--a);}
+
+/* Anticipation section before Karuna */
+.anticipation{padding:80px 0;background:var(--ink2);border-top:1px solid var(--b);border-bottom:1px solid var(--b);position:relative;overflow:hidden;}
+.ant-inner{max-width:760px;margin:0 auto;text-align:center;}
+.ant-q{font-family:var(--sf);font-size:clamp(1.3rem,3vw,2rem);font-weight:300;font-style:italic;color:var(--ow);line-height:1.4;margin-bottom:18px;}
+.ant-a{font-family:var(--sf);font-size:clamp(1.6rem,4vw,2.8rem);font-weight:900;letter-spacing:-.03em;color:var(--w);line-height:1.1;}
+.ant-a em{color:var(--a);font-style:italic;}
+
+</style>
+</head>
+<body>
+<div id="pb"></div>
+<div class="pw">
+
+<nav>
+  <div class="ni">
+    <span class="nw">Karuna</span>
+    <ul class="nl">
+      <li><a href="#research-space">Framing</a></li>
+      <li><a href="#reality">Experience</a></li>
+      <li><a href="#parallel">Parallel Worlds</a></li>
+      <li><a href="#synthesis-process">Synthesis</a></li>
+      <li><a href="#insights">Insights</a></li>
+      <li><a href="#karuna">Karuna</a></li>
+      <li><a href="#impact">Impact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ══ HERO ══════════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-bg"><div class="hero-glow"></div></div>
+  <div class="ctr">
+    <div class="hero-inner">
+      <div>
+        <div class="hlabel rv"><span class="lbl">Healthcare Innovation Research</span></div>
+        <h1 class="htitle rv d1">
+          Patients remember<br>more than<br><em>treatment.</em>
+          <span>They remember how they were cared for.</span>
+        </h1>
+        <p class="hsub rv d2">A generative research study into the psychological experience of long-stay acute care patients — and what it uncovered about the gap between clinical competence and human care.</p>
+        <div class="hmeta rv d3">
+          <div class="hmi"><span class="hmd"></span><span class="hmt">Lead Researcher &amp; Design Strategist</span></div>
+          <div class="hmi"><span class="hmd"></span><span class="hmt">Dallas, TX &amp; Savannah, GA</span></div>
+          <div class="hmi"><span class="hmd"></span><span class="hmt">3 Physicians · 1 Hospitalist · 5 Long-Stay Patients</span></div>
+          <div class="hmi"><span class="hmd"></span><span class="hmt">Ethnographic Interviews · Empathy Mapping · PMI · Concept Testing</span></div>
+        </div>
+      </div>
+      <div class="rv d2">
+        <div class="hpanel">
+          <div class="lbl" style="margin-bottom:6px;">Clinical Research Finding</div>
+          <div class="snum sn-a" id="heroStat">0</div>
+          <div class="san">of critical care patients experience acute psychological stress — fear, panic, depression, hallucinations — during hospitalization</div>
+          <div class="sdiv"></div>
+          <div class="lbl lbl-m" style="margin-bottom:9px;">The Central Question</div>
+          <p style="font-size:.88rem;color:var(--ow);line-height:1.65;">How might we help doctors build stronger emotional connections with patients — without increasing their workload?</p>
+          <div class="tpill"><span>Output</span><em>Karuna</em></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-cue"><div class="sc-line"></div><div class="sc-lbl">Scroll to explore</div></div>
+</section>
+
+
+<!-- ══ STAT BREAK ═════════════════════════════════════════════════ -->
+<div class="stat-break">
+  <div class="ctr">
+    <div class="sb-inner rv">
+      <div class="sb-ghost">45–80%</div>
+      <div class="sb-label">The scale of the problem</div>
+      <div class="sb-num">45 – 80%</div>
+      <div class="sb-body">45–80% of critical care patients experience acute psychological stress — panic, fear, depression, hallucinations. Most of it goes unaddressed by the system designed to care for them.</div>
+      <div style="margin-top:16px;font-family:var(--sm);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);">Source: BMJ Open</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ EXECUTIVE SUMMARY ═════════════════════════════════════════ -->
+<section style="padding:56px 0;border-bottom:1px solid var(--b);background:var(--ink2);">
+  <div class="ctr">
+    <div class="rv" style="margin-bottom:20px;">
+      <div class="lbl" style="margin-bottom:10px;">Project at a Glance</div>
+    </div>
+    <div class="rv" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--b);border-radius:var(--rl);overflow:hidden;border:1px solid var(--b);">
+      <div style="background:var(--ink3);padding:22px 20px;">
+        <div style="font-family:var(--sm);font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);margin-bottom:6px;">Challenge</div>
+        <div style="font-size:.88rem;color:var(--ow);line-height:1.55;">45–80% of acute care patients experience psychological stress that goes unaddressed</div>
+      </div>
+      <div style="background:var(--ink3);padding:22px 20px;">
+        <div style="font-family:var(--sm);font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);margin-bottom:6px;">My Role</div>
+        <div style="font-size:.88rem;color:var(--ow);line-height:1.55;">Solo researcher — scoping, fieldwork, synthesis, concept development, validation</div>
+      </div>
+      <div style="background:var(--ink3);padding:22px 20px;">
+        <div style="font-family:var(--sm);font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);margin-bottom:6px;">Research Methods</div>
+        <div style="font-size:.88rem;color:var(--ow);line-height:1.55;">Ethnographic interviews · Empathy mapping · SWOT analysis · PMI · Concept testing</div>
+      </div>
+      <div style="background:var(--ink3);padding:22px 20px;">
+        <div style="font-family:var(--sm);font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);margin-bottom:6px;">Outcome</div>
+        <div style="font-size:.88rem;color:var(--ow);line-height:1.55;"><span style="color:var(--a);font-weight:600;">Karuna</span> — a validated workshop strategy for acute care empathy training</div>
+      </div>
+    </div>
+    <div class="rv" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--b);border-radius:0 0 var(--rl) var(--rl);overflow:hidden;border:1px solid var(--b);border-top:none;margin-top:1px;">
+      <div style="background:var(--ink3);padding:18px 20px;">
+        <div style="font-family:var(--sm);font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);margin-bottom:6px;">Participants</div>
+        <div style="font-size:.88rem;color:var(--ow);">8 total — 5 long-stay patients · 3 physicians &amp; hospitalists · 2 hospital systems</div>
+      </div>
+      <div style="background:var(--ink3);padding:18px 20px;">
+        <div style="font-family:var(--sm);font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);margin-bottom:6px;">Core Research Question</div>
+        <div style="font-size:.88rem;color:var(--ow);font-style:italic;">How might we help doctors build stronger emotional connections with patients — without increasing their workload?</div>
+      </div>
+      <div style="background:var(--ink3);padding:18px 20px;">
+        <div style="font-family:var(--sm);font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);margin-bottom:6px;">Key Finding</div>
+        <div style="font-size:.88rem;color:var(--ow);">Doctors aren't failing patients. The system never trained them for emotional care. That's a solvable design problem.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ RESEARCH SPACE MATRIX ════════════════════════════════════════ -->
+<section class="sec sec-dk" id="research-space">
+  <div class="ctr">
+    <div class="shead rv">
+      <div class="step-banner">
+        <div class="step-n">01</div>
+        <div class="step-info">
+          <div class="step-lbl">Research Framing</div>
+          <div class="step-title">Mapping the problem space before choosing methods</div>
+        </div>
+      </div>
+      <h2 class="stitle">Where does this problem <em>actually live?</em></h2>
+      <p class="sbody">I mapped three intersecting domains before any fieldwork — to understand where the most important questions would emerge, and to resist forming hypotheses prematurely.</p>
+    </div>
+    <div class="venn-wrap rv">
+      <div class="venn-svg-wrap">
+        <svg viewBox="0 0 420 370" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:420px;display:block;margin:0 auto;">
+          <defs>
+            <radialGradient id="gc1" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#e8956d" stop-opacity=".28"/><stop offset="100%" stop-color="#e8956d" stop-opacity=".06"/></radialGradient>
+            <radialGradient id="gc2" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#7aa3ff" stop-opacity=".24"/><stop offset="100%" stop-color="#7aa3ff" stop-opacity=".06"/></radialGradient>
+            <radialGradient id="gc3" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#3dd6c8" stop-opacity=".22"/><stop offset="100%" stop-color="#3dd6c8" stop-opacity=".06"/></radialGradient>
+          </defs>
+          <circle cx="210" cy="120" r="110" fill="url(#gc1)" stroke="#e8956d" stroke-width="1.5" stroke-opacity=".45"/>
+          <circle cx="140" cy="250" r="110" fill="url(#gc2)" stroke="#7aa3ff" stroke-width="1.5" stroke-opacity=".38"/>
+          <circle cx="280" cy="250" r="110" fill="url(#gc3)" stroke="#3dd6c8" stroke-width="1.5" stroke-opacity=".35"/>
+          <text x="210" y="62" text-anchor="middle" font-family="Fraunces,serif" font-size="13" fill="#e8956d" font-weight="700">Psychological</text>
+          <text x="210" y="78" text-anchor="middle" font-family="Fraunces,serif" font-size="13" fill="#e8956d" font-weight="700">Wellbeing</text>
+          <text x="78" y="308" text-anchor="middle" font-family="Fraunces,serif" font-size="12" fill="#7aa3ff" font-weight="700">Design</text>
+          <text x="78" y="323" text-anchor="middle" font-family="Fraunces,serif" font-size="12" fill="#7aa3ff" font-weight="700">Management</text>
+          <text x="342" y="308" text-anchor="middle" font-family="Fraunces,serif" font-size="12" fill="#3dd6c8" font-weight="700">Acute Care</text>
+          <text x="342" y="323" text-anchor="middle" font-family="Fraunces,serif" font-size="12" fill="#3dd6c8" font-weight="700">Hospitals</text>
+          <text x="210" y="192" text-anchor="middle" font-family="Fraunces,serif" font-size="11" fill="white" font-weight="700">Reduce</text>
+          <text x="210" y="207" text-anchor="middle" font-family="Fraunces,serif" font-size="11" fill="white" font-weight="700">Psychological</text>
+          <text x="210" y="222" text-anchor="middle" font-family="Fraunces,serif" font-size="11" fill="white" font-weight="700">Stress</text>
+        </svg>
+
+      </div>
+      <div class="venn-labels">
+        <div class="venn-item on" onclick="hlVenn(this)">
+          <div class="vi-n" style="color:var(--a);">Domain 01 — Psychological Wellbeing</div>
+          <div class="vi-title">The human stakes</div>
+          <div class="vi-body">Acute psychological stress affects the majority of long-stay patients and directly compromises physical recovery outcomes.</div>
+        </div>
+        <div class="venn-item" onclick="hlVenn(this)">
+          <div class="vi-n" style="color:var(--a2);">Domain 02 — Design Management</div>
+          <div class="vi-title">The methodological lens</div>
+          <div class="vi-body">Ethnographic inquiry and systems thinking applied to understand how behavioral and structural change could happen within an existing care environment.</div>
+        </div>
+        <div class="venn-item" onclick="hlVenn(this)">
+          <div class="vi-n" style="color:var(--teal);">Domain 03 — Acute Care Hospitals</div>
+          <div class="vi-title">The system context</div>
+          <div class="vi-body">The operational environment — its workflows, structural defaults, and institutional constraints — shaped what was possible before any individual ever entered a room.</div>
+        </div>
+        <div class="thinking-box" style="margin-top:4px;">
+          <div class="tb-lbl">Research Thinking</div>
+          <div class="tb-text">This mapping confirmed the problem couldn't be solved by addressing any single domain alone — that framing shaped every methodological decision that followed.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ STAKEHOLDER ECOSYSTEM ══════════════════════════════════════ -->
+<section class="sec" id="stakeholders">
+  <div class="ctr">
+    <div class="shead rv">
+      <div class="step-banner">
+        <div class="step-n">02</div>
+        <div class="step-info">
+          <div class="step-lbl">Participant Strategy</div>
+          <div class="step-title">Deciding who to talk to — and why</div>
+        </div>
+      </div>
+      <h2 class="stitle">Research without the right voices<br>is just <em>assumption with evidence.</em></h2>
+      <p class="sbody">Recruiting across three tiers of the care relationship was deliberate. Insight from patients alone confirms a gap exists. Insight from physicians confirms whether it's a perception problem or a structural one. Both were needed.</p>
+    </div>
+    <div class="smap rv">
+      <div class="sm-card sm-pri">
+        <div class="sm-tier">Primary — Direct Experience</div>
+        <div class="sm-role">Long-Stay Patients</div>
+        <div class="sm-needs">
+          <div class="sm-need">Nathaniel Butler, 29 — Chef — 20 days</div>
+          <div class="sm-need">Vineeth Chada, 34 — Software Engineer — 1 month</div>
+          <div class="sm-need">Bhavyaa Kumar, 25 — Student — 25 days</div>
+          <div class="sm-need">Paul Dunkley, 44 — Graphic Designer — 1 month</div>
+          <div class="sm-need">Richard, 22 — Mechanic — 1 month</div>
+        </div>
+      </div>
+      <div class="sm-card sm-sec">
+        <div class="sm-tier">Secondary — System Operators</div>
+        <div class="sm-role">Acute Care Physicians</div>
+        <div class="sm-needs">
+          <div class="sm-need">Amit Thatishetty MD — 14 years — Memorial Health, Savannah</div>
+          <div class="sm-need">Robin Youngson MD — 21 years — Joseph Candler Hospital</div>
+          <div class="sm-need">Prasannaa — 7 years — Acute Care Hospitalist</div>
+        </div>
+      </div>
+      <div class="sm-card sm-ter">
+        <div class="sm-tier">Tertiary — Indirect Stakeholders</div>
+        <div class="sm-role">Patient Families</div>
+        <div class="sm-needs">
+          <div class="sm-need">Surfaced through patient interviews — not directly recruited</div>
+          <div class="sm-need">Structurally excluded from care decisions by the system</div>
+          <div class="sm-need">Primary source of patient emotional stability</div>
+          <div class="sm-need">Their exclusion emerged as a key system failure point</div>
+        </div>
+      </div>
+    </div>
+    <div class="thinking-box rv" style="margin-top:22px;">
+      <div class="tb-lbl">Why this participant structure mattered</div>
+      <div class="tb-text">If doctors believed they were providing adequate emotional care, the problem would be perceptual — fixable through communication. If doctors acknowledged the limitation, it's structural — requiring systemic change. All three did. That distinction determined the entire design direction.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ EMOTIONAL REALITY + EMPATHY MAP ═══════════════════════════ -->
+<section class="sec sec-dk" id="reality">
+  <div class="ctr">
+    <div class="shead rv">
+      <div class="lbl" style="margin-bottom:14px;">01 — The Hidden Experience</div>
+      <h2 class="stitle">Inside a long hospital stay,<br>the body isn't the only thing <em>suffering.</em></h2>
+      <p class="sbody">Three empathy maps were developed — patient, physician, and hospitalist. Click each quadrant to explore.</p>
+    </div>
+
+    <!-- Empathy Map: PATIENT (Bhavyaa) -->
+    <div class="rv">
+      <div class="em-hint">↓ Click any quadrant to explore</div>
+      <div style="height:8px;"></div>
+      <div class="empathy-arena" id="emMap">
+        <div class="em-quadrant" data-label="HEAR" onclick="toggleQuad(this)">
+          <div class="emq-head"><div class="emq-icon">👂</div><div class="emq-label">What she Hears</div></div>
+          <div class="emq-items">
+            <div class="emq-item">Medical updates about her disease and prognosis</div>
+            <div class="emq-item">Outpatient stories from other patients in the ward</div>
+            <div class="emq-item">Positive motivation from family during limited visits</div>
+            <div class="emq-item">How other patients survived the same disease</div>
+          </div>
+        </div>
+        <div class="em-quadrant" data-label="SEE" onclick="toggleQuad(this)">
+          <div class="emq-head"><div class="emq-icon">👁️</div><div class="emq-label">What she Sees</div></div>
+          <div class="emq-items">
+            <div class="emq-item">Other patients suffering in adjacent beds</div>
+            <div class="emq-item">Her family going through emotional and financial pressure</div>
+            <div class="emq-item">Differential treatment and inequity between patients</div>
+            <div class="emq-item">Doctors who are always occupied with screens</div>
+          </div>
+        </div>
+        <div class="em-quadrant" data-label="THINK" onclick="toggleQuad(this)">
+          <div class="emq-head"><div class="emq-icon">💭</div><div class="emq-label">What she Thinks &amp; Feels</div></div>
+          <div class="emq-items">
+            <div class="emq-item">Thinks constantly of her family and home</div>
+            <div class="emq-item">Anxious about how her regular life is disrupted by treatment</div>
+            <div class="emq-item">Reliving previous anxiety attacks triggered by the environment</div>
+            <div class="emq-item">Fears she will never fully return to her normal life</div>
+          </div>
+        </div>
+        <div class="em-quadrant" data-label="DO" onclick="toggleQuad(this)">
+          <div class="emq-head"><div class="emq-icon">🤲</div><div class="emq-label">What she Says &amp; Does</div></div>
+          <div class="emq-items">
+            <div class="emq-item">Says she has a problem connecting with her doctor</div>
+            <div class="emq-item">Walks around the hospital ward for mental refreshment</div>
+            <div class="emq-item">Prays daily for recovery and discharge</div>
+            <div class="emq-item">Keeps emotional distress to herself to avoid burdening staff</div>
+          </div>
+        </div>
+        <div class="em-center">
+          <div class="em-center-person">
+            <div class="em-center-avatar">👩</div>
+            <div class="em-center-info">
+              <h4>Bhavyaa Kumar</h4>
+              <p>Graphic Designer · Atlanta · 25-day stay</p>
+            </div>
+          </div>
+          <div class="em-meta-chips">
+            <span class="em-chip em-chip-a">Pain: Emotional disconnection from caregivers</span>
+            <span class="em-chip">Goal: Return to work as soon as possible</span>
+            <span class="em-chip">Motivation: Create a stress-free environment</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:52px;" class="rv">
+      <div class="lbl lbl-m" style="margin-bottom:14px;">From the other side of the bedside</div>
+      <div class="g2">
+        <div class="vc-grid" style="display:flex;flex-direction:column;gap:2px;">
+          <div class="vc">
+            <div class="vc-name">Vineeth Chada · Age 34 · Software Engineer · 1-month stay</div>
+            <div class="vc-q">"I felt like a piece of meat carted here and there."</div>
+            <div class="vc-q qt">"They did their job with highest professionalism. But I needed a bit of casualty to make my treatment more fun and normal."</div>
+            <div class="vc-q">"I can feel safe around doctors but they can never give me the feeling of being with my family."</div>
+          </div>
+          <div class="vc">
+            <div class="vc-name">Richard · Age 22 · Mechanic · 1-month stay</div>
+            <div class="vc-q qb">"Doctors often make me nervous. Any kind of non-medical inquiry would make me feel comfortable."</div>
+            <div class="vc-q">"They made sure that I am taking all the medication but they never asked how I am feeling about them."</div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:22px;">
+          <div style="background:var(--ink3);border:1px solid var(--b2);border-radius:var(--rl);padding:28px;position:relative;overflow:hidden;">
+            <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--a2),transparent);"></div>
+            <div class="lbl" style="color:var(--a2);margin-bottom:8px;">Physician · 21 years · Robin Youngson, MD</div>
+            <div class="vc-q qb">"Healthcare's focus on physical disease and bio-medicine is unbalanced. We need to pay much more attention to emotional, psychological and spiritual wellbeing."</div>
+            <div class="vc-q qb" style="margin-top:8px;">"When I go on rounds I see patients suffering from depression and insomnia. There is nothing I can do at that particular time — so I refer them to a psychiatrist."</div>
+          </div>
+          <div style="background:var(--ink3);border:1px solid var(--b2);border-radius:var(--rl);padding:28px;position:relative;overflow:hidden;">
+            <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--teal),transparent);"></div>
+            <div class="lbl lbl-t" style="margin-bottom:8px;">Hospitalist · 7 years · Prasannaa</div>
+            <div class="vc-q qt">"Families are left out of most part of current system of care. Patients and their family members and caregivers are given very less information about what is happening."</div>
+            <div class="vc-q qt" style="margin-top:8px;">"Technology is almost interwoven into everything I do. I feel that sometimes it is acting as a barrier to the right kind of human interaction."</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FULL QUOTE ════════════════════════════════════════════════ -->
+<div class="qfull">
+  <div class="ctr">
+    <div class="qf-inner rv">
+      <p class="qf-text">"They attended my physical needs with skilled efficiency — but never acknowledged my emotional needs."</p>
+      <span class="qf-attr">Nathaniel Butler · Chef · 20-day acute care stay</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CINEMATIC PARALLEL WORLDS ═══════════════════════════════════ -->
+<div id="parallel">
+  <div class="cinema-title rv">
+    <div class="ctr">
+      <div class="lbl" style="margin-bottom:14px;">02 — The Invisible Disconnect</div>
+      <h2 class="stitle" style="text-align:center;">Two people. Same building.<br><em>Parallel worlds.</em></h2>
+      <p class="sbody" style="margin:0 auto;text-align:center;">Neither party designed this. It is the structural default of a system built around clinical tasks.</p>
+    </div>
+  </div>
+
+  <div class="cinema rv">
+    <div class="ctr">
+    <div class="cinema-grid">
+
+      <!-- ROW: Headers -->
+      <div class="cinema-col-head p-head"><div class="ch-dot ch-dot-p"></div><span class="cinema-col-label">Long-Stay Patient</span></div>
+      <div class="cinema-divider-head"></div>
+      <div class="cinema-col-head d-head"><div class="ch-dot ch-dot-d"></div><span class="cinema-col-label">Acute Care Doctor</span></div>
+
+      <!-- ROW 1: Morning start -->
+      <div class="cinema-moment stress">
+        <div class="cm-time-bar"><div class="cm-time">7:00 AM</div></div>
+        <div class="cm-content"><div class="cm-title">Disruption before rest ends</div><div class="cm-body">Woken for medication or tests — often before natural sleep ends. The day begins with loss of control over even the most basic bodily rhythm.</div></div>
+        <div class="cm-emotion"><div class="ce-dot ce-red"></div><div class="ce-label">Anxious · disorientated · passive</div></div>
+      </div>
+      <div class="cinema-divider-cell"></div>
+      <div class="cinema-moment highlight">
+        <div class="cm-time-bar"><div class="cm-time">8:00 AM</div></div>
+        <div class="cm-content"><div class="cm-title">Patient load assigned</div><div class="cm-body">7–10 patients assigned simultaneously. Full clinical histories, active protocols, pending documentation. The system is already at capacity.</div></div>
+        <div class="cm-emotion"><div class="ce-dot ce-blue"></div><div class="ce-label">Task-oriented · system-facing</div></div>
+      </div>
+
+      <!-- ROW 2: Mid-morning -->
+      <div class="cinema-moment">
+        <div class="cm-time-bar"><div class="cm-time">10:00 AM</div></div>
+        <div class="cm-content"><div class="cm-title">A brief window of warmth</div><div class="cm-body">A brief family visit if hours allow — the only social warmth of the morning. Restricted visiting hours make even this unreliable.</div></div>
+        <div class="cm-emotion"><div class="ce-dot ce-ylw"></div><div class="ce-label">Slightly settled · still isolated</div></div>
+      </div>
+      <div class="cinema-divider-cell"></div>
+      <div class="cinema-moment">
+        <div class="cm-time-bar"><div class="cm-time">10:00 AM</div></div>
+        <div class="cm-content"><div class="cm-title">Re-evaluation round</div><div class="cm-body">Documentation and EHR work — screen-facing, not patient-facing. The technology that enables better care also creates distance from it.</div></div>
+        <div class="cm-emotion"><div class="ce-dot ce-blue"></div><div class="ce-label">Clinical · administrative · screen-facing</div></div>
+      </div>
+
+      <!-- ROW 3: Midday -->
+      <div class="cinema-moment">
+        <div class="cm-time-bar"><div class="cm-time">11:30 AM</div></div>
+        <div class="cm-content"><div class="cm-title">Lunch without autonomy</div><div class="cm-body">"Not much variety of food is provided. I would like to try different types of food." No control over menu, timing, or environment.</div></div>
+        <div class="cm-emotion"><div class="ce-dot ce-mid"></div><div class="ce-label">Resigned · monotonous</div></div>
+      </div>
+      <div class="cinema-divider-cell"></div>
+      <div class="cinema-moment">
+        <div class="cm-time-bar"><div class="cm-time">12:00 PM</div></div>
+        <div class="cm-content"><div class="cm-title">Lunch between cases</div><div class="cm-body">Brief. Often case-focused rather than restorative. The doctor returns to the afternoon carrying the morning's load.</div></div>
+        <div class="cm-emotion"><div class="ce-dot ce-ylw"></div><div class="ce-label">Slightly decompressed · still cognitively loaded</div></div>
+      </div>
+
+      <!-- ROW 4: Afternoon — THE OVERLAP MOMENT -->
+      <div class="cinema-moment stress">
+        <div class="cm-time-bar"><div class="cm-time">5:00 PM</div></div>
+        <div class="cm-content"><div class="cm-title">Isolation deepens</div><div class="cm-body">Confined with no information about the outside world. "Sitting in the room for such long time is hectic. I would like to know what's going on outside."</div></div>
+        <div class="cm-emotion"><div class="ce-dot ce-red"></div><div class="ce-label">Anxious · restless · disconnected</div></div>
+      </div>
+      <div class="cinema-divider-cell"></div>
+      <div class="cinema-moment highlight">
+        <div class="cm-time-bar"><div class="cm-time">2:00 PM</div></div>
+        <div class="cm-content"><div class="cm-title">The only window for connection</div><div class="cm-body">The primary patient interaction of the day — often under 10 minutes. The only moment emotional needs could be addressed. Also the moment most constrained by time.</div></div>
+        <div class="cm-emotion"><div class="ce-dot ce-grn"></div><div class="ce-label">The single overlap point · under-resourced</div></div>
+      </div>
+
+      <!-- ROW 5: End of day -->
+      <div class="cinema-moment">
+        <div class="cm-time-bar"><div class="cm-time">10:00 PM</div></div>
+        <div class="cm-content"><div class="cm-title">Sleep that doesn't restore</div><div class="cm-body">Disrupted by noise and anxiety. Insomnia is widespread — and almost universally unaddressed. The cycle repeats tomorrow.</div></div>
+        <div class="cm-emotion"><div class="ce-dot ce-red"></div><div class="ce-label">Fearful · unable to rest</div></div>
+      </div>
+      <div class="cinema-divider-cell"></div>
+      <div class="cinema-moment">
+        <div class="cm-time-bar"><div class="cm-time">5:00 PM</div></div>
+        <div class="cm-content"><div class="cm-title">Clock out. Burnout accumulates.</div><div class="cm-body">The burnout trajectory builds over months. Each day ends having addressed physical needs while leaving emotional ones unmet — not from indifference, but because the system never equipped doctors for anything else.</div></div>
+        <div class="cm-emotion"><div class="ce-dot ce-red"></div><div class="ce-label">Depleted · boundary-maintaining · unable to do more</div></div>
+      </div>
+
+    
+    </div>
+    </div>
+
+<div class="cinema-callout">
+      <div class="ctr">
+        <div class="cc-inner rv">
+          <div class="cc-stat">10 minutes</div>
+          <div class="cc-body">The bedside assessment is the only moment where emotional exchange is possible. The documentation burden, patient count, and referral model all conspire to make it shorter and less human. <strong style="color:var(--w);">Neither party chose this. It is the default.</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ SYNTHESIS BRIDGE ═══════════════════════════════════════════ -->
+<section class="sec sec-dk" id="synthesis-process">
+  <div class="ctr">
+    <div class="shead rv">
+      <div class="step-banner">
+        <div class="step-n">03</div>
+        <div class="step-info">
+          <div class="step-lbl">Research Synthesis</div>
+          <div class="step-title">From raw data to strategic direction</div>
+        </div>
+      </div>
+      <h2 class="stitle">How understanding <em>emerged</em><br>from uncertainty.</h2>
+      <p class="sbody">Eight conversations → five structural insights → five opportunity areas → one intervention. This is how that happened.</p>
+    </div>
+    <div class="bridge rv">
+      <div class="bridge-step">
+        <div class="bs-num"><div class="bs-dot">1</div><div class="bs-line"></div></div>
+        <div class="bs-content">
+          <div class="bs-lbl">Raw Data Collection</div>
+          <div class="bs-title">Ethnographic interviews — open, not hypothesis-driven</div>
+          <div class="bs-body">Eight in-depth interviews across Dallas and Savannah. Open-ended, lived-experience focused. Deliberately unstructured — listening for what I didn't know, not confirming what I expected.</div>
+          <div class="bs-chips"><span class="bs-chip">User Interviews</span><span class="bs-chip">Contextual Inquiry</span><span class="bs-chip">8 Participants</span><span class="bs-chip">2 Cities</span><span class="bs-chip">3 Stakeholder Tiers</span></div>
+        </div>
+      </div>
+      <div class="bridge-step">
+        <div class="bs-num"><div class="bs-dot">2</div><div class="bs-line"></div></div>
+        <div class="bs-content">
+          <div class="bs-lbl">Empathy Mapping</div>
+          <div class="bs-title">Making the emotional world visible</div>
+          <div class="bs-body">Three detailed empathy maps — patient, physician, and hospitalist. Each map surfaced emotional subtext — what wasn't said directly but was visible in behavior, hesitation, and language.</div>
+          <div class="bs-chips"><span class="bs-chip">Empathy Maps ×3</span><span class="bs-chip">Pains &amp; Gains</span><span class="bs-chip">Goals &amp; Motivations</span><span class="bs-chip-a bs-chip">Emotional Subtext</span></div>
+        </div>
+      </div>
+      <div class="bridge-step">
+        <div class="bs-num"><div class="bs-dot">3</div><div class="bs-line"></div></div>
+        <div class="bs-content">
+          <div class="bs-lbl">Affinity Clustering</div>
+          <div class="bs-title">The same themes kept appearing across all eight conversations</div>
+          <div class="bs-body">Trust. Time. Invisibility. Family exclusion. Training gaps. These weren't individual complaints. They were symptoms of the same structural failure. Convergence across participant types is the strongest form of qualitative validation.</div>
+          <div class="bs-chips"><span class="bs-chip" style="background:rgba(255,122,122,.14);color:#ff9090;border:1px solid rgba(255,122,122,.2);">Trust</span><span class="bs-chip" style="background:rgba(245,194,122,.11);color:var(--warm);border:1px solid rgba(245,194,122,.18);">Time</span><span class="bs-chip" style="background:rgba(122,163,255,.11);color:#7aa3ff;border:1px solid rgba(122,163,255,.18);">Invisibility</span><span class="bs-chip" style="background:rgba(61,214,200,.09);color:var(--teal);border:1px solid rgba(61,214,200,.15);">Family</span><span class="bs-chip" style="background:rgba(168,85,247,.11);color:rgba(168,85,247,.9);border:1px solid rgba(168,85,247,.18);">Training</span></div>
+        </div>
+      </div>
+      <div class="bridge-step">
+        <div class="bs-num"><div class="bs-dot">4</div><div class="bs-line"></div></div>
+        <div class="bs-content">
+          <div class="bs-lbl">Competitive Landscape</div>
+          <div class="bs-title">Why the existing system cannot solve this on its own</div>
+          <div class="bs-body">Every existing modality — palliative care, hospice, psychiatry — is referral-only. They address emotional needs only above a high severity threshold. Most patient distress has no pathway.</div>
+          <div class="bs-chips"><span class="bs-chip">Competitive Analysis</span><span class="bs-chip">SWOT ×2</span><span class="bs-chip">2×2 Positioning Map</span><span class="bs-chip-a bs-chip">Structural Gap Confirmed</span></div>
+        </div>
+      </div>
+      <div class="bridge-step">
+        <div class="bs-num"><div class="bs-dot">5</div><div class="bs-line"></div></div>
+        <div class="bs-content">
+          <div class="bs-lbl">Opportunity Mapping</div>
+          <div class="bs-title">Five structural gaps → five design opportunities</div>
+          <div class="bs-body">Each insight generated an opportunity area — framed as a strategic direction, not a solution. Broad enough to admit multiple interventions. Specific enough to rule things out.</div>
+          <div class="bs-chips"><span class="bs-chip">5 Insights</span><span class="bs-chip">5 Opportunity Areas</span><span class="bs-chip-a bs-chip">Strategic Framing</span></div>
+        </div>
+      </div>
+      <div class="bridge-step">
+        <div class="bs-num"><div class="bs-dot">6</div></div>
+        <div class="bs-content">
+          <div class="bs-lbl">Concept Development &amp; Validation</div>
+          <div class="bs-title">Three concepts → PMI analysis → prototype testing → one direction</div>
+          <div class="bs-body">Three concepts, each at a different leverage point. Evaluated against design criteria and PMI, then tested with a multi-role medical cohort. One direction scored highest on feasibility, behavioral fit, and immediate reach.</div>
+          <div class="bs-chips"><span class="bs-chip">3 Concepts</span><span class="bs-chip">PMI Analysis</span><span class="bs-chip">Design Criteria</span><span class="bs-chip">Prototype Testing</span><span class="bs-chip-a bs-chip">Karuna</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ POSITIONING MATRIX + SWOT ═════════════════════════════════ -->
+<section class="sec" id="positioning">
+  <div class="ctr">
+    <div class="shead rv">
+      <div class="step-banner">
+        <div class="step-n">04</div>
+        <div class="step-info">
+          <div class="step-lbl">Competitive Analysis</div>
+          <div class="step-title">Where acute care sits — and where the gap is</div>
+        </div>
+      </div>
+      <h2 class="stitle">The care system is organized<br>around the wrong <em>axis.</em></h2>
+      <p class="sbody">Plotting care modalities across two axes revealed exactly where acute care sits — and why emotional support isn't part of its default operating model.</p>
+    </div>
+    <div class="matrix-wrap rv">
+      <div class="matrix-svg-area">
+        <svg viewBox="0 0 440 420" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:440px;display:block;">
+          <defs>
+            <marker id="arr" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="rgba(232,149,109,.5)"/>
+            </marker>
+          </defs>
+
+          <!-- Axis lines -->
+          <line x1="220" y1="28" x2="220" y2="388" stroke="rgba(235,240,255,.15)" stroke-width="1.5"/>
+          <line x1="28" y1="208" x2="412" y2="208" stroke="rgba(235,240,255,.15)" stroke-width="1.5"/>
+
+          <!-- Axis labels -->
+          <text x="220" y="18" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="rgba(200,210,240,.45)" letter-spacing="2">CURING</text>
+          <text x="220" y="406" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="rgba(200,210,240,.45)" letter-spacing="2">CARING</text>
+          <text x="16" y="208" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="rgba(200,210,240,.45)" letter-spacing="1.5" transform="rotate(-90,16,208)">PHYSICAL</text>
+          <text x="428" y="208" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="rgba(200,210,240,.45)" letter-spacing="1.5" transform="rotate(90,428,208)">EMOTIONAL</text>
+
+          <!-- ── Emergency Care: cx=95 cy=100 ── -->
+          <text x="95" y="75" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#7aa3ff">Emergency</text>
+          <text x="95" y="87" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#7aa3ff">Care</text>
+          <circle cx="95" cy="100" r="7" fill="#7aa3ff" opacity=".85"/>
+
+          <!-- ── Primary Care: cx=160 cy=152 ── -->
+          <text x="160" y="127" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#7aa3ff">Primary</text>
+          <text x="160" y="139" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#7aa3ff">Care</text>
+          <circle cx="160" cy="152" r="7" fill="#7aa3ff" opacity=".75"/>
+
+          <!-- ── Mental Health: cx=310 cy=85 ── -->
+          <text x="310" y="60" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#4de09e">Mental</text>
+          <text x="310" y="72" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#4de09e">Health</text>
+          <circle cx="310" cy="85" r="7" fill="#4de09e" opacity=".85"/>
+
+          <!-- ── Psychotherapy: cx=355 cy=140 ── -->
+          <text x="355" y="115" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#4de09e">Psycho-</text>
+          <text x="355" y="127" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#4de09e">therapy</text>
+          <circle cx="355" cy="140" r="7" fill="#4de09e" opacity=".75"/>
+
+          <!-- ── Acute Care: cx=195 cy=118 — larger, highlighted ── -->
+          <text x="195" y="90" text-anchor="middle" font-family="Fraunces,serif" font-size="11" fill="#e8956d" font-weight="700">Acute</text>
+          <text x="195" y="103" text-anchor="middle" font-family="Fraunces,serif" font-size="11" fill="#e8956d" font-weight="700">Care</text>
+          <circle cx="195" cy="118" r="11" fill="#e8956d" opacity=".95"/>
+
+          <!-- ── Hospice: cx=290 cy=308 ── -->
+          <text x="290" y="283" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#3dd6c8">Hospice</text>
+          <text x="290" y="295" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#3dd6c8">Care</text>
+          <circle cx="290" cy="308" r="7" fill="#3dd6c8" opacity=".85"/>
+
+          <!-- ── Palliative: cx=365 cy=268 ── -->
+          <text x="365" y="243" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#3dd6c8">Palliative</text>
+          <text x="365" y="255" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#3dd6c8">Care</text>
+          <circle cx="365" cy="268" r="7" fill="#3dd6c8" opacity=".75"/>
+
+          <!-- ── Opportunity zone ellipse ── -->
+          <ellipse cx="292" cy="158" rx="60" ry="44" fill="rgba(232,149,109,.09)" stroke="rgba(232,149,109,.38)" stroke-width="1.2" stroke-dasharray="5,3"/>
+          <text x="292" y="154" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="rgba(232,149,109,.8)">OPPORTUNITY</text>
+          <text x="292" y="166" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="rgba(232,149,109,.8)">ZONE</text>
+
+          <!-- Arrow from Acute Care toward opportunity zone -->
+          <line x1="206" y1="118" x2="228" y2="132" stroke="rgba(232,149,109,.4)" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#arr)"/>
+        </svg>
+        <div class="matrix-legend">
+          <div class="ml-item"><div class="ml-dot" style="background:#e8956d;"></div><strong style="color:var(--a);">Acute Care</strong> — the intervention target</div>
+          <div class="ml-item"><div class="ml-dot" style="background:#7aa3ff;"></div>Emergency &amp; Primary Care</div>
+          <div class="ml-item"><div class="ml-dot" style="background:#4de09e;"></div>Mental Health &amp; Psychotherapy</div>
+          <div class="ml-item"><div class="ml-dot" style="background:#3dd6c8;"></div>Hospice &amp; Palliative Care</div>
+        </div>
+        <div class="matrix-insight">
+          <div class="mi-lbl">The strategic finding</div>
+          <div class="mi-text">Acute care sits firmly in the Physical/Curing quadrant. The dashed zone is where it could expand capacity without becoming a different discipline — the opportunity is not to transform acute care, but to extend it.</div>
+        </div>
+      </div>
+      <div>
+        <div class="swot-pair" style="display:flex;flex-direction:column;gap:14px;">
+          <div class="swot-card">
+            <div class="swot-head"><div><div class="swot-head-sub">SWOT Analysis</div><div class="swot-head-title">Acute Care Hospitals</div></div></div>
+            <div class="swot-grid">
+              <div class="swot-q swot-s"><div class="swot-q-lbl">Strengths</div><ul class="swot-list"><li>Convenience &amp; high accessibility</li><li>Wide range of treatments</li><li>High physical stabilization rates</li></ul></div>
+              <div class="swot-q swot-w"><div class="swot-q-lbl">Weaknesses</div><ul class="swot-list"><li>Narrow scope — physical care only</li><li>Unpersonalized treatment models</li><li>Poor emotional information sharing</li></ul></div>
+              <div class="swot-q swot-o"><div class="swot-q-lbl">Opportunities</div><ul class="swot-list"><li>Integrate emotional care at treatment point</li><li>Emerging hospital-mental health partnerships</li></ul></div>
+              <div class="swot-q swot-t"><div class="swot-q-lbl">Threats</div><ul class="swot-list"><li>Competition with specialist emotional care</li><li>Scope-of-practice limits on physicians</li></ul></div>
+            </div>
+          </div>
+          <div class="swot-card">
+            <div class="swot-head"><div><div class="swot-head-sub">SWOT Analysis — Why Not Just Expand This?</div><div class="swot-head-title">Palliative Care</div></div></div>
+            <div class="swot-grid">
+              <div class="swot-q swot-s"><div class="swot-q-lbl">Strengths</div><ul class="swot-list"><li>Evidence-based emotional support model</li><li>Team-based, holistic practice</li><li>Reduces ED visits and readmissions</li></ul></div>
+              <div class="swot-q swot-w"><div class="swot-q-lbl">Weaknesses</div><ul class="swot-list"><li>Perceived as only for end-of-life care</li><li>Not considered equal to medical treatment</li><li>Requires specialist training — scarce supply</li></ul></div>
+              <div class="swot-q swot-o"><div class="swot-q-lbl">Opportunities</div><ul class="swot-list"><li>Integrate principles into everyday acute care</li><li>Shift community and policy perception</li></ul></div>
+              <div class="swot-q swot-t"><div class="swot-q-lbl">Threats</div><ul class="swot-list"><li>Critical shortage of palliative specialists</li><li>Limited policy and funding connections</li></ul></div>
+            </div>
+          </div>
+        </div>
+        <div class="thinking-box" style="margin-top:16px;">
+          <div class="tb-lbl">Why this analysis ruled out expanding palliative care</div>
+          <div class="tb-text">Palliative care's weaknesses are structural — specialist shortage, stigma, policy gaps. Scaling it would take decades. The faster path: bring palliative capabilities into acute care providers directly.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ DESIGN CRITERIA ════════════════════════════════════════════ -->
+<section class="sec sec-dk" id="criteria">
+  <div class="ctr">
+    <div class="shead rv">
+      <div class="step-banner">
+        <div class="step-n">05</div>
+        <div class="step-info">
+          <div class="step-lbl">Design Criteria</div>
+          <div class="step-title">The filters that guided concept selection</div>
+        </div>
+      </div>
+      <h2 class="stitle">Not every good idea is the <em>right idea.</em><br>Design criteria decide.</h2>
+      <p class="sbody">Criteria were derived directly from research findings before any concept generation — to separate ideas that sounded good from ones that were structurally viable.</p>
+    </div>
+    <div class="criteria-wrap rv">
+      <div class="criteria-levels">
+        <div class="cl cl-must">
+          <div class="cl-tier">Must Have — Non-negotiable</div>
+          <div class="cl-items">
+            <div class="cl-item">Equal importance to physical and mental care at any stage of illness</div>
+            <div class="cl-item">Empathy integrated alongside clinical treatment — not as a separate pathway</div>
+            <div class="cl-item">Doctor training in communicational and emotional skills</div>
+          </div>
+        </div>
+        <div class="cl cl-should">
+          <div class="cl-tier">Should Have — Strong Preference</div>
+          <div class="cl-items">
+            <div class="cl-item">Trust-building between doctors and patients to reduce institutional fear</div>
+            <div class="cl-item">Decision-making that incorporates the patient's perspective</div>
+            <div class="cl-item">Structured family involvement in the care conversation</div>
+          </div>
+        </div>
+        <div class="cl cl-nice">
+          <div class="cl-tier">Nice to Have — Aspirational</div>
+          <div class="cl-items">
+            <div class="cl-item">Activities that reduce stress from the treatment environment itself</div>
+            <div class="cl-item">Improved environmental design of the acute care unit</div>
+            <div class="cl-item">Digital tools supporting ongoing patient-family communication</div>
+          </div>
+        </div>
+      </div>
+      <div class="criteria-context">
+        <div class="cc-block m">
+          <div class="cc-lbl">Why Must Haves emerged from the data</div>
+          <div class="cc-text">The research showed empathic interaction isn't secondary to physical care — it's parallel to it. Any solution treating emotional support as optional fails structurally.</div>
+        </div>
+        <div class="cc-block s">
+          <div class="cc-lbl">Why trust is a design requirement, not a soft preference</div>
+          <div class="cc-text">Dr. Thatishetty confirmed it directly: "Patients don't share their emotional issues." When emotional trust is absent, clinical information quality drops. Trust is not a wellbeing metric — it's a diagnostic infrastructure metric.</div>
+        </div>
+        <div class="cc-block n">
+          <div class="cc-lbl">Why aspirational criteria were separated out</div>
+          <div class="cc-text">Separating aspirational criteria prevented scope creep and anchored evaluation to what was achievable within real constraints.</div>
+        </div>
+        <div class="thinking-box">
+          <div class="tb-lbl">Research Thinking</div>
+          <div class="tb-text">Design criteria are a decision filter. The residency workshop model satisfied all Must Haves and most Should Haves. The other directions each failed at least one Must Have.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ CONCEPT COMPARISON ═════════════════════════════════════════ -->
+<section class="sec" id="concept-comparison">
+  <div class="ctr">
+    <div class="shead rv">
+      <div class="step-banner">
+        <div class="step-n">06</div>
+        <div class="step-info">
+          <div class="step-lbl">Concept Development</div>
+          <div class="step-title">How three ideas became one direction</div>
+        </div>
+      </div>
+      <h2 class="stitle">Ideas are only valuable<br>when they can be <em>compared and challenged.</em></h2>
+      <p class="sbody">Three directions, each at a different leverage point. PMI analysis, design criteria, and prototype testing made the decision.</p>
+    </div>
+    <div class="concept-table rv">
+      <div class="ct-head">
+        <div class="ct-h">Evaluation Criterion</div>
+        <div class="ct-h winner">Residency Workshops<br><small style="font-size:.52rem;opacity:.7;font-style:normal;">→ Selected Direction</small></div>
+        <div class="ct-h other">Educational Program</div>
+        <div class="ct-h other">Multi-Care Units</div>
+      </div>
+      <div class="ct-row">
+        <div class="ct-criterion">Reaches practicing doctors now</div>
+        <div class="ct-cell winner-col"><span class="ct-yes">✓</span> Immediately, within existing system</div>
+        <div class="ct-cell"><span class="ct-no">✗</span> Only future graduates</div>
+        <div class="ct-cell"><span class="ct-part">~</span> Requires specialist buy-in</div>
+      </div>
+      <div class="ct-row">
+        <div class="ct-criterion">Reaches upcoming doctors</div>
+        <div class="ct-cell winner-col"><span class="ct-yes">✓</span> Via residency integration</div>
+        <div class="ct-cell"><span class="ct-yes">✓</span> At curriculum level</div>
+        <div class="ct-cell"><span class="ct-no">✗</span> Not applicable</div>
+      </div>
+      <div class="ct-row">
+        <div class="ct-criterion">Feasible within constraints</div>
+        <div class="ct-cell winner-col"><span class="ct-yes">✓</span> Uses existing hospital infrastructure</div>
+        <div class="ct-cell"><span class="ct-no">✗</span> Requires institutional curriculum change</div>
+        <div class="ct-cell"><span class="ct-part">~</span> Requires palliative specialists</div>
+      </div>
+      <div class="ct-row">
+        <div class="ct-criterion">Behaviorally experiential</div>
+        <div class="ct-cell winner-col"><span class="ct-yes">✓</span> 80%+ hands-on learning</div>
+        <div class="ct-cell"><span class="ct-part">~</span> Depends on implementation</div>
+        <div class="ct-cell"><span class="ct-no">✗</span> Structural, not behavioral</div>
+      </div>
+      <div class="ct-row">
+        <div class="ct-criterion">Scalable over time</div>
+        <div class="ct-cell winner-col"><span class="ct-yes">✓</span> Train-the-trainer model</div>
+        <div class="ct-cell"><span class="ct-yes">✓</span> Curriculum scales naturally</div>
+        <div class="ct-cell"><span class="ct-part">~</span> Limited by specialist supply</div>
+      </div>
+      <div class="ct-row">
+        <div class="ct-criterion">PMI composite score</div>
+        <div class="ct-cell winner-col"><span class="ct-yes" style="font-family:var(--sf);font-size:1.5rem;font-weight:900;">+8</span></div>
+        <div class="ct-cell"><span style="font-family:var(--sf);font-size:1.5rem;font-weight:900;color:var(--warm);">+7</span></div>
+        <div class="ct-cell"><span style="font-family:var(--sf);font-size:1.5rem;font-weight:900;color:var(--err);">−2</span></div>
+      </div>
+      <div class="ct-row">
+        <div class="ct-criterion">Prototype validated</div>
+        <div class="ct-cell winner-col"><span class="ct-yes">✓</span> Tested with multi-role medical cohort</div>
+        <div class="ct-cell"><span class="ct-no">✗</span> Not tested at this stage</div>
+        <div class="ct-cell"><span class="ct-no">✗</span> Not tested at this stage</div>
+      </div>
+    </div>
+    <div class="thinking-box rv" style="margin-top:22px;">
+      <div class="tb-lbl">Why the workshop model won — and why that wasn't obvious at the start</div>
+      <div class="tb-text">The Educational Program appeared most compelling early — it addresses root cause. But the research confirmed the problem exists now, in operating hospitals. A curriculum change would take a decade to reach patients. The workshop model creates immediate impact while seeding change in the next generation. Prototype testing confirmed both the need and the approach.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SYNTHESIS ════════════════════════════════════════════════ -->
+<div class="synth">
+  <div class="ctr">
+    <div class="shead rv">
+      <div class="lbl" style="margin-bottom:14px;">03 — Research Synthesis</div>
+      <h2 class="stitle">From raw experience<br>to <em>structured insight.</em></h2>
+    </div>
+    <div class="synth-flow rv">
+      <div class="synth-stage"><div class="si">🌀</div><div class="sl">Stage 01</div><div class="st">Raw Experience</div><div class="sd">Eight voices. Unstructured but deeply human.</div></div>
+      <div class="sa">→</div>
+      <div class="synth-stage"><div class="si">🗂️</div><div class="sl">Stage 02</div><div class="st">Patterns Emerge</div><div class="sd">Affinity clustering. Empathy maps. Same things, different words.</div><div class="mc-row"><span class="mc mc1">Trust</span><span class="mc mc2">Time</span><span class="mc mc3">Invisible</span><span class="mc mc4">Family</span><span class="mc mc5">Training</span><span class="mc mc1">Fear</span><span class="mc mc2">Control</span><span class="mc mc3">Technology</span></div></div>
+      <div class="sa">→</div>
+      <div class="synth-stage"><div class="si">💡</div><div class="sl">Stage 03</div><div class="st">Five Insights</div><div class="sd">Structural, repeatable, actionable — each pointing to the same gap.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ INSIGHTS INTERLUDE ═════════════════════════════════════════ -->
+<div class="fhero" id="insights">
+  <div class="ctr">
+    <div class="fhi rv">
+      <div class="lbl" style="margin-bottom:16px;">04 — Key Insights</div>
+      <h2 class="fhtit">What the research<br><em>kept saying.</em></h2>
+      <p class="fhbod">Five structural findings that held across every participant, every role, every conversation.</p>
+      <div class="ins-pills" id="insPills">
+        <div class="ip on" onclick="showIns(0,this)"><div class="ip-n">01</div><div class="ip-t">Emotional suffering is invisible — by design</div></div>
+        <div class="ip" onclick="showIns(1,this)"><div class="ip-n">02</div><div class="ip-t">Clinical skill ≠ emotional skill</div></div>
+        <div class="ip" onclick="showIns(2,this)"><div class="ip-n">03</div><div class="ip-t">Technology creates distance</div></div>
+        <div class="ip" onclick="showIns(3,this)"><div class="ip-n">04</div><div class="ip-t">Families are excluded</div></div>
+        <div class="ip" onclick="showIns(4,this)"><div class="ip-n">05</div><div class="ip-t">Care is fragmented by design</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="sec sec-dk">
+  <div class="ctr">
+    <div class="ins-arena">
+      <div class="ins-panel on" id="ins0">
+        <div><div class="fnb"><span class="fn">INSIGHT 01</span></div><h3 class="ftit">Emotional suffering is systematically invisible — and both sides have accepted this.</h3><p class="fbt">Patients stopped disclosing because experience taught them nothing would change. Doctors stopped probing because the system never trained them to. A mutual, unspoken agreement formed — emotional needs go permanently unaddressed.</p><div class="evl"><div class="evi evi-q">"Most of the time, patients don't share their emotional issues, which cannot be easily seen on scans or tests." — Dr. Amit Thatishetty</div><div class="evi">Empathy mapping: patients actively suppressed distress to avoid burdening staff they perceived as overloaded.</div><div class="evi evi-t">The longer the stay, the more pronounced this learned suppression became.</div></div><div class="ibox"><div class="ibox-l">Design Opportunity</div><div class="ibox-t">Create structured moments that make it safe — and expected — for patients to share emotional states.</div></div></div>
+        <div class="ins-vis"><div class="iv-l">Physical vs. emotional care — patient self-rating</div><div class="iv-big" id="bigNum0">0%</div><p style="font-size:.82rem;color:var(--ow);line-height:1.6;opacity:.8;margin-bottom:20px;">of patients felt their emotional distress was adequately acknowledged during their hospital stay. Consistent across all five interviews regardless of hospital, length of stay, or diagnosis.</p><div class="gv" id="gapVis"><div class="gv-row"><div class="gv-h">Physical care quality <span class="gv-p">92%</span></div><div class="gv-track"><div class="gv-fill gv-blue" data-w="92" style="width:0%"></div></div></div><div class="gv-row"><div class="gv-h">Emotional care quality <span class="gv-p">8%</span></div><div class="gv-track"><div class="gv-fill gv-org" data-w="8" style="width:0%"></div></div></div></div><div style="margin-top:14px;font-size:.75rem;color:var(--mid);font-style:italic;">Patient self-rating · 0–100 scale</div></div>
+      </div>
+
+      <div class="ins-panel" id="ins1">
+        <div><div class="fnb"><span class="fn">INSIGHT 02</span></div><h3 class="ftit">Clinical skill does not transfer to emotional skill — and no one ever taught the difference.</h3><p class="fbt">Every physician was clinically competent. None had received formal training in emotional communication or active listening. This is a curriculum gap, not a character failure. Medical education trains doctors to treat disease — not to be present with suffering.</p><div class="evl"><div class="evi evi-q">"It's out of my field. I am not trained in treating such issues." — Robin Youngson, MD (21 years experience)</div><div class="evi">All three physicians confirmed: emotional intelligence is assumed, not taught.</div><div class="evi evi-t">"Empathy can't be taught by books or in labs." — Workshop Participant, Physician (prototype testing)</div></div><div class="ibox"><div class="ibox-l">Design Opportunity</div><div class="ibox-t">Experiential emotional intelligence training at residency — reaching upcoming and practicing doctors simultaneously.</div></div></div>
+        <div class="ins-vis"><div class="iv-l">Training gap — formal emotional education received</div><div class="iv-big" style="color:var(--warm);">0 of 3</div><p style="font-size:.82rem;color:var(--ow);line-height:1.6;opacity:.8;margin-bottom:20px;">physicians interviewed reported any formal training in emotional communication, active listening, or psychological support during their medical education.</p><div class="callout callout-w"><p><strong style="color:var(--warm);">The paradox:</strong> Doctors who care deeply about patients are operating without the tools to translate that care into what patients need. <em>This is a design problem, not a character problem.</em></p></div></div>
+      </div>
+
+      <div class="ins-panel" id="ins2">
+        <div><div class="fnb"><span class="fn">INSIGHT 03</span></div><h3 class="ftit">Technology is creating distance — even when it's meant to enable connection.</h3><p class="fbt">Clinical technology is essential — but it shifted the relational register of patient interactions. Looking at a screen rather than a patient changes the nature of the conversation, even when the information exchanged is identical.</p><div class="evl"><div class="evi evi-q">"Technology is almost interwoven into everything I do. I feel that sometimes it is acting as a barrier to get the right kind of human interaction." — Prasannaa, Hospitalist</div><div class="evi">During bedside interactions, screen-facing posture was the default. Eye contact averaged under 20% of interaction time.</div></div><div class="ibox"><div class="ibox-l">Design Opportunity</div><div class="ibox-t">Train clinicians in eye-contact-first patterns. Explore EHR designs that promote human-facing posture.</div></div></div>
+        <div class="ins-vis"><div class="iv-l">The technology barrier — interaction flow</div><div class="tflow" style="margin-top:8px;"><div class="tf-row"><div class="tf-n tf-a">Doctor enters room</div><div class="tf-arr">→</div><div class="tf-n tf-b">Opens EHR system</div></div><div style="text-align:center;color:var(--err);font-size:.78rem;padding:4px 0;">↓ screen replaces eye contact</div><div class="tf-row"><div class="tf-n tf-c">Emotional distance increases</div></div><div style="text-align:center;color:var(--mid);font-size:.78rem;padding:4px 0;">↓ patient reads the signal</div><div class="tf-row"><div class="tf-n tf-a" style="background:rgba(122,163,255,.06);">Patient suppresses emotional disclosure</div></div><div style="text-align:center;color:var(--mid);font-size:.78rem;padding:4px 0;">↓ cycle reinforces itself</div><div class="tf-row"><div class="tf-n" style="background:rgba(255,122,122,.08);border:1px solid rgba(255,122,122,.2);color:var(--err);">Emotional needs go permanently unmet</div></div></div><div style="margin-top:12px;font-size:.75rem;color:var(--mid);line-height:1.5;font-style:italic;">Described by both patients and physicians independently — a rare data convergence.</div></div>
+      </div>
+
+      <div class="ins-panel" id="ins3">
+        <div><div class="fnb"><span class="fn">INSIGHT 04</span></div><h3 class="ftit">Families are the patients' emotional backbone — excluded by the system that needs them most.</h3><p class="fbt">Family was every patient's primary source of emotional stability. Yet the system restricts visiting hours, withholds information, and excludes families from care conversations. Its most powerful emotional resource is structurally unavailable.</p><div class="evl"><div class="evi evi-q">"Families are left out of most part of current system of care. Patients and their family members and caregivers are given very less information about what is happening to them or their loved one." — Prasannaa</div><div class="evi evi-q">"I can feel safe around doctors but they can never give me the feeling of me being with my family." — Vineeth Chada</div><div class="evi">The less information families receive, the more anxious they become — adding to the patient's own stress. A self-reinforcing exclusion cycle.</div></div><div class="ibox"><div class="ibox-l">Design Opportunity</div><div class="ibox-t">Communication protocols that involve families as care partners — not restricted visitors.</div></div></div>
+        <div class="ins-vis"><div class="iv-l">Family exclusion model</div><div class="fv" style="margin-top:8px;"><div class="fv-g fv-in"><div class="fv-ic">🏥</div><div class="fv-l">Patient</div></div><div class="fv-g fv-in"><div class="fv-ic">👨‍⚕️</div><div class="fv-l">Clinical Team</div></div><div class="fv-g fv-out"><div class="fv-ic">👨‍👩‍👧</div><div class="fv-l">Family</div></div><div class="fv-g fv-out"><div class="fv-ic">💭</div><div class="fv-l">Emotional Support</div></div><div class="fv-note">The system that most needs family involvement restricts it — at precisely the moment it matters most.</div></div></div>
+      </div>
+
+      <div class="ins-panel" id="ins4">
+        <div><div class="fnb"><span class="fn">INSIGHT 05</span></div><h3 class="ftit">Emotional support is a referral destination — not a feature of everyday care.</h3><p class="fbt">When distress is severe enough, the system refers to palliative care or psychiatry. But most patient distress never crosses that threshold — it sits in the ordinary daily experience of care, entirely unaddressed.</p><div class="evl"><div class="evi evi-q">"We don't have any psychiatric doctor at our unit. If a patient has a severe mental illness, then we move him to a different ward." — Dr. Amit Thatishetty</div><div class="evi">Palliative care and hospice address emotional illness — but only as referral-only systems. Acute care sits adjacent to that capacity without accessing it.</div><div class="evi evi-t">45–80% of patients experience acute stress. The referral threshold is far higher. Most suffer without any system response.</div></div><div class="ibox"><div class="ibox-l">Design Opportunity</div><div class="ibox-t">Integrate baseline emotional support into acute care — as a trained feature of every physician-patient interaction, not a referral option.</div></div></div>
+        <div class="ins-vis"><div class="iv-l">Care fragmentation map</div><div class="cm-care" style="margin-top:8px;"><div class="cmc-row"><div class="cmc cmc-a">Acute Care</div><div class="tf-arr">→</div><div class="cmc cmc-s" style="font-size:.7rem;">emotional distress?</div></div><div style="text-align:center;color:var(--mid);font-size:.78rem;padding:2px 0;">↓ only if severe enough to notice</div><div class="cmc-row"><div class="cmc cmc-p">Palliative Care</div><div class="tf-arr">or</div><div class="cmc cmc-p" style="background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.2);">Psychiatry</div></div><div style="text-align:center;color:var(--err);font-size:.78rem;padding:4px 0;">↓ most distress never crosses this threshold</div><div class="cmc-row"><div class="cmc cmc-s" style="font-size:.72rem;">45–80% of patients experiencing acute stress → no referral → no system response</div></div></div><div style="margin-top:20px;"><div class="iv-l" style="margin-bottom:12px;">What patients most wanted from care providers</div><div class="bc" id="barChart"><div class="bc-row"><div class="bc-h">Address my emotions <span class="bc-p">87%</span></div><div class="bc-track"><div class="bc-fill" data-w="87" style="width:0%"></div></div></div><div class="bc-row"><div class="bc-h">Respect confidentiality &amp; privacy <span class="bc-p">82%</span></div><div class="bc-track"><div class="bc-fill" data-w="82" style="width:0%"></div></div></div><div class="bc-row"><div class="bc-h">Explain in plain language <span class="bc-p">78%</span></div><div class="bc-track"><div class="bc-fill" data-w="78" style="width:0%"></div></div></div><div class="bc-row"><div class="bc-h">Be a good listener <span class="bc-p">74%</span></div><div class="bc-track"><div class="bc-fill" data-w="74" style="width:0%"></div></div></div></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ ANTICIPATION — earned reveal ══════════════════════════════ -->
+<div class="anticipation">
+  <div class="ctr">
+    <div class="ant-inner rv">
+      <div class="ant-q">"How might we help doctors build stronger emotional connections with patients — without increasing their workload?"</div>
+      <div class="ant-a">Six months of research.<br>Eight conversations.<br>Five frameworks.<br>Three concepts.<br><em>One answer.</em></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ KARUNA REVEAL ══════════════════════════════════════════════ -->
+<div class="k-reveal" id="karuna">
+  <div class="ctr">
+    <div class="kr-inner rv">
+      <div class="kr-pill"><span>Sanskrit · कारुण्य</span><em>Compassion as action</em></div>
+      <h2 class="kr-title rv">The research pointed<br>to one intervention.<br><em>Karuna.</em></h2>
+      <p class="kr-sub rv d1">The research converged on a single direction. Here is what it is — and how it was chosen.</p>
+    </div>
+
+    <div class="rv d2" style="margin:0 auto 52px;max-width:720px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;border-radius:var(--rl);overflow:hidden;border:1px solid var(--b2);">
+        <div style="background:var(--ink3);padding:28px 32px;position:relative;overflow:hidden;">
+          <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--a),var(--warm),transparent);"></div>
+          <div class="lbl" style="margin-bottom:10px;">The name</div>
+          <div style="font-family:var(--sf);font-size:2rem;font-weight:900;color:var(--a);letter-spacing:-.02em;line-height:1;margin-bottom:8px;">कारुण्य</div>
+          <div style="font-family:var(--sf);font-size:1rem;font-style:italic;color:var(--ow);margin-bottom:6px;">From Sanskrit <em style="font-style:normal;color:var(--a);">kara</em> — to do, to make</div>
+          <div style="font-size:.84rem;color:var(--mid);line-height:1.6;">Not the feeling of compassion. The <em style="color:var(--ow);">act</em> of it. Action-based care.</div>
+        </div>
+        <div style="background:var(--ink3);padding:28px 32px;">
+          <div class="lbl" style="margin-bottom:10px;">What it is</div>
+          <div style="font-family:var(--sf);font-size:1.1rem;font-weight:700;color:var(--w);line-height:1.3;margin-bottom:10px;">A workshop-based communication training program for acute care physicians</div>
+          <div style="font-size:.84rem;color:var(--mid);line-height:1.6;">Delivered at residency hospitals. Built from patient and physician research. Designed to create behavioral change — not structural overhaul.</div>
+        </div>
+      </div>
+    </div>
+    <div class="con-row rv">
+      <div class="con"><div class="con-n">Direction 01</div><div class="con-title">Hospital Workshops</div><div class="con-body">Practitioner-led sessions to build emotional and communication skills into practicing physicians' workflows. Scalable within existing hospital infrastructure.</div></div>
+      <div class="con con-win"><div class="con-n">Direction 02 — Selected</div><div class="con-title">Residency Integration</div><div class="con-body">Embedding emotional intelligence training at the residency period — the highest-leverage point, where all roles converge and behavior is still being formed.</div><span class="con-badge">✓ PMI Score +8 · Prototype Validated</span></div>
+      <div class="con"><div class="con-n">Direction 03</div><div class="con-title">Multi-Care Units</div><div class="con-body">Embedding palliative care capabilities across acute units — allowing doctors to develop their own psychological care programs without specialist referral.</div></div>
+    </div>
+    <div class="ws-row rv">
+      <div class="ws"><div class="ws-n">1</div><div class="ws-ic">👥</div><div class="ws-l">10–20 Doctor Cohort</div></div>
+      <div class="ws"><div class="ws-n">2</div><div class="ws-ic">🔍</div><div class="ws-l">Research Insights Presented</div></div>
+      <div class="ws"><div class="ws-n">3</div><div class="ws-ic">🧩</div><div class="ws-l">Realistic Case Scenarios</div></div>
+      <div class="ws"><div class="ws-n">4</div><div class="ws-ic">🔁</div><div class="ws-l">Peer Feedback &amp; Reflection</div></div>
+      <div class="ws"><div class="ws-n">5</div><div class="ws-ic">🌐</div><div class="ws-l">Connect the Dots</div></div>
+    </div>
+    <div class="rv">
+      <div class="vp"><p class="vp-text">For long-stay patients who stay in acute care hospitals — <strong>Karuna</strong> improves their psychological wellbeing by conducting workshops at residency hospitals that teach both upcoming and practicing doctors to build interaction skills with their patients. By doing this, doctors build relationships that invoke emotional experiences — <strong>unlike the present acute care environment.</strong></p></div>
+    </div>
+    <div style="margin-top:64px;" class="rv">
+      <div class="lbl" style="margin-bottom:16px;">Concept evaluation — PMI Analysis</div>
+      <div class="pmi-g">
+        <div class="pmi pmi-p"><span class="pmi-h">Plus · Strengths</span><ul><li>Workshop format scored +8 overall — highest return on feasibility and impact</li><li>80%+ of content is experiential — not passive instruction</li><li>Residency is the convergence point: all roles, one building, formative years</li><li>Customizable per unit, specialty, and treatment context</li></ul></div>
+        <div class="pmi pmi-m"><span class="pmi-h">Minus · Constraints</span><ul><li>Workshops alone only reach current doctors unless embedded at residency level</li><li>Requires buy-in from medical education institutions</li><li>Time constraints limit deep engagement for active physicians</li><li>Palliative care integration risks becoming an add-on burden</li></ul></div>
+        <div class="pmi pmi-i"><span class="pmi-h">Interesting · Potential</span><ul><li>"Empathy cannot be taught by books or in labs" — confirmed by all workshop participants</li><li>Problem exists in every clinical unit, not just acute care</li><li>Train-the-trainer model enables exponential dissemination</li><li>Potential collaboration with emotional intelligence training organizations</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ IMPACT ════════════════════════════════════════════════════ -->
+<div class="imp-sec" id="impact">
+  <div class="ctr">
+    <div class="imp-in">
+      <div class="shead rv">
+        <div class="lbl" style="margin-bottom:14px;">05 — Vision for Impact</div>
+        <h2 class="stitle">What changes when<br><em>doctors learn to listen.</em></h2>
+        <p class="sbody">Karuna is a shift in how the healthcare system trains for human connection.</p>
+      </div>
+      <div class="dgrid rv">
+        <div class="dc"><div class="dn">Doctor–Patient Trust</div><div class="ds ds-a">↑ Trust</div><div class="dd">When patients trust doctors, they share more. When they share more, clinical decisions improve. Trust is diagnostic infrastructure.</div></div>
+        <div class="dc"><div class="dn">Psychological Morbidity</div><div class="ds ds-w">↓ Distress</div><div class="dd">Addressing psychological stress during hospitalization reduces long-term mental health consequences — a direct clinical outcome, not a soft metric.</div></div>
+        <div class="dc"><div class="dn">Systemic Change</div><div class="ds ds-t">Scale</div><div class="dd">Every hospital that adopts Karuna becomes a source of capacity for others. The intervention scales without central dependency.</div></div>
+      </div>
+      <div class="g2 rv" style="margin-top:64px;">
+        <div>
+          <div class="lbl" style="margin-bottom:16px;">Implementation roadmap</div>
+          <div class="rmap">
+            <div class="rm"><div class="rm-dot">P1</div><div class="rm-body"><div class="rm-ph">Phase 1 · 6 months</div><div class="rm-title">Research Extension &amp; Prototype Refinement</div><div class="rm-desc">Extend primary research to additional acute care systems. Refine the workshop curriculum with healthcare professionals. Develop the Karuna strategy booklet and web platform.</div></div></div>
+            <div class="rm"><div class="rm-dot">P2</div><div class="rm-body"><div class="rm-ph">Phase 2 · 6 months</div><div class="rm-title">Pilot Introduction &amp; Adoption</div><div class="rm-desc">Introduce workshops across pilot acute care units. Impact measured through patient interaction quality and outcome data across the full cohort.</div></div></div>
+            <div class="rm"><div class="rm-dot">P3</div><div class="rm-body"><div class="rm-ph">Phase 3 · 3 months</div><div class="rm-title">Scale &amp; Train-the-Trainer</div><div class="rm-desc">Release Karuna publicly. Enable widespread dissemination through a faculty development model — hospitals run their own workshops independently.</div></div></div>
+          </div>
+        </div>
+        <div>
+          <div class="lbl" style="margin-bottom:16px;">Researcher reflection</div>
+          <div class="accl">
+            <div class="ai"><div class="at" onclick="toggleA(this)"><h3>What surprised me most</h3><span class="aico">▾</span></div><div class="ab"><p>I expected a technology problem. The actual issue was simpler and harder: medical education treats emotional intelligence as a personal attribute, not a clinical competency. Doctors aren't failing out of indifference — they were never taught what to do.</p></div></div>
+            <div class="ai"><div class="at" onclick="toggleA(this)"><h3>What the research changed in my thinking</h3><span class="aico">▾</span></div><div class="ab"><p>I began expecting a technology opportunity. I ended recommending a workshop. Following the data led me away from the solution I assumed — which is exactly when research is doing its job.</p></div></div>
+            <div class="ai"><div class="at" onclick="toggleA(this)"><h3>A note on scope</h3><span class="aico">▾</span></div><div class="ab"><p>Research was conducted at two hospital systems. Directionally strong but not statistically representative. Karuna is validated as a promising direction — not a proven one. That distinction matters, and it shapes what comes next.</p></div></div>
+            <div class="ai open"><div class="at" onclick="toggleA(this)"><h3>What I would do next</h3><span class="aico">▾</span></div><div class="ab" style="display:block;"><p>Expand to three additional hospital systems to test transferability across geography and patient demographics. Build outcome metrics that go beyond doctor self-report — patient psychological state at discharge, re-admission rates, and long-term wellbeing data. Develop a family-facing parallel component addressing the information exclusion gap that every patient in this study raised.</p></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ CLOSING STATEMENT ════════════════════════════════════════ -->
+<div style="padding:80px 0;border-top:1px solid var(--b);background:var(--ink);position:relative;overflow:hidden;">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 50% 60% at 50% 100%,rgba(232,149,109,.04),transparent 70%);"></div>
+  <div class="ctr" style="position:relative;z-index:1;">
+    <div class="rv" style="max-width:760px;margin:0 auto;text-align:center;">
+      <div class="lbl" style="margin-bottom:20px;">What this project demonstrates</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2px;border-radius:var(--rl);overflow:hidden;border:1px solid var(--b2);margin-bottom:44px;">
+        <div style="background:var(--ink3);padding:24px 20px;">
+          <div style="font-family:var(--sf);font-size:1.4rem;font-weight:900;color:var(--a);margin-bottom:8px;">Systems thinking</div>
+          <div style="font-size:.82rem;color:var(--mid);line-height:1.55;">The ability to see beyond individual pain points to structural causes — and design interventions at the right level.</div>
+        </div>
+        <div style="background:var(--ink3);padding:24px 20px;border-left:1px solid var(--b2);border-right:1px solid var(--b2);">
+          <div style="font-family:var(--sf);font-size:1.4rem;font-weight:900;color:var(--warm);margin-bottom:8px;">Decision rigor</div>
+          <div style="font-size:.82rem;color:var(--mid);line-height:1.55;">Research that produces defensible, evidence-based decisions — not just insights that sit in a document.</div>
+        </div>
+        <div style="background:var(--ink3);padding:24px 20px;">
+          <div style="font-family:var(--sf);font-size:1.4rem;font-weight:900;color:var(--teal);margin-bottom:8px;">Human empathy</div>
+          <div style="font-size:.82rem;color:var(--mid);line-height:1.55;">The capacity to hold both the emotional reality of patients and the structural reality of clinicians — and find the intervention that addresses both.</div>
+        </div>
+      </div>
+      <div style="font-family:var(--sf);font-size:clamp(1.1rem,2.5vw,1.6rem);font-weight:300;font-style:italic;color:var(--ow);line-height:1.45;opacity:.9;">
+        "The goal was never to make doctors feel more. The goal was to give them the tools to <em style="color:var(--a);font-style:normal;">act</em> on what they already feel."
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="ctr">
+    <div class="fw rv">Karuna</div>
+    <div class="fm rv">Healthcare Innovation Research · Krishna Panyala · Senior UX Researcher<br></div>
+  </div>
+</footer>
+
+</div>
+<script>
+// Progress
+window.addEventListener('scroll',()=>{const s=window.scrollY,t=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('pb').style.width=(s/t*100)+'%';});
+
+// Reveal
+const ro=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('vis');});},{threshold:.07,rootMargin:'0px 0px -36px 0px'});
+document.querySelectorAll('.rv').forEach(el=>ro.observe(el));
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+
+// Hero stat counter
+function animStr(el,end,dur){let start=Date.now();const run=()=>{const p=Math.min((Date.now()-start)/dur,1);const v=Math.round(45+(80-45)*p);el.textContent=v+'%';if(p<1)requestAnimationFrame(run);else el.textContent='45–80%';}; run();}
+const hs=document.getElementById('heroStat');
+const hro=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){setTimeout(()=>animStr(hs,'45–80%',1600),400);hro.unobserve(x.target);}});},{threshold:.3});
+if(hs)hro.observe(hs);
+
+// Empathy quadrant toggle
+function toggleQuad(el){const qs=document.querySelectorAll('.em-quadrant');const wasActive=el.classList.contains('active');qs.forEach(q=>q.classList.remove('active'));if(!wasActive)el.classList.add('active');}
+// Activate first quadrant by default
+document.addEventListener('DOMContentLoaded',()=>{const first=document.querySelector('.em-quadrant');if(first)first.classList.add('active');});
+
+// Insight explorer
+function showIns(idx,pill){
+  document.querySelectorAll('.ins-panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.ip').forEach(p=>p.classList.remove('on'));
+  document.getElementById('ins'+idx).classList.add('on');
+  pill.classList.add('on');
+  if(idx===4){setTimeout(()=>{document.querySelectorAll('#barChart .bc-fill').forEach(b=>{b.style.width=b.dataset.w+'%';});},300);}
+  if(idx===0){setTimeout(()=>{document.querySelectorAll('#gapVis .gv-fill').forEach(b=>{b.style.width=b.dataset.w+'%';});},100);}
+}
+
+// Gap vis on load
+const gvo=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){document.querySelectorAll('#gapVis .gv-fill').forEach(b=>{b.style.width=b.dataset.w+'%';});gvo.unobserve(x.target);}});},{threshold:.4});
+const gv=document.getElementById('gapVis');if(gv)gvo.observe(gv);
+
+// Bar chart on scroll
+const bro=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.querySelectorAll('.bc-fill').forEach(b=>{b.style.width=b.dataset.w+'%';});bro.unobserve(x.target);}});},{threshold:.4});
+const bc=document.getElementById('barChart');if(bc)bro.observe(bc);
+
+// Accordion
+function toggleA(trigger){const item=trigger.parentElement,body=trigger.nextElementSibling,isOpen=item.classList.contains('open');document.querySelectorAll('.ai').forEach(el=>{el.classList.remove('open');const b=el.querySelector('.ab');if(b)b.style.display='none';});if(!isOpen){item.classList.add('open');body.style.display='block';}}
+
+// Venn domain highlight
+function hlVenn(el){document.querySelectorAll('.venn-item').forEach(v=>v.classList.remove('on'));el.classList.add('on');}
+
+</script>
+</body>
+</html>
